@@ -1,0 +1,312 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\logo.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="strHello" xml:space="preserve">
+    <value>function hello1(valid,code2,uid2,value){
+value = mask(valid + code2 + mask("voodoo_people_" + uid2 + mask(value)));
+return value;
+}</value>
+  </data>
+  <data name="strMask" xml:space="preserve">
+    <value>function mask(msg) {
+    
+    function rotate_left(n, s) {
+        var t4 = (n &lt;&lt; s) | (n &gt;&gt;&gt; (32 - s));
+        return t4;
+    }
+    ;
+    
+    function lsb_hex(val) {
+        var str = "";
+        var i;
+        var vh;
+        var vl;
+        
+        for (i = 0; i &lt;= 6; i += 2) {
+            vh = (val &gt;&gt;&gt; (i * 4 + 4)) &amp; 0x0f;
+            vl = (val &gt;&gt;&gt; (i * 4)) &amp; 0x0f;
+            str += vh.toString(16) + vl.toString(16);
+        }
+        return str;
+    }
+    ;
+    
+    function cvt_hex(val) {
+        var str = "";
+        var i;
+        var v;
+        
+        for (i = 7; i &gt;= 0; i--) {
+            v = (val &gt;&gt;&gt; (i * 4)) &amp; 0x0f;
+            str += v.toString(16);
+        }
+        return str;
+    }
+    ;
+    
+    
+    function Utf8Encode(string) {
+        string = string.replace(/\r\n/g, "\n");
+        var utftext = "";
+        
+        for (var n = 0; n &lt; string.length; n++) {
+            
+            var c = string.charCodeAt(n);
+            
+            if (c &lt; 128) {
+                utftext += String.fromCharCode(c);
+            } 
+            else if ((c &gt; 127) &amp;&amp; (c &lt; 2048)) {
+                utftext += String.fromCharCode((c &gt;&gt; 6) | 192);
+                utftext += String.fromCharCode((c &amp; 63) | 128);
+            } 
+            else {
+                utftext += String.fromCharCode((c &gt;&gt; 12) | 224);
+                utftext += String.fromCharCode(((c &gt;&gt; 6) &amp; 63) | 128);
+                utftext += String.fromCharCode((c &amp; 63) | 128);
+            }
+        
+        }
+        
+        return utftext;
+    }
+    ;
+    
+    var blockstart;
+    var i, j;
+    var W = new Array(80);
+    var H0 = 0x67452301;
+    var H1 = 0xEFCDAB89;
+    var H2 = 0x98BADCFE;
+    var H3 = 0x10325476;
+    var H4 = 0xC3D2E1F0;
+    var A, B, C, D, E;
+    var temp;
+    
+    msg = Utf8Encode(msg);
+    
+    var msg_len = msg.length;
+    
+    var word_array = new Array();
+    for (i = 0; i &lt; msg_len - 3; i += 4) {
+        j = msg.charCodeAt(i) &lt;&lt; 24 | msg.charCodeAt(i + 1) &lt;&lt; 16 | 
+        msg.charCodeAt(i + 2) &lt;&lt; 8 | msg.charCodeAt(i + 3);
+        word_array.push(j);
+    }
+    
+    switch (msg_len % 4) {
+        case 0:
+            i = 0x080000000;
+            break;
+        case 1:
+            i = msg.charCodeAt(msg_len - 1) &lt;&lt; 24 | 0x0800000;
+            break;
+        
+        case 2:
+            i = msg.charCodeAt(msg_len - 2) &lt;&lt; 24 | msg.charCodeAt(msg_len - 1) &lt;&lt; 16 | 0x08000;
+            break;
+        
+        case 3:
+            i = msg.charCodeAt(msg_len - 3) &lt;&lt; 24 | msg.charCodeAt(msg_len - 2) &lt;&lt; 16 | msg.charCodeAt(msg_len - 1) &lt;&lt; 8 | 0x80;
+            break;
+    }
+    
+    word_array.push(i);
+    
+    while ((word_array.length % 16) != 14)
+        word_array.push(0);
+    
+    word_array.push(msg_len &gt;&gt;&gt; 29);
+    word_array.push((msg_len &lt;&lt; 3) &amp; 0x0ffffffff);
+    
+    
+    for (blockstart = 0; blockstart &lt; word_array.length; blockstart += 16) {
+        
+        for (i = 0; i &lt; 16; i++)
+            W[i] = word_array[blockstart + i];
+        for (i = 16; i &lt;= 79; i++)
+            W[i] = rotate_left(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16], 1);
+        
+        A = H0;
+        B = H1;
+        C = H2;
+        D = H3;
+        E = H4;
+        
+        for (i = 0; i &lt;= 19; i++) {
+            temp = (rotate_left(A, 5) + ((B &amp; C) | (~B &amp; D)) + E + W[i] + 0x5A827999) &amp; 0x0ffffffff;
+            E = D;
+            D = C;
+            C = rotate_left(B, 30);
+            B = A;
+            A = temp;
+        }
+        
+        for (i = 20; i &lt;= 39; i++) {
+            temp = (rotate_left(A, 5) + (B ^ C ^ D) + E + W[i] + 0x6ED9EBA1) &amp; 0x0ffffffff;
+            E = D;
+            D = C;
+            C = rotate_left(B, 30);
+            B = A;
+            A = temp;
+        }
+        
+        for (i = 40; i &lt;= 59; i++) {
+            temp = (rotate_left(A, 5) + ((B &amp; C) | (B &amp; D) | (C &amp; D)) + E + W[i] + 0x8F1BBCDC) &amp; 0x0ffffffff;
+            E = D;
+            D = C;
+            C = rotate_left(B, 30);
+            B = A;
+            A = temp;
+        }
+        
+        for (i = 60; i &lt;= 79; i++) {
+            temp = (rotate_left(A, 5) + (B ^ C ^ D) + E + W[i] + 0xCA62C1D6) &amp; 0x0ffffffff;
+            E = D;
+            D = C;
+            C = rotate_left(B, 30);
+            B = A;
+            A = temp;
+        }
+        
+        H0 = (H0 + A) &amp; 0x0ffffffff;
+        H1 = (H1 + B) &amp; 0x0ffffffff;
+        H2 = (H2 + C) &amp; 0x0ffffffff;
+        H3 = (H3 + D) &amp; 0x0ffffffff;
+        H4 = (H4 + E) &amp; 0x0ffffffff;
+    
+    }
+    
+    var temp = cvt_hex(H0) + cvt_hex(H1) + cvt_hex(H2) + cvt_hex(H3) + cvt_hex(H4);
+    
+    return temp.toLowerCase();
+
+}</value>
+  </data>
+  <data name="strPin" xml:space="preserve">
+    <value>function pin(r1,r2,u,code){
+var value = mask(r1 + r2 + mask("pin_" + u + code));
+return value;
+}</value>
+  </data>
+</root>
