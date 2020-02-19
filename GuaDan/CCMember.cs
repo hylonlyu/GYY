@@ -1922,8 +1922,14 @@ namespace GuaDan
             return bRet;
         }
 
-
-        public bool QiPiaoGuaQ(RaceInfoItem item, out BetResultInfo info)
+        /// <summary>
+        /// 挂Q
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="info"></param>
+        /// <param name="combo">1为拖，0为交叉</param>
+        /// <returns></returns>
+        public bool QiPiaoGuaQ(RaceInfoItem item, out BetResultInfo info,string combo="1")
         {
             bool bRet = false;
             info = new BetResultInfo();
@@ -1976,7 +1982,7 @@ namespace GuaDan
                 }
                 betItem.StrDiscount = amount.ToString();
 
-                string url = $"http://{DoMain}/forecast?task=betBox&combo=1&Tix={tix}&Race={item.Race}&Hss={Hss}&fctype={fctype}&Q=Q&type={type}&overflow=1&amount={amount}&fclmt={fclmt}&race_type={item.Url}&race_date={item.Date}&show={item.Race}&rd={rd}";
+                string url = $"http://{DoMain}/forecast?task=betBox&combo={combo}&Tix={tix}&Race={item.Race}&Hss={Hss}&fctype={fctype}&Q=Q&type={type}&overflow=1&amount={amount}&fclmt={fclmt}&race_type={item.Url}&race_date={item.Date}&show={item.Race}&rd={rd}";
                 //string refer = "http://cvyorfp.citibet.net/citibethk.jsp?race_type=63A&race_date=17-08-2012&tab=u&sml=s";
                 string refer = $"http://{DoMain}/citibethk.jsp?race_type={item.Url}&race_date={item.Date}&tab=u&sml=s";
 

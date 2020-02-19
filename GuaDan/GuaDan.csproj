@@ -117,6 +117,7 @@
     <Compile Include="FrmWebbrowser.Designer.cs">
       <DependentUpon>FrmWebbrowser.cs</DependentUpon>
     </Compile>
+    <Compile Include="GdConfig.cs" />
     <Compile Include="IniFile.cs" />
     <Compile Include="LoadAccept2.cs">
       <SubType>Form</SubType>
