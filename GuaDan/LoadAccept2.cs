@@ -19,7 +19,7 @@ namespace GuaDan
         private string cServer = "http://localhost:55534/";
         private double dMoxSubmitRMB = 0.0;
        
-        private FrmEatZd mainF = new FrmEatZd();
+        private FrmGuaDan mainF = new FrmGuaDan();
         public LoadAccept2()
         {
             InitializeComponent();

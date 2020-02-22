@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,6 +17,7 @@ namespace GuaDan
 {
     public partial class FrmGuaDan : Form
     {
+        public bool bCheckOnline = false;
         private CCMember cCmemberInstance;
         public CCMember CCmemberInstance
         {
@@ -54,6 +56,10 @@ namespace GuaDan
         UserInfo uInfo2 = new UserInfo();
         private List<Task> lstTask = new List<Task>();
         private GdConfig Config = new GdConfig();
+        /// <summary>
+        /// 二次下单时的Q赔率
+        /// </summary>
+        Dictionary<string, WPOdds> dicWpOdds = new Dictionary<string, WPOdds>();
         public FrmGuaDan()
         {
             InitializeComponent();
@@ -186,6 +192,7 @@ namespace GuaDan
         private void btnSave_Click(object sender, EventArgs e)
         {
             SaveConfig();
+            SetInstanceConfig();
         }
 
         #region Config
@@ -208,7 +215,7 @@ namespace GuaDan
             Config.Pwd2 = txtPwd2.Text.Trim();
             Config.Pin2 = txtPin2.Text.Trim();
 
-            Config.Qgqzk =Util.Text2Double(txtQgqzk.Text.Trim());
+            Config.Qgqzk = Util.Text2Double(txtQgqzk.Text.Trim());
             Config.Qgdzk = Util.Text2Double(txtQgdzk.Text.Trim());
             Config.Qzkps = Util.Text2Int(txtQzkps.Text.Trim());
             Config.Qgdps = Util.Text2Int(txtQgdps.Text.Trim());
@@ -338,12 +345,12 @@ namespace GuaDan
             string horse = "";
             string member = "";
             string bettype = "";
-            foreach(Control c in panType.Controls)
+            foreach (Control c in panType.Controls)
             {
-                if(c is RadioButton)
+                if (c is RadioButton)
                 {
                     RadioButton rad = c as RadioButton;
-                    if(rad.Checked)
+                    if (rad.Checked)
                     {
                         type = rad.Text;
                         break;
@@ -351,7 +358,7 @@ namespace GuaDan
                 }
             }
 
-            if(chkM1.Checked && !chkM2.Checked)
+            if (chkM1.Checked && !chkM2.Checked)
             {
                 member = "1";
             }
@@ -365,12 +372,12 @@ namespace GuaDan
                 member = "3";
             }
 
-            foreach(Control c in panHorse.Controls)
+            foreach (Control c in panHorse.Controls)
             {
-                if(c is CheckBox)
+                if (c is CheckBox)
                 {
                     CheckBox cc = c as CheckBox;
-                    if(cc.Checked)
+                    if (cc.Checked)
                     {
                         horse += $"{cc.Text}_";
                     }
@@ -382,11 +389,11 @@ namespace GuaDan
                 horse = $"{txtT.Text.Trim()}*{horse}";
             }
 
-            if(radEat.Checked )
+            if (radEat.Checked)
             {
                 bettype = "吃";
             }
-            else if(radBet.Checked)
+            else if (radBet.Checked)
             {
                 bettype = "赌";
             }
@@ -399,7 +406,27 @@ namespace GuaDan
             return strRet;
         }
 
+        private void SetInstanceConfig()
+        {
+            CCmemberInstance.Config = Config;
+            CCmemberInstance2.Config = Config;
+        }
         private void btn1_Click(object sender, EventArgs e)
+        {
+            SetInstanceConfig();
+            if (radGp.Checked)
+            {
+                DoBetGuPiao();
+            }
+
+            if (radZk.Checked)
+            {
+                DoBetZuoKong();
+            }
+
+        }
+
+        private void DoBetGuPiao()
         {
             lstTask.Clear();
             for (int i = 0; i < this.dgvDan.Rows.Count; i++)
@@ -411,16 +438,16 @@ namespace GuaDan
                 switch (type)
                 {
                     case "Q":
-                        DoBetQ(horse, member, playtype);
+                        DoBetQ(horse, member, playtype, Config.Qgdps);
                         break;
                     case "WP":
-                        DoBetWP(horse,member,playtype);
+                        DoBetWP(horse, member, playtype, Config.WPgdps);
                         break;
                     case "W":
-                        DoBetW(horse, member, playtype);
+                        DoBetW(horse, member, playtype, Config.Wgdps);
                         break;
                     case "P":
-                        DoBetP(horse, member, playtype);
+                        DoBetP(horse, member, playtype, Config.Pgdps);
                         break;
                 }
             }
@@ -430,20 +457,234 @@ namespace GuaDan
             });
         }
 
-        private void DoBetQ(string horse, string member, string playtype)
+        private void DoBetZuoKong(bool next = false)
+        {
+            lstTask.Clear();
+            if (!next)
+            {
+                //先获取一次Q的赔率
+                CCmemberInstance.GetPeiData14();
+                //获取wp的赔率
+                dicWpOdds = CCmemberInstance.GetWPPeiData();
+            }
+
+            for (int i = 0; i < this.dgvDan.Rows.Count; i++)
+            {
+                string horse = dgvDan.Rows[i].Cells[0].Value.ToString();
+                string type = dgvDan.Rows[i].Cells[1].Value.ToString();
+                string member = dgvDan.Rows[i].Cells[2].Value.ToString();
+                string playtype = dgvDan.Rows[i].Cells[3].Value.ToString();
+
+                switch (type)
+                {
+                    case "Q":
+                        DoBetQbyZK(horse, member, playtype);
+                        break;
+                    case "W":
+                        DoBetWbyZK(horse, member, playtype, dicWpOdds);
+                        break;
+                    case "P":
+                        DoBetPbyZK(horse, member, playtype, dicWpOdds);
+                        break;
+                }
+            }
+            Task.WhenAll(lstTask).ContinueWith((t) =>
+            {
+                ShowInfoMsg("完成任务");
+            });
+        }
+        private void DoBetWbyZK(string horse, string member, string playtype, Dictionary<string, WPOdds> dicWpOdds)
+        {
+            if (!string.IsNullOrEmpty(horse))
+            {
+                string[] hs = horse.Split("_".ToCharArray());
+                foreach (string h in hs)
+                {
+                    if (!string.IsNullOrEmpty(h))
+                    {
+                        if (dicWpOdds.ContainsKey(h))
+                        {
+                            double pei = dicWpOdds[h].Win;
+                            if (pei != 0)
+                            {
+                                int piao = (int)(Config.Wzkps / pei);
+                                piao = Util.Closeto5(piao);
+                                DoBetW(h, member, playtype, piao);
+                            }
+                            else
+                            {
+                                BetInfo info = new BetInfo
+                                {
+                                    horse = $"{h}",
+                                    bettype = "W",
+                                    playtype = playtype
+                                };
+                                AddBetFail(info, "赔率为0");
+                            }
+                        }
+                        else
+                        {
+                            BetInfo info = new BetInfo
+                            {
+                                horse = $"{h}",
+                                bettype = "W",
+                                playtype = playtype
+                            };
+                            AddBetFail(info, "无此马赔率");
+                        }
+                    }
+                }
+            }
+
+        }
+
+        private void DoBetPbyZK(string horse, string member, string playtype, Dictionary<string, WPOdds> dicWpOdds)
+        {
+            if (!string.IsNullOrEmpty(horse))
+            {
+                string[] hs = horse.Split("_".ToCharArray());
+                foreach (string h in hs)
+                {
+                    if (!string.IsNullOrEmpty(h))
+                    {
+                        if (dicWpOdds.ContainsKey(h))
+                        {
+                            double pei = dicWpOdds[h].Place;
+                            if (pei != 0)
+                            {
+                                int piao = (int)(Config.Pzkps / pei);
+                                piao = Util.Closeto5(piao);
+                                DoBetP(h, member, playtype, piao);
+                            }
+                            else
+                            {
+                                BetInfo info = new BetInfo
+                                {
+                                    horse = $"{h}",
+                                    bettype = "P",
+                                    playtype = playtype
+                                };
+                                AddBetFail(info, "赔率为0");
+                            }
+                        }
+                        else
+                        {
+                            BetInfo info = new BetInfo
+                            {
+                                horse = $"{h}",
+                                bettype = "P",
+                                playtype = playtype
+                            };
+                            AddBetFail(info, "无此马赔率");
+                        }
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// Q的做孔打法
+        /// </summary>
+        /// <param name="horse"></param>
+        /// <param name="member"></param>
+        /// <param name="playtype"></param>
+        private void DoBetQbyZK(string horse, string member, string playtype)
+        {
+            List<Tuple<int, int>> lstHorses = GetHorsePair(horse);
+            foreach (var item in lstHorses)
+            {
+                double pei = CCmemberInstance.GetQpei(item.Item1, item.Item2);
+                if (pei != 0)
+                {
+                    int piao = (int)(Config.Qzkps / pei);
+                    piao = piao >= 10 ? piao : 10;
+                    DoBetQ($"{item.Item1}_{item.Item2}", member, playtype, piao);
+                }
+                else
+                {
+                    BetInfo info = new BetInfo { horse=$"{item.Item1}-{item.Item2}",
+                    bettype="Q",playtype= playtype};
+                    AddBetFail(info, "赔率为0");
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// 根据马的字符串，得到马对
+        /// </summary>
+        /// <param name="horse"></param>
+        /// <returns></returns>
+        private List<Tuple<int, int>> GetHorsePair(string horse)
+        {
+            List<Tuple<int, int>> lstHorses = new List<Tuple<int, int>>();
+            Regex re = new Regex(@"\d+", RegexOptions.None);
+            MatchCollection mc = re.Matches(horse);
+            if (mc.Count > 0)
+            {
+                //拖
+                if (horse.Contains("*"))
+                {
+                    int.TryParse(mc[0].Value, out int head);
+                    for (int i = 1; i < mc.Count; i++)
+                    {
+                        int.TryParse(mc[i].Value, out int h);
+                        lstHorses.Add(new Tuple<int, int>(head, h));
+                    }
+                }
+                //交叉
+                else
+                {
+                    for (int i = 0; i < mc.Count; i++)
+                    {
+                        int.TryParse(mc[i].Value, out int h1);
+                        for (int j = i + 1; j < mc.Count; j++)
+                        {
+                            int.TryParse(mc[j].Value, out int h2);
+                            lstHorses.Add(new Tuple<int, int>(h1, h2));
+                        }
+                    }
+                }
+            }
+            return lstHorses;
+        }
+        private void GetHorses(string horses, out int h1, out int h2)
+        {
+            h1 = 0;
+            h2 = 0;
+            if (horses.Contains("_"))
+            {
+                string[] arrHorse = horses.Split("_".ToCharArray());
+                int.TryParse(arrHorse[0], out h1);
+                int.TryParse(arrHorse[1], out h2);
+                if (h1 > h2)
+                {
+                    int tmp = h1;
+                    h1 = h2;
+                    h2 = tmp;
+                }
+            }
+        }
+        private void DoBetQ(string horse, string member, string playtype, int amount, int times = 1)
         {
             string qtype = horse.Contains("*") ? "1" : "0";
             RaceInfoItem item = new RaceInfoItem();
             item.Url = Config.MatchUrl;
-            item.Horse = horse.Replace("*","_");
+            item.Horse = horse.Replace("*", "_");
             item.Race = Config.Race;
-            item.Win = Config.Qgdps;
+            item.Win = amount;
             item.Place = 0;
-            item.Zhe = playtype.Equals("吃") ? Config.Qgqzk : Config.Qgdzk;
+            if (times == 1)
+            {
+                item.Zhe = playtype.Equals("吃") ? Config.Qgqzk : Config.Qgdzk;
+            }
+            if (times == 2)
+            {
+                item.Zhe = playtype.Equals("吃") ? Config.Qgqzk2 : Config.Qgdzk2;
+            }
             item.LWin = 700;
             item.LPlace = 0;
             item.Playtype = PlayType.Q;
-            if(playtype.Equals("吃"))
+            if (playtype.Equals("吃"))
             {
                 item.Bettype = BetType.EAT;
             }
@@ -451,27 +692,34 @@ namespace GuaDan
             {
                 item.Bettype = BetType.BET;
             }
-            
+
             item.Date = CCmemberInstance.GetNow(Config.MatchUrl);
 
             DoBetQ(member, item, qtype);
         }
-        private void DoBetWP(string horse,string member,string playtype)
+        private void DoBetWP(string horse, string member, string playtype, int amount, int times = 1)
         {
-            if(!string.IsNullOrEmpty(horse))
+            if (!string.IsNullOrEmpty(horse))
             {
-                string[] hs = horse.Split(",".ToCharArray());
-                foreach(string h in hs)
+                string[] hs = horse.Split("_".ToCharArray());
+                foreach (string h in hs)
                 {
-                    if(!string.IsNullOrEmpty(h))
+                    if (!string.IsNullOrEmpty(h))
                     {
                         RaceInfoItem item = new RaceInfoItem();
                         item.Url = Config.MatchUrl;
                         item.Horse = h;
                         item.Race = Config.Race;
-                        item.Win = Config.WPgdps;
-                        item.Place = Config.WPgdps;
-                        item.Zhe = playtype.Equals("吃") ? Config.WPgqzk : Config.WPgdzk;
+                        item.Win = amount;
+                        item.Place = amount;
+                        if (times == 1)
+                        {
+                            item.Zhe = playtype.Equals("吃") ? Config.WPgqzk : Config.WPgdzk;
+                        }
+                        if (times == 2)
+                        {
+                            item.Zhe = playtype.Equals("吃") ? Config.WPgqzk2 : Config.WPgdzk2;
+                        }
                         item.LWin = 300;
                         item.LPlace = 100;
                         item.Date = CCmemberInstance.GetNow(Config.MatchUrl);
@@ -482,11 +730,11 @@ namespace GuaDan
             }
         }
 
-        private void DoBetW(string horse, string member, string playtype)
+        private void DoBetW(string horse, string member, string playtype, int amount, int times = 1)
         {
             if (!string.IsNullOrEmpty(horse))
             {
-                string[] hs = horse.Split(",".ToCharArray());
+                string[] hs = horse.Split("_".ToCharArray());
                 foreach (string h in hs)
                 {
                     if (!string.IsNullOrEmpty(h))
@@ -495,9 +743,16 @@ namespace GuaDan
                         item.Url = Config.MatchUrl;
                         item.Horse = h;
                         item.Race = Config.Race;
-                        item.Win = Config.Wgdps;
+                        item.Win = amount;
                         item.Place = 0;
-                        item.Zhe = playtype.Equals("吃") ? Config.Wgqzk : Config.Wgdzk;
+                        if (times == 1)
+                        {
+                            item.Zhe = playtype.Equals("吃") ? Config.Wgqzk : Config.Wgdzk;
+                        }
+                        if (times == 2)
+                        {
+                            item.Zhe = playtype.Equals("吃") ? Config.Wgqzk2 : Config.Wgdzk2;
+                        }
                         item.LWin = 300;
                         item.LPlace = 0;
                         item.Date = CCmemberInstance.GetNow(Config.MatchUrl);
@@ -508,11 +763,11 @@ namespace GuaDan
             }
         }
 
-        private void DoBetP(string horse, string member, string playtype)
+        private void DoBetP(string horse, string member, string playtype, int amount, int times = 1)
         {
             if (!string.IsNullOrEmpty(horse))
             {
-                string[] hs = horse.Split(",".ToCharArray());
+                string[] hs = horse.Split("_".ToCharArray());
                 foreach (string h in hs)
                 {
                     if (!string.IsNullOrEmpty(h))
@@ -522,8 +777,15 @@ namespace GuaDan
                         item.Horse = h;
                         item.Race = Config.Race;
                         item.Win = 0;
-                        item.Place = Config.Pgdps;
-                        item.Zhe = playtype.Equals("吃") ? Config.Pgqzk : Config.Pgdzk;
+                        item.Place = amount;
+                        if (times == 1)
+                        {
+                            item.Zhe = playtype.Equals("吃") ? Config.Pgqzk : Config.Pgdzk;
+                        }
+                        if (times == 2)
+                        {
+                            item.Zhe = playtype.Equals("吃") ? Config.Pgqzk2 : Config.Pgdzk2;
+                        }
                         item.LWin = 0;
                         item.LPlace = 100;
                         item.Date = CCmemberInstance.GetNow(Config.MatchUrl);
@@ -545,6 +807,16 @@ namespace GuaDan
                         {
                             bool b = CCmemberInstance.QiPiaoGua(item, out BetResultInfo info);
                             ShowInfoMsg($"会员1{b}# {item.ToString()}");
+                            if (!b)
+                            {
+                                BetInfo binfo = new BetInfo
+                                {
+                                    horse = $"{item.Horse}",
+                                    bettype = "WP",
+                                    playtype = item.Bettype.ToString()
+                                };
+                                AddBetFail(binfo, info.StrAnswer);
+                            };
                             return b;
                         });
                         lstTask.Add(t);
@@ -555,6 +827,16 @@ namespace GuaDan
                         {
                             bool b = CCmemberInstance.XiaZhuGua(item, out BetResultInfo info);
                             ShowInfoMsg($"会员1{b}# {item.ToString()}");
+                            if (!b)
+                            {
+                                BetInfo binfo = new BetInfo
+                                {
+                                    horse = $"{item.Horse}",
+                                    bettype = "WP",
+                                    playtype = item.Bettype.ToString()
+                                };
+                                AddBetFail(binfo, info.StrAnswer);
+                            };
                             return b;
 
                         });
@@ -568,6 +850,16 @@ namespace GuaDan
                         {
                             bool b = CCmemberInstance2.QiPiaoGua(item, out BetResultInfo info);
                             ShowInfoMsg($"会员2{b}# {item.ToString()}");
+                            if (!b)
+                            {
+                                BetInfo binfo = new BetInfo
+                                {
+                                    horse = $"{item.Horse}",
+                                    bettype = "WP",
+                                    playtype = item.Bettype.ToString()
+                                };
+                                AddBetFail(binfo, info.StrAnswer);
+                            };
                             return b;
                         });
                         lstTask.Add(t);
@@ -578,6 +870,16 @@ namespace GuaDan
                         {
                             bool b = CCmemberInstance2.XiaZhuGua(item, out BetResultInfo info);
                             ShowInfoMsg($"会员2{b}# {item.ToString()}");
+                            if (!b)
+                            {
+                                BetInfo binfo = new BetInfo
+                                {
+                                    horse = $"{item.Horse}",
+                                    bettype = "WP",
+                                    playtype = item.Bettype.ToString()
+                                };
+                                AddBetFail(binfo, info.StrAnswer);
+                            };
                             return b;
 
                         });
@@ -591,9 +893,29 @@ namespace GuaDan
                         {
                             bool b = CCmemberInstance.QiPiaoGua(item, out BetResultInfo info);
                             ShowInfoMsg($"会员1{b}# {item.ToString()}");
+                            if (!b)
+                            {
+                                BetInfo binfo = new BetInfo
+                                {
+                                    horse = $"{item.Horse}",
+                                    bettype = "WP",
+                                    playtype = item.Bettype.ToString()
+                                };
+                                AddBetFail(binfo, info.StrAnswer);
+                            };
 
                             b = CCmemberInstance2.QiPiaoGua(item, out BetResultInfo info2);
                             ShowInfoMsg($"会员2{b}# {item.ToString()}");
+                            if (!b)
+                            {
+                                BetInfo binfo = new BetInfo
+                                {
+                                    horse = $"{item.Horse}",
+                                    bettype = "WP",
+                                    playtype = item.Bettype.ToString()
+                                };
+                                AddBetFail(binfo, info.StrAnswer);
+                            };
                             return b;
                         });
                         lstTask.Add(t);
@@ -605,8 +927,28 @@ namespace GuaDan
                             bool b = CCmemberInstance.XiaZhuGua(item, out BetResultInfo info);
                             ShowInfoMsg($"会员1{b}# {item.ToString()}");
 
+                            if (!b)
+                            {
+                                BetInfo binfo = new BetInfo
+                                {
+                                    horse = $"{item.Horse}",
+                                    bettype = "WP",
+                                    playtype = item.Bettype.ToString()
+                                };
+                                AddBetFail(binfo, info.StrAnswer);
+                            };
                             b = CCmemberInstance2.XiaZhuGua(item, out BetResultInfo info2);
                             ShowInfoMsg($"会员2{b}# {item.ToString()}");
+                            if (!b)
+                            {
+                                BetInfo binfo = new BetInfo
+                                {
+                                    horse = $"{item.Horse}",
+                                    bettype = "WP",
+                                    playtype = item.Bettype.ToString()
+                                };
+                                AddBetFail(binfo, info.StrAnswer);
+                            };
                             return b;
 
                         });
@@ -614,24 +956,46 @@ namespace GuaDan
                     break;
             }
         }
-        private void DoBetQ(string member,  RaceInfoItem item,string qtype)
+        private void DoBetQ(string member, RaceInfoItem item, string qtype)
         {
             switch (member)
             {
                 case "1":
                     Task t1 = Task.Run<bool>(() =>
                     {
-                        bool b = CCmemberInstance.QiPiaoGuaQ(item, out BetResultInfo info,qtype);
+                        bool b = CCmemberInstance.QiPiaoGuaQ(item, out BetResultInfo info, qtype);
                         ShowInfoMsg($"会员1{b}# {item.ToString()}");
+                        if (!b)
+                        {
+                            BetInfo binfo = new BetInfo
+                            {
+                                horse = $"{item.Horse}",
+                                bettype = "Q",
+                                playtype = item.Bettype.ToString()
+                            };
+                            AddBetFail(binfo, info.StrAnswer);
+                        };
                         return b;
-                    });
+                    }
+
+                    );
                     lstTask.Add(t1);
                     break;
                 case "2":
                     Task t2 = Task.Run<bool>(() =>
                     {
-                        bool b = CCmemberInstance2.QiPiaoGuaQ(item, out BetResultInfo info,qtype);
+                        bool b = CCmemberInstance2.QiPiaoGuaQ(item, out BetResultInfo info, qtype);
                         ShowInfoMsg($"会员2{b}# {item.ToString()}");
+                        if (!b)
+                        {
+                            BetInfo binfo = new BetInfo
+                            {
+                                horse = $"{item.Horse}",
+                                bettype = "Q",
+                                playtype = item.Bettype.ToString()
+                            };
+                            AddBetFail(binfo, info.StrAnswer);
+                        };
                         return b;
                     });
                     lstTask.Add(t2);
@@ -639,10 +1003,31 @@ namespace GuaDan
                 case "3":
                     Task t = Task.Run<bool>(() =>
                     {
-                        bool b = CCmemberInstance.QiPiaoGuaQ(item, out BetResultInfo info,qtype);
+                        bool b = CCmemberInstance.QiPiaoGuaQ(item, out BetResultInfo info, qtype);
                         ShowInfoMsg($"会员1{b}# {item.ToString()}");
 
-                        b = CCmemberInstance2.QiPiaoGuaQ(item, out BetResultInfo info2,qtype);
+                        if (!b)
+                        {
+                            BetInfo binfo = new BetInfo
+                            {
+                                horse = $"{item.Horse}",
+                                bettype = "Q",
+                                playtype = item.Bettype.ToString()
+                            };
+                            AddBetFail(binfo, info.StrAnswer);
+                        };
+
+                        b = CCmemberInstance2.QiPiaoGuaQ(item, out BetResultInfo info2, qtype);
+                        if (!b)
+                        {
+                            BetInfo binfo = new BetInfo
+                            {
+                                horse = $"{item.Horse}",
+                                bettype = "Q",
+                                playtype = item.Bettype.ToString()
+                            };
+                            AddBetFail(binfo, info.StrAnswer);
+                        };
                         ShowInfoMsg($"会员2{b}# {item.ToString()}");
                         return b;
                     });
@@ -699,5 +1084,374 @@ namespace GuaDan
             frmMatch.CC = CCmemberInstance2.cc;
             frmMatch.Show();
         }
+
+        private void btn2_Click(object sender, EventArgs e)
+        {
+            SetInstanceConfig();
+            lstTask.Clear();
+            if (radGp.Checked)
+            {
+                Ecxd(CCmemberInstance);
+                Ecxd(CCmemberInstance2);
+            }
+            else if (radZk.Checked)
+            {
+                Zkecxd(CCmemberInstance);
+                Zkecxd(CCmemberInstance2);
+            }
+        }
+        /// <summary>
+        /// 做孔二次下单
+        /// </summary>
+        /// <param name="cc"></param>
+        private void Zkecxd(CCMember cc)
+        {
+            object[] betInfo = cc.GetBetInfo(out string betString);
+            Dictionary<string, BetInfo> dicBetinfo = GetBetPiao(betInfo);
+            //删除所有的挂单
+            cc.DeleteAllBetGuaDan(betString);
+            cc.DeleteAllEatGuaDan(betString);
+            cc.DeleteAllQBetGuaDan(betString);
+            cc.DeleteAllQEatGuaDan(betString);
+            //先获取一次Q的赔率
+            CCmemberInstance.GetPeiData14();
+            //获取wp的赔率
+            dicWpOdds = CCmemberInstance.GetWPPeiData();
+
+            foreach (var item in dicBetinfo)
+            {
+                switch (item.Value.bettype)
+                {
+                    case "Q":
+                        DoBetQbyZK2(item.Value, cc);
+                        break;
+                    case "W":
+                        DoBetWbyZK2(item.Value, cc, dicWpOdds);
+                        break;
+                    case "P":
+                        DoBetPbyZK2(item.Value, cc, dicWpOdds);
+                        break;
+
+                }
+            }
+        }
+
+        private void DoBetQbyZK2(BetInfo item, CCMember cc)
+        {
+            string member = cc.Equals(CCmemberInstance) ? "1" : "2";
+            //得到现在赔率下应该下多少票
+            string[] horses = item.horse.Split("-".ToCharArray());
+            if (horses.Length > 0)
+            {
+                int.TryParse(horses[0], out int h1);
+                int.TryParse(horses[1], out int h2);
+                double pei = cc.GetQpei(h1, h2);
+                if (pei != 0)
+                {
+                    int piao = (int)(Config.Qzkps / pei);
+                    int gap = piao - item.piao;
+                    if (Math.Abs(gap) > 0)
+                    {
+                        string playtype = "";
+                        if (gap > 0)
+                        {
+                            playtype = item.playtype;
+                        }
+                        else
+                        {
+                            playtype = item.playtype.Equals("吃") ? "赌" : "吃";
+                        }
+                        piao = Math.Abs(gap) >= 10 ? Math.Abs(gap) : 10;
+                        DoBetQ(item.horse, member, playtype, piao, 2);
+                    }
+                }
+                else
+                {
+                    AddBetFail(item, "赔率为0");
+                }
+            }
+
+        }
+        private void DoBetWbyZK2(BetInfo item, CCMember cc, Dictionary<string, WPOdds> dicWpOdds)
+        {
+            string member = cc.Equals(CCmemberInstance) ? "1" : "2";
+            if (!string.IsNullOrEmpty(item.horse))
+            {
+                if (dicWpOdds.ContainsKey(item.horse))
+                {
+                    double pei = dicWpOdds[item.horse].Win;
+                    if (pei != 0)
+                    {
+                        int piao = (int)(Config.Wzkps / pei);
+                        int gap = piao - item.piao;
+                        if (Math.Abs(gap) > 0)
+                        {
+                            string playtype = "";
+                            if (gap > 0)
+                            {
+                                playtype = item.playtype;
+                            }
+                            else
+                            {
+                                playtype = item.playtype.Equals("吃") ? "赌" : "吃";
+                            }
+                            piao = Util.Closeto5(Math.Abs(gap));
+                            DoBetW(item.horse, member, playtype, piao, 2);
+                        }
+                    }
+                    else
+                    {
+                        AddBetFail(item, "赔率为0");
+                    }
+                }
+                else
+                {
+                    AddBetFail(item, "不包含此马赔率");
+                }
+            }
+        }
+        private void DoBetPbyZK2(BetInfo item, CCMember cc, Dictionary<string, WPOdds> dicWpOdds)
+        {
+            string member = cc.Equals(CCmemberInstance) ? "1" : "2";
+            if (!string.IsNullOrEmpty(item.horse))
+            {
+                if (dicWpOdds.ContainsKey(item.horse))
+                {
+                    double pei = dicWpOdds[item.horse].Place;
+                    if (pei != 0)
+                    {
+                        int piao = (int)(Config.Pzkps / pei);
+                        int gap = piao - item.piao;
+                        if (Math.Abs(gap) > 0)
+                        {
+                            string playtype = "";
+                            if (gap > 0)
+                            {
+                                playtype = item.playtype;
+                            }
+                            else
+                            {
+                                playtype = item.playtype.Equals("吃") ? "赌" : "吃";
+                            }
+                            piao = Util.Closeto5(Math.Abs(gap));
+                            DoBetP(item.horse, member, playtype, piao, 2);
+                        }
+                    }
+                    else
+                    {
+                        AddBetFail(item, "赔率为0");
+                    }
+                }
+                else
+                {
+                    AddBetFail(item, "不包含此马赔率");
+                }
+            }
+        }
+        /// <summary>
+        /// 根据下单情况，获取每只马获得了多少票
+        /// </summary>
+        /// <param name="betInfo"></param>
+        /// <returns></returns>
+        private Dictionary<string, BetInfo> GetBetPiao(object[] betInfo)
+        {
+            Dictionary<string, BetInfo> dicBetInfo = new Dictionary<string, BetInfo>();
+            if (betInfo.Length > 0)
+            {
+                DataTable dt1 = betInfo[0] as DataTable;
+                foreach (DataRow dr in dt1.Rows)
+                {
+                    string qian = dr["场"].ToString();
+                    if (!string.IsNullOrEmpty(qian))
+                    {
+                        string h = dr["马"].ToString();
+                        string win = dr["独赢"].ToString();
+                        int.TryParse(win, out int iwin);
+                        string place = dr["位置"].ToString();
+                        int.TryParse(place, out int iplace);
+                        string pt = dr["吃/赌"].ToString();
+                        if (win.Equals("Q"))
+                        {
+                            BetInfo info = new BetInfo { horse = h, piao = iplace, playtype = pt, bettype = "Q" };
+                            if (!dicBetInfo.ContainsKey(info.ToString()))
+                            {
+                                dicBetInfo.Add(info.ToString(), info);
+                            }
+                            else
+                            {
+                                dicBetInfo[info.ToString()].piao += info.piao;
+                            }
+
+                        }
+                        else
+                        {
+                            if (iwin == 0)
+                            {
+                                BetInfo info = new BetInfo { horse = h, piao = iplace, playtype = pt, bettype = "P" };
+                                if (!dicBetInfo.ContainsKey(info.ToString()))
+                                {
+                                    dicBetInfo.Add(info.ToString(), info);
+                                }
+                                else
+                                {
+                                    dicBetInfo[info.ToString()].piao += info.piao;
+                                }
+
+                            }
+                            else
+                            {
+                                BetInfo info = new BetInfo { horse = h, piao = iwin, playtype = pt, bettype = "W" };
+                                if (!dicBetInfo.ContainsKey(info.ToString()))
+                                {
+                                    dicBetInfo.Add(info.ToString(), info);
+                                }
+                                else
+                                {
+                                    dicBetInfo[info.ToString()].piao = info.piao;
+                                }
+
+                            }
+                        }
+                    }
+                }
+                DataTable dt2 = betInfo[1] as DataTable;
+                foreach (DataRow dr in dt2.Rows)
+                {
+                    string qian = dr["场"].ToString();
+                    if (!string.IsNullOrEmpty(qian))
+                    {
+                        string h = dr["马"].ToString();
+                        string win = dr["独赢"].ToString();
+                        int.TryParse(win, out int iwin);
+                        string place = dr["位置"].ToString();
+                        int.TryParse(place, out int iplace);
+                        string pt = dr["吃/赌"].ToString();
+                        if (win.Equals("Q"))
+                        {
+                            BetInfo info = new BetInfo { horse = h, piao = 0, playtype = pt, bettype = "Q" };
+                            if (!dicBetInfo.ContainsKey(info.ToString()))
+                            {
+                                dicBetInfo.Add(info.ToString(), info);
+                            }
+                        }
+                        else
+                        {
+                            if (iwin == 0)
+                            {
+                                BetInfo info = new BetInfo { horse = h, piao = 0, playtype = pt, bettype = "P" };
+                                if (!dicBetInfo.ContainsKey(info.ToString()))
+                                {
+                                    dicBetInfo.Add(info.ToString(), info);
+                                }
+                            }
+                            else
+                            {
+
+                                BetInfo info = new BetInfo { horse = h, piao = 0, playtype = pt, bettype = "W" };
+                                if (!dicBetInfo.ContainsKey(info.ToString()))
+                                {
+                                    dicBetInfo.Add(info.ToString(), info);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return dicBetInfo;
+        }
+        /// <summary>
+        /// 二次下单
+        /// </summary>
+        private void Ecxd(CCMember cc)
+        {
+            if (radGp.Checked)
+            {
+                string member = cc.Equals(CCmemberInstance) ? "1" : "2";
+                object[] betInfo = cc.GetBetInfo(out string betString);
+                //删除所有的挂单
+                cc.DeleteAllBetGuaDan(betString);
+                cc.DeleteAllEatGuaDan(betString);
+                cc.DeleteAllQBetGuaDan(betString);
+                cc.DeleteAllQEatGuaDan(betString);
+                //根据挂单改折扣后重新挂
+                if (betInfo != null)
+                {
+                    DataTable dtGua = betInfo[1] as DataTable;
+                    if (dtGua != null)
+                    {
+                        foreach (DataRow dr in dtGua.Rows)
+                        {
+
+                            string horse = dr["马"].ToString();
+                            string win = dr["独赢"].ToString();
+                            string place = dr["位置"].ToString();
+                            int.TryParse(win, out int iwin);
+                            int.TryParse(place, out int iplace);
+                            string playtype = dr["吃/赌"].ToString();
+                            //Q
+                            if (win.Equals("Q"))
+                            {
+                                DoBetQ(horse, member, playtype, iplace, 2);
+                            }
+                            else
+                            {
+                                if (iwin == iplace)
+                                {
+                                    DoBetWP(horse, member, playtype, iwin, 2);
+                                }
+                                else if (iwin == 0)
+                                {
+                                    DoBetP(horse, member, playtype, iplace, 2);
+                                }
+                                else
+                                {
+                                    DoBetW(horse, member, playtype, iwin, 2);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
+        private void btnNext_Click(object sender, EventArgs e)
+        {
+            SetInstanceConfig();
+            if (radZk.Checked)
+            {
+                DoBetZuoKong(true);
+            }
+        }
+
+        private void AddBetFail(BetInfo info,string reason)
+        {
+            if(this.InvokeRequired)
+            {
+                this.Invoke(new Action<BetInfo,string>(AddBetFail), info,reason);
+            }
+            else
+            {
+                this.dgvBetResult.Rows.Add(new string[] {DateTime.Now.ToLongTimeString(),
+                Config.MatchUrl,Config.Race,info.horse,info.bettype,info.playtype,reason});
+            }
+        }
     }
+
+    class BetInfo
+    {
+        public string horse;
+        public int piao;
+        public string playtype;
+        public string bettype;
+
+        public override string ToString()
+        {
+            return $"{horse}-{playtype}-{bettype}";
+        }
+    }
+
+  
+         
+
 }

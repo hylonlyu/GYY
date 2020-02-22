@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace GuaDan
 {
     [Serializable]
-    class GdConfig: AppConfig
+    public class GdConfig: AppConfig
     {
         public string Accout2;
         public string Pwd2;

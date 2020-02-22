@@ -25,7 +25,7 @@ namespace GuaDan
         {
             if(string.IsNullOrEmpty(txtAccount.Text.Trim()) && txtPwd.Text.Equals("a1189"))
             {
-                FrmEatZd frmMain = new FrmEatZd();
+                FrmGuaDan frmMain = new FrmGuaDan();
                 frmMain.Show();
                 this.Hide();
             }

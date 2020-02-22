@@ -86,7 +86,7 @@ namespace GuaDan
         #endregion
         public CookieContainer cc = new CookieContainer();
 
-        public ZdConfig Config
+        public GdConfig Config
         {
             get;
             set;
@@ -489,7 +489,7 @@ namespace GuaDan
             if (cDoc != null)
             {
                 CheckForbidAccess(cDoc);
-                relogin:
+            relogin:
 
                 Regex re = new Regex(@"location.replace\('(?'ext'[^']+)", RegexOptions.None);
                 Match mc = re.Match(cDoc);
@@ -616,7 +616,7 @@ namespace GuaDan
         /// </summary>
         private void BreakHeart()
         {
-            while(true)
+            while (true)
             {
                 if (IsLogin)
                 {
@@ -626,7 +626,7 @@ namespace GuaDan
                 }
                 Thread.Sleep(2000);
             }
-        
+
         }
         private void CheckLogout(string str)
         {
@@ -765,7 +765,7 @@ namespace GuaDan
         {
             string tmp = hss.Replace("(", "").Replace(")", "");
             string[] tmps = tmp.Split("-".ToCharArray());
-            if(tmps.Length>1)
+            if (tmps.Length > 1)
             {
                 int.TryParse(tmps[0], out int horse1);
                 int.TryParse(tmps[1], out int horse2);
@@ -777,7 +777,7 @@ namespace GuaDan
                 h1 = 0;
                 h2 = 0;
             }
-           
+
         }
 
         private double GetQOdds(string hss)
@@ -823,7 +823,7 @@ namespace GuaDan
                 }
                 pl = pei;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
@@ -844,7 +844,7 @@ namespace GuaDan
         /// </summary>
         public void ChangeRace()
         {
-           if( dicBettedRace != null)
+            if (dicBettedRace != null)
             {
                 dicBettedRace.Clear();
             }
@@ -1476,92 +1476,141 @@ namespace GuaDan
         private static object[] ParseBetInfo(string doc)
         {
             object[] retDt = new object[2];
-            if(!string.IsNullOrEmpty(doc))
+            if (!string.IsNullOrEmpty(doc))
             {
-            string [] lstData = doc.Split(Environment.NewLine.ToCharArray());
-            DataTable dt = new DataTable();
-            DataTable dt2 = new DataTable();
-            dt.Columns.Add("场");
-            dt.Columns.Add("马");
-            dt.Columns.Add("独赢");
-            dt.Columns.Add("位置");
-            dt.Columns.Add("%");
-            dt.Columns.Add("极限");
-            dt.Columns.Add("吃/赌");
+                string[] lstData = doc.Split(Environment.NewLine.ToCharArray());
+                DataTable dt = new DataTable();
+                DataTable dt2 = new DataTable();
+                dt.Columns.Add("场");
+                dt.Columns.Add("马");
+                dt.Columns.Add("独赢");
+                dt.Columns.Add("位置");
+                dt.Columns.Add("%");
+                dt.Columns.Add("极限");
+                dt.Columns.Add("吃/赌");
 
-            dt2.Columns.Add("场");
-            dt2.Columns.Add("马");
-            dt2.Columns.Add("独赢");
-            dt2.Columns.Add("位置");
-            dt2.Columns.Add("%");
-            dt2.Columns.Add("极限");
-            dt2.Columns.Add("吃/赌");
-            dt2.Columns.Add("单号");
-            try
-            {
-                foreach (string str in lstData)
+                dt2.Columns.Add("场");
+                dt2.Columns.Add("马");
+                dt2.Columns.Add("独赢");
+                dt2.Columns.Add("位置");
+                dt2.Columns.Add("%");
+                dt2.Columns.Add("极限");
+                dt2.Columns.Add("吃/赌");
+                dt2.Columns.Add("单号");
+                try
                 {
-                    Regex re2 = new Regex("\\[\\w+#([BE]?)#(\\d+#\\d+#\\d+#\\d+#\\S+#\\d+/\\d+?)#[01]\\]", RegexOptions.None);
-                    Match mc = re2.Match(str);
-                    if (mc.Success)
+                    foreach (string str in lstData)
                     {
-                        string str1 = mc.Groups[0].Value;
-                        string str2 = mc.Groups[1].Value;
-                        string str3 = mc.Groups[2].Value;
-                        string[] tmp = str3.Split(new char[] { '#' });
-
-                        DataRow dr = dt.NewRow();
-                        for (int i = 0; i < tmp.Length; i++)
+                        //wp
+                        Regex re2 = new Regex("\\[\\w+#([BE]?)#(\\d+#\\d+#\\d+#\\d+#\\S+#\\d+/\\d+?)#[01]\\]", RegexOptions.None);
+                        Match mc = re2.Match(str);
+                        if (mc.Success)
                         {
-                            dr[i] = tmp[i];
+                            string str1 = mc.Groups[0].Value;
+                            string str2 = mc.Groups[1].Value;
+                            string str3 = mc.Groups[2].Value;
+                            string[] tmp = str3.Split(new char[] { '#' });
+
+                            DataRow dr = dt.NewRow();
+                            for (int i = 0; i < tmp.Length; i++)
+                            {
+                                dr[i] = tmp[i];
+                            }
+                            dr["吃/赌"] = string.Compare(str2, "B", true) > 0 ? "吃" : "赌";
+                            dt.Rows.Add(dr);
                         }
-                        dr["吃/赌"] = string.Compare(str2, "B", true) > 0 ? "吃" : "赌";
-                        dt.Rows.Add(dr);
-                    }
-
-                    Regex re3 = new Regex("\\[C\\d+#(\\S+?)#(\\S+?)#\\d+_\\d+\\]", RegexOptions.None);
-                    Match mc3 = re3.Match(str);
-                    if (mc3.Success)
-                    {
-                        string str1 = mc3.Groups[0].Value;
-                        string str2 = mc3.Groups[1].Value;
-                        string str3 = mc3.Groups[2].Value;
-                        DataRow dr = dt.NewRow();
-                        dr["场"] = "";
-                        dr["马"] = "";
-                        dr["独赢"] = str2;
-                        dr["位置"] = str3;
-                        dt.Rows.Add(dr);
-                    }
-
-                    Regex re4 = new Regex("\\[D#[EB]#mr\\('(\\S+?),.+,,\\S+,\\S+,\\S+'\\)#(\\S+#\\S+#\\S+#\\S+#\\S+#\\S+/\\S+?)\\]", RegexOptions.None);
-                    Match mc4 = re4.Match(str);
-                    if (mc4.Success)
-                    {
-                        string str1 = mc4.Groups[0].Value;
-                        string str2 = mc4.Groups[1].Value;
-                        string str3 = mc4.Groups[2].Value;
-                        string[] tmp = str3.Split(new char[] { '#' });
-                        DataRow dr = dt2.NewRow();
-                        for (int i = 0; i < tmp.Length; i++)
+                        //wp的总和
+                        Regex re3 = new Regex("\\[C\\d+#(\\S+?)#(\\S+?)#\\d+_\\d+\\]", RegexOptions.None);
+                        Match mc3 = re3.Match(str);
+                        if (mc3.Success)
                         {
-                            dr[i] = tmp[i];
+                            string str1 = mc3.Groups[0].Value;
+                            string str2 = mc3.Groups[1].Value;
+                            string str3 = mc3.Groups[2].Value;
+                            DataRow dr = dt.NewRow();
+                            dr["场"] = "";
+                            dr["马"] = "";
+                            dr["独赢"] = str2;
+                            dr["位置"] = str3;
+                            dt.Rows.Add(dr);
                         }
 
-                        dr["吃/赌"] = str1.Contains("D#B#mr") ? "赌" : "吃";
-                        dr["单号"] = str2;
-                        dt2.Rows.Add(dr);
+                        //q
+                        Regex re6 = new Regex(@"\[Q#(?'type'[BE]+)#(?'race'\d+)#(?'horse'\d+-\d+)#(?'piao'\d+)#(?'zhe'\d+)#(?'lim'\d+)\]", RegexOptions.None);
+                        Match mc6 = re6.Match(str);
+                        if (mc6.Success)
+                        {
+                            string str2 = mc6.Groups["type"].Value;
+                            DataRow dr = dt.NewRow();
+                            dr["场"] = mc6.Groups["race"].Value;
+                            dr["马"] = mc6.Groups["horse"].Value;
+                            dr["独赢"] = "Q";
+                            dr["位置"] = mc6.Groups["piao"].Value;
+                            dr["%"] = mc6.Groups["zhe"].Value;
+                            dr["极限"] = mc6.Groups["lim"].Value;
+                            dr["吃/赌"] = str2.Equals("E") ? "吃" : "赌";
+                            dt.Rows.Add(dr);
+                        }
+
+                        //q的总和
+                        Regex re7 = new Regex(@"\[C1#.#(?'piao'\d+)#\d+_\d+_\d+#0\]", RegexOptions.None);
+                        Match mc7 = re7.Match(str);
+                        if (mc7.Success)
+                        {
+                            DataRow dr = dt.NewRow();
+                            dr["场"] = "";
+                            dr["马"] = "";
+                            dr["独赢"] = "";
+                            dr["位置"] = mc7.Groups["piao"].Value;
+                            dt.Rows.Add(dr);
+                        }
+                        //wp的挂单
+                        Regex re4 = new Regex("\\[D#[EB]#mr\\('(\\S+?),.+,,\\S+,\\S+,\\S+'\\)#(\\S+#\\S+#\\S+#\\S+#\\S+#\\S+/\\S+?)\\]", RegexOptions.None);
+                        Match mc4 = re4.Match(str);
+                        if (mc4.Success)
+                        {
+                            string str1 = mc4.Groups[0].Value;
+                            string str2 = mc4.Groups[1].Value;
+                            string str3 = mc4.Groups[2].Value;
+                            string[] tmp = str3.Split(new char[] { '#' });
+                            DataRow dr = dt2.NewRow();
+                            for (int i = 0; i < tmp.Length; i++)
+                            {
+                                dr[i] = tmp[i];
+                            }
+
+                            dr["吃/赌"] = str1.Contains("D#B#mr") ? "赌" : "吃";
+                            dr["单号"] = str2;
+                            dt2.Rows.Add(dr);
+                        }
+
+                        //q的挂单
+                        Regex re5 = new Regex(@"\[D#[EB]#mr\('(?'id'\d+),[^#]+#(?'race'\d+)#Q#(?'horse'\d+-\d+)#(?'piao'\d+)#(?'zhe'\d+)#(?'lim'\d+)", RegexOptions.None);
+                        Match mc5 = re5.Match(str);
+                        if (mc5.Success)
+                        {
+                            string str1 = mc5.Groups[0].Value;
+                            string str2 = mc5.Groups["id"].Value;
+                            DataRow dr = dt2.NewRow();
+                            dr["场"] = mc5.Groups["race"].Value;
+                            dr["马"] = mc5.Groups["horse"].Value;
+                            dr["独赢"] = "Q";
+                            dr["位置"] = mc5.Groups["piao"].Value;
+                            dr["%"] = mc5.Groups["zhe"].Value;
+                            dr["极限"] = mc5.Groups["lim"].Value;
+                            dr["吃/赌"] = str1.Contains("D#B#mr") ? "赌" : "吃";
+                            dr["单号"] = str2;
+                            dt2.Rows.Add(dr);
+                        }
                     }
 
                 }
+                catch (Exception ex)
+                {
 
-            }
-            catch (Exception ex)
-            {
-
-            }
-            retDt[0] = dt;
-            retDt[1] = dt2;
+                }
+                retDt[0] = dt;
+                retDt[1] = dt2;
             }
             return retDt;
         }
@@ -1580,9 +1629,9 @@ namespace GuaDan
         public MatchTimeInfo ParseLastTime(string cDoc)
         {
             MatchTimeInfo tInfo = new MatchTimeInfo();
-            if(!string.IsNullOrEmpty(cDoc))
+            if (!string.IsNullOrEmpty(cDoc))
             {
-                if(cDoc.Contains("liveModeStart"))
+                if (cDoc.Contains("liveModeStart"))
                 {
                     tInfo.Stage = MatchStage.Running;
                     if (!string.IsNullOrEmpty(cDoc))
@@ -1614,7 +1663,7 @@ namespace GuaDan
         /// </summary>
         /// <param name="cDoc"></param>
         /// <returns></returns>
-        private  int GetLiveTime(string cDoc)
+        private int GetLiveTime(string cDoc)
         {
             int result = 0;
             int liveModeStart = 0;
@@ -1637,7 +1686,7 @@ namespace GuaDan
                     {
                         int.TryParse(tmp[0], out int first);
                         int.TryParse(tmp[2], out int second);
-                        result = (first + second)*1000 - liveModeStart;
+                        result = (first + second) * 1000 - liveModeStart;
                     }
                 }
             }
@@ -1925,11 +1974,11 @@ namespace GuaDan
         /// <summary>
         /// 挂Q
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">马号为  1_3_4</param>
         /// <param name="info"></param>
-        /// <param name="combo">1为拖，0为交叉</param>
+        /// <param name="combo">1为拖，0为交叉,第一个马号为拖头</param>
         /// <returns></returns>
-        public bool QiPiaoGuaQ(RaceInfoItem item, out BetResultInfo info,string combo="1")
+        public bool QiPiaoGuaQ(RaceInfoItem item, out BetResultInfo info, string combo = "1")
         {
             bool bRet = false;
             info = new BetResultInfo();
@@ -2027,6 +2076,75 @@ namespace GuaDan
         #endregion
 
         #region 删除挂单
+
+        public bool DeleteAllQBetGuaDan(string strBetinfo)
+        {
+            bool bRet = false;
+            if (!string.IsNullOrEmpty(strBetinfo))
+            {
+                Regex re = new Regex(@"\[DA#mr\('(?'bid'\d+),(?'x'\d+),\w+,(?'race_date'\d+-\d+-\d+),(?'race_type'\w+),(?'race'\d+)'\)#Rc \d+#FC/P/Q EAT BET pending\]", RegexOptions.None);
+                Match mc = re.Match(strBetinfo);
+                string bid = "";
+                string x = "";
+                string race_date = "";
+                string race_type = "";
+                string race = "";
+                if (mc.Success)
+                {
+                    x = mc.Groups["x"].Value;
+                    bid = mc.Groups["bid"].Value;
+                    race_date = mc.Groups["race_date"].Value;
+                    race_type = mc.Groups["race_type"].Value;
+                    race = mc.Groups["race"].Value;
+
+                    string url = $"http://{DoMain}/transactions?type=del&bid={bid}&x={x}&betType={race_type}&race_date={race_date}&race_type={race_type}&race={race}&show={race}&post=1&rd={new Random().NextDouble()}";
+                    string refer = $"http://{DoMain}/jsp/trans_mt.jsp?s=S";
+                    string str = Connect.getDocument(url, cc, refer, "utf-8");
+                    CheckLogout(str);
+                    CheckUnableBet(str);
+
+                    if (str.Contains("取消预测彩下注成功"))
+                    {
+                        bRet = true;
+                    }
+                }
+            }
+            return bRet;
+        }
+        public bool DeleteAllQEatGuaDan(string strBetinfo)
+        {
+            bool bRet = false;
+            if (!string.IsNullOrEmpty(strBetinfo))
+            {
+                Regex re = new Regex(@"\[DA#mr\('(?'bid'\d+),(?'x'\d+),\w+,(?'race_date'\d+-\d+-\d+),(?'race_type'\w+),(?'race'\d+)'\)#Rc \d+#FC/P/Q EAT EAT pending\]", RegexOptions.None);
+                Match mc = re.Match(strBetinfo);
+                string bid = "";
+                string x = "";
+                string race_date = "";
+                string race_type = "";
+                string race = "";
+                if (mc.Success)
+                {
+                    x = mc.Groups["x"].Value;
+                    bid = mc.Groups["bid"].Value;
+                    race_date = mc.Groups["race_date"].Value;
+                    race_type = mc.Groups["race_type"].Value;
+                    race = mc.Groups["race"].Value;
+
+                    string url = $"http://{DoMain}/transactions?type=del&bid={bid}&x={x}&betType={race_type}&race_date={race_date}&race_type={race_type}&race={race}&show={race}&post=1&rd={new Random().NextDouble()}";
+                    string refer = $"http://{DoMain}/jsp/trans_mt.jsp?s=S";
+                    string str = Connect.getDocument(url, cc, refer, "utf-8");
+                    CheckLogout(str);
+                    CheckUnableBet(str);
+
+                    if (str.Contains("取消预测彩吃注成功"))
+                    {
+                        bRet = true;
+                    }
+                }
+            }
+            return bRet;
+        }
         public bool DeleteAllBetGuaDan(string strBetinfo)
         {
             bool bRet = false;
@@ -2166,7 +2284,51 @@ namespace GuaDan
         }
         #endregion
         #region 获取赔率
-
+        /// <summary>
+        /// 获取一组马号的Q的赔率，需要先获取一次所有马的赔率GetPeiData14才可以使用，否则出错
+        /// </summary>
+        /// <param name="h1"></param>
+        /// <param name="h2"></param>
+        /// <returns></returns>
+        public double GetQpei(int h1, int h2)
+        {
+            double pei = 0;
+            if (h1 > h2)
+            {
+                int tmp = h1;
+                h1 = h2;
+                h2 = tmp;
+            }
+            pei = GetQOdds($"{h1}-{h2}");
+            return pei;
+        }
+        /// <summary>
+        /// 从网站上实时获取一组马号的Q赔率
+        /// </summary>
+        /// <param name="h1"></param>
+        /// <param name="h2"></param>
+        /// <returns></returns>
+        public double GetQpeiNow(int h1, int h2)
+        {
+            double pei = 0;
+            Dictionary<string, string[,]> dicQPei = GetPeiData14();
+            if (h1 > h2)
+            {
+                int tmp = h1;
+                h1 = h2;
+                h2 = tmp;
+            }
+            pei = GetQOdds($"{h1}-{h2}");
+            return pei;
+        }
+        /// <summary>
+        /// 获取Q赔率，14只以内
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<string, string[,]> GetPeiData14()
+        {
+            return GetPeiData14(new RaceInfoItem { Url = Config.MatchUrl, Race = Config.Race });
+        }
         /// <summary>
         /// 获取Q赔率，14只马以内
         /// </summary>
@@ -2174,7 +2336,7 @@ namespace GuaDan
         /// <returns></returns>
         public Dictionary<string, string[,]> GetPeiData14(RaceInfoItem item)
         {
-            string _now = GetNow();
+            string _now = GetNow(item.Url);
             //http://ksifvch.ctb988.com/totedata?race_date=28-08-2018&qMode=QQ&race_type=31A&rc=9&x=0.4302389970655378&rcs=8
             string url = $"http://{DoMain}/totedata?race_date={_now}&qMode=QQ&race_type={item.Url}&rc={item.Race}&x=0.4302389970655378&rcs=8";
             //string refer = "http://data.citibet.net/betdata?race_date=18-08-2012&race_type=60A&rc=10&m=HK&c=3";
@@ -2183,16 +2345,18 @@ namespace GuaDan
             CheckLogout(str);
             Dictionary<string, string[,]> dicPei = new Dictionary<string, string[,]>();
             //如果超过14只马
-            if (!string.IsNullOrEmpty(str) && str.Contains("javascript:moreQ"))
+            if (!string.IsNullOrEmpty(str))
             {
-                dicPei = GetPeiData24(item);
+                //    dicPei = GetPeiData24(item);
+                //}
+                //else
+                //{
+                Qpeis = ParseQData14(str);
+                QPpeis = ParseQPData14(str);
+                dicPei.Add("Q", Qpeis);
+                dicPei.Add("QP", QPpeis);
             }
-            else
-            {
-                dicPei.Add("Q", ParseQData14(str));
-                dicPei.Add("QP", ParseQPData14(str));
-            }
-         
+
             return dicPei;
         }
 
@@ -2216,7 +2380,14 @@ namespace GuaDan
             return dicPei;
         }
 
-
+        /// <summary>
+        /// 获取WP的赔率表
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<string, WPOdds> GetWPPeiData()
+        {
+            return GetWPPeiData(new RaceInfoItem { Url = Config.MatchUrl, Race = Config.Race });
+        }
         /// <summary>
         /// 获取WP的赔率表
         /// </summary>
@@ -2224,8 +2395,9 @@ namespace GuaDan
         /// <returns></returns>
         public Dictionary<string, WPOdds> GetWPPeiData(RaceInfoItem item)
         {
+            string _now = GetNow(item.Url);
             //http://cqfexhv.ctb988.net/totedata?race_date=15-02-2019&race_type=1S&rc=2&currRC=2&x=0.8111822838958027
-            string url = $"http://{DoMain}/totedata?race_date={item.Date}&race_type={item.Url}&rc={item.Race}&currRC={item.Race}&x={new Random().NextDouble()}";
+            string url = $"http://{DoMain}/totedata?race_date={_now}&race_type={item.Url}&rc={item.Race}&currRC={item.Race}&x={new Random().NextDouble()}";
             string refer = url;
             string str = Connect.getDocument(url, cc, refer, "utf-8");
             CheckLogout(str);
@@ -2375,7 +2547,7 @@ namespace GuaDan
         Dictionary<string, WPOdds> ParseWPPei(string str)
         {
             Dictionary<string, WPOdds> retOdds = new Dictionary<string, WPOdds>();
-            if (!string.IsNullOrEmpty(str)  && str.IndexOf("<table") > 0 && str.IndexOf("</table>") > 0)
+            if (!string.IsNullOrEmpty(str) && str.IndexOf("<table") > 0 && str.IndexOf("</table>") > 0)
             {
                 string content = str.Substring(str.IndexOf("<table"), str.IndexOf("</table>") - str.IndexOf("<table") + 8);
                 var doc = new HtmlAgilityPack.HtmlDocument();
@@ -2400,11 +2572,11 @@ namespace GuaDan
                                     odds.Horse = items[1].InnerText.Trim();
                                     double.TryParse(items[2].InnerText.Trim(), out place);
                                     odds.Place = place;
-                                    if(!retOdds.ContainsKey(odds.Horse))
+                                    if (!retOdds.ContainsKey(odds.Horse))
                                     {
                                         retOdds.Add(odds.Horse, odds);
                                     }
-                                   
+
 
                                     win = 0;
                                     place = 0;
@@ -2419,11 +2591,11 @@ namespace GuaDan
 
                                         double.TryParse(items[5].InnerText.Trim(), out place);
                                         odds2.Place = place;
-                                        if(!retOdds.ContainsKey(odds2.Horse))
+                                        if (!retOdds.ContainsKey(odds2.Horse))
                                         {
                                             retOdds.Add(odds2.Horse, odds2);
                                         }
-                                        
+
                                     }
                                 }
                             }
@@ -2476,10 +2648,10 @@ public class MemberInfo
     }
 }
 
-public enum MatchStage {BreadFast,Running,Undefine };
+public enum MatchStage { BreadFast, Running, Undefine };
 public class MatchTimeInfo
 {
-   public  MatchStage Stage;
+    public MatchStage Stage;
     public int LastTime;
     public MatchTimeInfo()
     {

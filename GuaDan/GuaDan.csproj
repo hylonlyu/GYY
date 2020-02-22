@@ -93,12 +93,6 @@
     <Compile Include="ExtendedWebBrowser.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FrmEatZd.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FrmEatZd.Designer.cs">
-      <DependentUpon>FrmEatZd.cs</DependentUpon>
-    </Compile>
     <Compile Include="FrmGuaDan.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -132,10 +126,6 @@
     <Compile Include="Security.cs" />
     <Compile Include="UserInfo.cs" />
     <Compile Include="Util.cs" />
-    <Compile Include="ZdStrategy.cs" />
-    <EmbeddedResource Include="FrmEatZd.resx">
-      <DependentUpon>FrmEatZd.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="FrmGuaDan.resx">
       <DependentUpon>FrmGuaDan.cs</DependentUpon>
     </EmbeddedResource>
