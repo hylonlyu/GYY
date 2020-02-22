@@ -1114,9 +1114,9 @@ namespace GuaDan
             cc.DeleteAllQBetGuaDan(betString);
             cc.DeleteAllQEatGuaDan(betString);
             //先获取一次Q的赔率
-            CCmemberInstance.GetPeiData14();
+            cc.GetPeiData14();
             //获取wp的赔率
-            dicWpOdds = CCmemberInstance.GetWPPeiData();
+            dicWpOdds = cc.GetWPPeiData();
 
             foreach (var item in dicBetinfo)
             {
@@ -1164,6 +1164,10 @@ namespace GuaDan
                         piao = Math.Abs(gap) >= 10 ? Math.Abs(gap) : 10;
                         DoBetQ(item.horse, member, playtype, piao, 2);
                     }
+                    else
+                    {
+                        DoBetQ(item.horse, member, item.playtype, item.piao, 2);
+                    }
                 }
                 else
                 {
@@ -1198,6 +1202,11 @@ namespace GuaDan
                             piao = Util.Closeto5(Math.Abs(gap));
                             DoBetW(item.horse, member, playtype, piao, 2);
                         }
+                        else
+                        {
+                            DoBetW(item.horse, member, item.playtype, item.piao, 2);
+                        }
+
                     }
                     else
                     {
@@ -1235,6 +1244,10 @@ namespace GuaDan
                             }
                             piao = Util.Closeto5(Math.Abs(gap));
                             DoBetP(item.horse, member, playtype, piao, 2);
+                        }
+                        else
+                        {
+                            DoBetP(item.horse, member, item.playtype, item.piao, 2);
                         }
                     }
                     else
