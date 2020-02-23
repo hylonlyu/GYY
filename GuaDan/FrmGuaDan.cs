@@ -246,6 +246,8 @@ namespace GuaDan
             Config.Pgqzk2 = Util.Text2Double(txtPgqzk2.Text.Trim());
             Config.Pgdzk2 = Util.Text2Double(txtPgdzk2.Text.Trim());
 
+            Config.bGp = radGp.Checked;
+            Config.bZk = radZk.Checked;
             string file = string.Format(@"setting\{0}.jpg", "FrmEatZd");
 
             using (FileStream fs = new FileStream(file, FileMode.Create))
@@ -326,6 +328,9 @@ namespace GuaDan
 
                 txtPgqzk2.Text = Config.Pgqzk2.ToString();
                 txtPgdzk2.Text = Config.Pgdzk2.ToString();
+
+                radZk.Checked = Config.bZk;
+                radGp.Checked = Config.bGp;
             }
             catch (Exception ex)
             {
@@ -372,16 +377,23 @@ namespace GuaDan
                 member = "3";
             }
 
+
+            Stack<string> stack = new Stack<string>();
             foreach (Control c in panHorse.Controls)
             {
                 if (c is CheckBox)
                 {
+
                     CheckBox cc = c as CheckBox;
                     if (cc.Checked)
                     {
-                        horse += $"{cc.Text}_";
+                        stack.Push(cc.Text);
                     }
                 }
+            }
+            while (stack.Count > 0)
+            {
+                horse += $"{stack.Pop()}_";
             }
             horse = horse.Trim("_".ToCharArray());
             if (radQ.Checked && radT.Checked)
@@ -413,6 +425,7 @@ namespace GuaDan
         }
         private void btn1_Click(object sender, EventArgs e)
         {
+            SaveConfig();
             SetInstanceConfig();
             if (radGp.Checked)
             {
@@ -1058,6 +1071,7 @@ namespace GuaDan
             FrmWebbrowser frmBrowser = new FrmWebbrowser();
             frmBrowser.Url = $"http://{CCmemberInstance.DoMain}/new_history_live.jsp";
             frmBrowser.CC = CCmemberInstance.cc;
+            frmBrowser.Text = "1";
             frmBrowser.Show();
         }
 
@@ -1066,6 +1080,7 @@ namespace GuaDan
             FrmWebbrowser frmMatch = new FrmWebbrowser();
             frmMatch.Url = $"http://{CCmemberInstance.DoMain}/playerhk.jsp";
             frmMatch.CC = CCmemberInstance.cc;
+            frmMatch.Text = "1";
             frmMatch.Show();
         }
 
@@ -1074,6 +1089,7 @@ namespace GuaDan
             FrmWebbrowser frmBrowser = new FrmWebbrowser();
             frmBrowser.Url = $"http://{CCmemberInstance.DoMain}/new_history_live.jsp";
             frmBrowser.CC = CCmemberInstance2.cc;
+            frmBrowser.Text = "2";
             frmBrowser.Show();
         }
 
@@ -1082,11 +1098,13 @@ namespace GuaDan
             FrmWebbrowser frmMatch = new FrmWebbrowser();
             frmMatch.Url = $"http://{CCmemberInstance.DoMain}/playerhk.jsp";
             frmMatch.CC = CCmemberInstance2.cc;
+            frmMatch.Text = "2";
             frmMatch.Show();
         }
 
         private void btn2_Click(object sender, EventArgs e)
         {
+            SaveConfig();
             SetInstanceConfig();
             lstTask.Clear();
             if (radGp.Checked)
@@ -1430,6 +1448,7 @@ namespace GuaDan
 
         private void btnNext_Click(object sender, EventArgs e)
         {
+            SaveConfig();
             SetInstanceConfig();
             if (radZk.Checked)
             {
@@ -1448,6 +1467,21 @@ namespace GuaDan
                 this.dgvBetResult.Rows.Add(new string[] {DateTime.Now.ToLongTimeString(),
                 Config.MatchUrl,Config.Race,info.horse,info.bettype,info.playtype,reason});
             }
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            dgvDan.Rows.Clear();
+        }
+
+        private void cobMatch_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SaveConfig();
+        }
+
+        private void cobRace_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SaveConfig();
         }
     }
 

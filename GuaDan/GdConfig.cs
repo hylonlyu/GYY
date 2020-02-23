@@ -44,5 +44,7 @@ namespace GuaDan
         public double Pgqzk2;
         public double Pgdzk2;
 
+        public bool bZk;
+        public bool bGp;
     }
 }
