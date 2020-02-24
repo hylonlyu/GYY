@@ -84,5 +84,12 @@ namespace GuaDan
             SetCookie();
             webBrowser1.Refresh();
         }
+
+        private void webBrowser1_BeforeNavigate(object sender, WebBrowserExtendedNavigatingEventArgs e)
+        {
+            //e.Cancel = true;
+            SetCookie();
+            //webBrowser1.Navigate(e.Url);
+        }
     }
 }
