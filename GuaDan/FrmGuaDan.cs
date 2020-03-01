@@ -1168,7 +1168,7 @@ namespace GuaDan
                 {
                     int piao = (int)(Config.Qzkps / pei);
                     int gap = piao - item.piao;
-                    if (Math.Abs(gap) > 0)
+                    if (Math.Abs(gap) >= 10)
                     {
                         string playtype = "";
                         if (gap > 0)
@@ -1184,7 +1184,7 @@ namespace GuaDan
                     }
                     else
                     {
-                        DoBetQ(item.horse, member, item.playtype, item.piao, 2);
+                        //DoBetQ(item.horse, member, item.playtype, item.piao, 2);
                     }
                 }
                 else
@@ -1206,7 +1206,7 @@ namespace GuaDan
                     {
                         int piao = (int)(Config.Wzkps / pei);
                         int gap = piao - item.piao;
-                        if (Math.Abs(gap) > 0)
+                        if (Math.Abs(gap) >= 5)
                         {
                             string playtype = "";
                             if (gap > 0)
@@ -1222,7 +1222,7 @@ namespace GuaDan
                         }
                         else
                         {
-                            DoBetW(item.horse, member, item.playtype, item.piao, 2);
+                            //DoBetW(item.horse, member, item.playtype, item.piao, 2);
                         }
 
                     }
@@ -1249,7 +1249,7 @@ namespace GuaDan
                     {
                         int piao = (int)(Config.Pzkps / pei);
                         int gap = piao - item.piao;
-                        if (Math.Abs(gap) > 0)
+                        if (Math.Abs(gap) >= 5)
                         {
                             string playtype = "";
                             if (gap > 0)
@@ -1265,7 +1265,7 @@ namespace GuaDan
                         }
                         else
                         {
-                            DoBetP(item.horse, member, item.playtype, item.piao, 2);
+                            //DoBetP(item.horse, member, item.playtype, item.piao, 2);
                         }
                     }
                     else
