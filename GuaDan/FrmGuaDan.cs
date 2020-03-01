@@ -1338,7 +1338,7 @@ namespace GuaDan
                                 }
                                 else
                                 {
-                                    dicBetInfo[info.ToString()].piao = info.piao;
+                                    dicBetInfo[info.ToString()].piao += info.piao;
                                 }
 
                             }
