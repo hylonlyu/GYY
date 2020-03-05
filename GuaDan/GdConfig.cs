@@ -32,6 +32,19 @@ namespace GuaDan
         public int Pzkps;
         public int Pgdps;
 
+        public double Qgqzk3;
+        public double Qgdzk3;
+        public int Qzkps3;
+
+
+        public double Wgqzk3;
+        public double Wgdzk3;
+        public int Wzkps3;
+
+        public double Pgqzk3;
+        public double Pgdzk3;
+        public int Pzkps3;
+
         public double Qgqzk2;
         public double Qgdzk2;
 

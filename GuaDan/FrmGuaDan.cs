@@ -234,6 +234,18 @@ namespace GuaDan
             Config.Pzkps = Util.Text2Int(txtPzkps.Text.Trim());
             Config.Pgdps = Util.Text2Int(txtPgdps.Text.Trim());
 
+            Config.Qgqzk3 = Util.Text2Double(txtQgqzk3.Text.Trim());
+            Config.Qgdzk3 = Util.Text2Double(txtQgdzk3.Text.Trim());
+            Config.Qzkps3 = Util.Text2Int(txtQzkps3.Text.Trim());
+
+            Config.Wgqzk3 = Util.Text2Double(txtWgqzk3.Text.Trim());
+            Config.Wgdzk3 = Util.Text2Double(txtWgdzk3.Text.Trim());
+            Config.Wzkps3 = Util.Text2Int(txtWzkps3.Text.Trim());
+
+            Config.Pgqzk3 = Util.Text2Double(txtPgqzk3.Text.Trim());
+            Config.Pgdzk3 = Util.Text2Double(txtPgdzk3.Text.Trim());
+            Config.Pzkps3 = Util.Text2Int(txtPzkps3.Text.Trim());
+
             Config.Qgqzk2 = Util.Text2Double(txtQgqzk2.Text.Trim());
             Config.Qgdzk2 = Util.Text2Double(txtQgdzk2.Text.Trim());
 
@@ -316,6 +328,19 @@ namespace GuaDan
                 txtPgdzk.Text = Config.Pgdzk.ToString();
                 txtPzkps.Text = Config.Pzkps.ToString();
                 txtPgdps.Text = Config.Pgdps.ToString();
+
+
+                txtQgqzk3.Text = Config.Qgqzk3.ToString();
+                txtQgdzk3.Text = Config.Qgdzk3.ToString();
+                txtQzkps3.Text = Config.Qzkps3.ToString();
+
+                txtWgqzk3.Text = Config.Wgqzk3.ToString();
+                txtWgdzk3.Text = Config.Wgdzk3.ToString();
+                txtWzkps3.Text = Config.Wzkps3.ToString();
+
+                txtPgqzk3.Text = Config.Pgqzk3.ToString();
+                txtPgdzk3.Text = Config.Pgdzk3.ToString();
+                txtPzkps3.Text = Config.Pzkps3.ToString();
 
                 txtQgqzk2.Text = Config.Qgqzk2.ToString();
                 txtQgdzk2.Text = Config.Qgdzk2.ToString();
@@ -427,6 +452,9 @@ namespace GuaDan
         {
             SaveConfig();
             SetInstanceConfig();
+            Button btnThis = sender as Button;
+            btnThis.Enabled = false;
+
             if (radGp.Checked)
             {
                 DoBetGuPiao();
@@ -436,6 +464,7 @@ namespace GuaDan
             {
                 DoBetZuoKong();
             }
+            btnThis.Enabled = true;
 
         }
 
@@ -491,13 +520,13 @@ namespace GuaDan
                 switch (type)
                 {
                     case "Q":
-                        DoBetQbyZK(horse, member, playtype);
+                        DoBetQbyZK(horse, member, playtype,next);
                         break;
                     case "W":
-                        DoBetWbyZK(horse, member, playtype, dicWpOdds);
+                        DoBetWbyZK(horse, member, playtype, dicWpOdds,next);
                         break;
                     case "P":
-                        DoBetPbyZK(horse, member, playtype, dicWpOdds);
+                        DoBetPbyZK(horse, member, playtype, dicWpOdds,next);
                         break;
                 }
             }
@@ -506,7 +535,7 @@ namespace GuaDan
                 ShowInfoMsg("完成任务");
             });
         }
-        private void DoBetWbyZK(string horse, string member, string playtype, Dictionary<string, WPOdds> dicWpOdds)
+        private void DoBetWbyZK(string horse, string member, string playtype, Dictionary<string, WPOdds> dicWpOdds,bool next = false)
         {
             if (!string.IsNullOrEmpty(horse))
             {
@@ -520,9 +549,15 @@ namespace GuaDan
                             double pei = dicWpOdds[h].Win;
                             if (pei != 0)
                             {
+                                pei = pei > 30 ? 30 : pei;
                                 int piao = (int)(Config.Wzkps / pei);
+                                if(next)
+                                {
+                                    piao = (int)(Config.Wzkps3 / pei);
+                                }
                                 piao = Util.Closeto5(piao);
-                                DoBetW(h, member, playtype, piao);
+                                int times = next ? 3 : 1;
+                                DoBetW(h, member, playtype, piao,times);
                             }
                             else
                             {
@@ -551,7 +586,7 @@ namespace GuaDan
 
         }
 
-        private void DoBetPbyZK(string horse, string member, string playtype, Dictionary<string, WPOdds> dicWpOdds)
+        private void DoBetPbyZK(string horse, string member, string playtype, Dictionary<string, WPOdds> dicWpOdds,bool next = false)
         {
             if (!string.IsNullOrEmpty(horse))
             {
@@ -565,9 +600,15 @@ namespace GuaDan
                             double pei = dicWpOdds[h].Place;
                             if (pei != 0)
                             {
+                                pei = pei > 10 ? 10 : pei;
                                 int piao = (int)(Config.Pzkps / pei);
+                                if(next)
+                                {
+                                    piao = (int)(Config.Pzkps3 / pei);
+                                }
                                 piao = Util.Closeto5(piao);
-                                DoBetP(h, member, playtype, piao);
+                                int times = next ? 3 : 1;
+                                DoBetP(h, member, playtype, piao,times);
                             }
                             else
                             {
@@ -600,7 +641,7 @@ namespace GuaDan
         /// <param name="horse"></param>
         /// <param name="member"></param>
         /// <param name="playtype"></param>
-        private void DoBetQbyZK(string horse, string member, string playtype)
+        private void DoBetQbyZK(string horse, string member, string playtype,bool next = false)
         {
             List<Tuple<int, int>> lstHorses = GetHorsePair(horse);
             foreach (var item in lstHorses)
@@ -608,9 +649,15 @@ namespace GuaDan
                 double pei = CCmemberInstance.GetQpei(item.Item1, item.Item2);
                 if (pei != 0)
                 {
+                    pei = pei > 70 ? 70 : pei;
                     int piao = (int)(Config.Qzkps / pei);
+                    if(next)
+                    {
+                        piao = (int)(Config.Qzkps3 / pei);
+                    }
                     piao = piao >= 10 ? piao : 10;
-                    DoBetQ($"{item.Item1}_{item.Item2}", member, playtype, piao);
+                    int times = next ? 3 : 1;
+                    DoBetQ($"{item.Item1}_{item.Item2}", member, playtype, piao,times);
                 }
                 else
                 {
@@ -694,6 +741,10 @@ namespace GuaDan
             {
                 item.Zhe = playtype.Equals("吃") ? Config.Qgqzk2 : Config.Qgdzk2;
             }
+            if (times == 3)
+            {
+                item.Zhe = playtype.Equals("吃") ? Config.Qgqzk3 : Config.Qgdzk3;
+            }
             item.LWin = 700;
             item.LPlace = 0;
             item.Playtype = PlayType.Q;
@@ -766,6 +817,10 @@ namespace GuaDan
                         {
                             item.Zhe = playtype.Equals("吃") ? Config.Wgqzk2 : Config.Wgdzk2;
                         }
+                        if (times == 3)
+                        {
+                            item.Zhe = playtype.Equals("吃") ? Config.Wgqzk3 : Config.Wgdzk3;
+                        }
                         item.LWin = 300;
                         item.LPlace = 0;
                         item.Date = CCmemberInstance.GetNow(Config.MatchUrl);
@@ -798,6 +853,10 @@ namespace GuaDan
                         if (times == 2)
                         {
                             item.Zhe = playtype.Equals("吃") ? Config.Pgqzk2 : Config.Pgdzk2;
+                        }
+                        if (times == 3)
+                        {
+                            item.Zhe = playtype.Equals("吃") ? Config.Pgqzk3 : Config.Pgdzk3;
                         }
                         item.LWin = 0;
                         item.LPlace = 100;
@@ -1107,6 +1166,9 @@ namespace GuaDan
             SaveConfig();
             SetInstanceConfig();
             lstTask.Clear();
+            Button btnThis = sender as Button;
+            btnThis.Enabled = false;
+
             if (radGp.Checked)
             {
                 Ecxd(CCmemberInstance);
@@ -1117,6 +1179,7 @@ namespace GuaDan
                 Zkecxd(CCmemberInstance);
                 Zkecxd(CCmemberInstance2);
             }
+            btnThis.Enabled = true;
         }
         /// <summary>
         /// 做孔二次下单
@@ -1131,11 +1194,12 @@ namespace GuaDan
             cc.DeleteAllEatGuaDan(betString);
             cc.DeleteAllQBetGuaDan(betString);
             cc.DeleteAllQEatGuaDan(betString);
+            /*
             //先获取一次Q的赔率
             cc.GetPeiData14();
             //获取wp的赔率
             dicWpOdds = cc.GetWPPeiData();
-
+            */
             foreach (var item in dicBetinfo)
             {
                 switch (item.Value.bettype)
@@ -1166,6 +1230,7 @@ namespace GuaDan
                 double pei = cc.GetQpei(h1, h2);
                 if (pei != 0)
                 {
+                    pei = pei > 70 ? 70 : pei;
                     int piao = (int)(Config.Qzkps / pei);
                     int gap = piao - item.piao;
                     if (Math.Abs(gap) >= 10)
@@ -1204,6 +1269,7 @@ namespace GuaDan
                     double pei = dicWpOdds[item.horse].Win;
                     if (pei != 0)
                     {
+                        pei = pei > 30 ? 30 : pei;
                         int piao = (int)(Config.Wzkps / pei);
                         int gap = piao - item.piao;
                         if (Math.Abs(gap) >= 5)
@@ -1247,6 +1313,7 @@ namespace GuaDan
                     double pei = dicWpOdds[item.horse].Place;
                     if (pei != 0)
                     {
+                        pei = pei > 10 ? 10 : pei;
                         int piao = (int)(Config.Pzkps / pei);
                         int gap = piao - item.piao;
                         if (Math.Abs(gap) >= 5)
@@ -1450,10 +1517,15 @@ namespace GuaDan
         {
             SaveConfig();
             SetInstanceConfig();
+
+            Button btnThis = sender as Button;
+            btnThis.Enabled = false;
+
             if (radZk.Checked)
             {
                 DoBetZuoKong(true);
             }
+            btnThis.Enabled = true;
         }
 
         private void AddBetFail(BetInfo info,string reason)
@@ -1482,6 +1554,41 @@ namespace GuaDan
         private void cobRace_SelectedIndexChanged(object sender, EventArgs e)
         {
             SaveConfig();
+        }
+
+        private void btnLockOdds_Click(object sender, EventArgs e)
+        {
+            Button btnThis = sender as Button;
+            btnThis.Enabled = false;
+            LockOdds(CCmemberInstance);
+            LockOdds(CCmemberInstance2);
+            btnThis.Enabled = true;
+        }
+
+        private void LockOdds(CCMember cc)
+        {
+            //先获取一次Q的赔率
+            Dictionary<string,string[,]> dicQodds =  cc.GetPeiData14();
+            //获取wp的赔率
+            dicWpOdds = cc.GetWPPeiData();
+            string member = cc.Equals(CCmemberInstance) ? "1" : "2";
+            if(dicQodds!=null && dicQodds["Q"] != null)
+            {
+                ShowInfoMsg($"会员{member}获取Q赔率成功");
+            }
+            else
+            {
+                ShowInfoMsg($"会员{member}获取Q赔率失败");
+            }
+
+            if(dicWpOdds!=null && dicWpOdds.Count>0)
+            {
+                ShowInfoMsg($"会员{member}获取WP赔率成功");
+            }
+            else
+            {
+                ShowInfoMsg($"会员{member}获取WP赔率失败");
+            }
         }
     }
 
