@@ -25,8 +25,8 @@ namespace GuaDan
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                //Application.Run(new LoadAccept2());
-                Application.Run(new FrmGuaDan());
+                //Application.Run(new FrmGuaDan());
+                Application.Run(new LoadAccept2());
                 //Application.Run(new FrmLogin());
             }
             catch (Exception ex)

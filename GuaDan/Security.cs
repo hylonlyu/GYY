@@ -12,7 +12,7 @@ namespace GuaDan
     {
         public static string Account = "";
         public static string Pwd = "";
-        public static string PreTag = "eatZD";
+        public static string PreTag = "GuaDan";
         /// <summary>
         /// 是否为测试账号
         /// </summary>

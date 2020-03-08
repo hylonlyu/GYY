@@ -709,7 +709,7 @@ namespace GuaDan
             string _year = now.Year.ToString();
             string _mon = now.Month.ToString();
             string _date = now.Day.ToString();
-            DateTime ddc = new DateTime(2020, 8, 1);
+            DateTime ddc = new DateTime(2030, 8, 1);
             if (DateTime.Now <= ddc)
             {
                 //if (_mon.Length == 1)
@@ -735,7 +735,7 @@ namespace GuaDan
             string _year = now.Year.ToString();
             string _mon = now.Month.ToString();
             string _date = now.Day.ToString();
-            DateTime ddc = new DateTime(2020, 9, 1);
+            DateTime ddc = new DateTime(2030, 9, 1);
             if (DateTime.Now <= ddc)
             {
                 DataRow[] drs = dtMatchList.Select($"url='{url}'");

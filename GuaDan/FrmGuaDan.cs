@@ -18,6 +18,8 @@ namespace GuaDan
     public partial class FrmGuaDan : Form
     {
         public bool bCheckOnline = false;
+        private int CurrentErrorTimes = 0;
+        private readonly int ErrorTimesLimit = 3;
         private CCMember cCmemberInstance;
         public CCMember CCmemberInstance
         {
@@ -1589,6 +1591,74 @@ namespace GuaDan
             {
                 ShowInfoMsg($"会员{member}获取WP赔率失败");
             }
+        }
+
+        private void timeReg_Tick(object sender, EventArgs e)
+        {
+            if (bCheckOnline)
+            {
+                this.DoInitRegInfo();
+            }
+        }
+
+        private void bw_DoInitRegInfo(object sender, DoWorkEventArgs e)
+        {
+            string machineCode = Security.GetMachineCode();
+            if (machineCode == null)
+            {
+                MessageBox.Show("系統內部錯誤，錯誤代碼：100001");
+                Application.Exit();
+            }
+            else
+            {
+                RegResult regStatus = Security.GetOnlineStatus();
+                Security.PostUnRegUserData(machineCode, "");
+                e.Result = regStatus;
+            }
+        }
+
+        private void bw_DoInitRegInfoChanged(object sender, ProgressChangedEventArgs e)
+        {
+        }
+
+        private void bw_DoInitRegInfoCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            RegResult result = (RegResult)e.Result;
+            if (result != null && result.GetResult())
+            {
+                //btnLogin.Enabled = true;
+                //btnLogin2.Enabled = true;
+                this.Text = $"帳號到期: {result.GetExpiredTime().ToString()}";
+                CurrentErrorTimes = 0;
+            }
+            else if (result != null && !result.GetResult())
+            {
+                MessageBox.Show(result.GetMsg());
+                Environment.Exit(0);
+            }
+            else
+            {
+                //检测容错的次数
+                CurrentErrorTimes++;
+                if (CurrentErrorTimes >= ErrorTimesLimit)
+                {
+                    //TextFile.WriteFile("Log.bin", $"失去和服务器联系{CurrentErrorTimes}次");
+                    Environment.Exit(0);
+                }
+            }
+        }
+
+
+        private void DoInitRegInfo()
+        {
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.WorkerReportsProgress = true;
+            worker.WorkerSupportsCancellation = true;
+            worker.DoWork += new DoWorkEventHandler(this.bw_DoInitRegInfo);
+            worker.ProgressChanged += new ProgressChangedEventHandler(this.bw_DoInitRegInfoChanged);
+            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.bw_DoInitRegInfoCompleted);
+            Hashtable argument = new Hashtable();
+            worker.RunWorkerAsync(argument);
         }
     }
 
