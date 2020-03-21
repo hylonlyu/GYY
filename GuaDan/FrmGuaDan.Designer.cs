@@ -251,7 +251,7 @@
             this.label17.Location = new System.Drawing.Point(341, 27);
             this.label17.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(23, 12);
+            this.label17.Size = new System.Drawing.Size(28, 13);
             this.label17.TabIndex = 70;
             this.label17.Text = "Pin";
             // 
@@ -280,7 +280,7 @@
             this.btnLockOdds.Name = "btnLockOdds";
             this.btnLockOdds.Size = new System.Drawing.Size(81, 50);
             this.btnLockOdds.TabIndex = 9;
-            this.btnLockOdds.Text = "锁定赔率";
+            this.btnLockOdds.Text = "锁定";
             this.btnLockOdds.UseVisualStyleBackColor = true;
             this.btnLockOdds.Click += new System.EventHandler(this.btnLockOdds_Click);
             // 
@@ -309,7 +309,7 @@
             this.radGp.Checked = true;
             this.radGp.Location = new System.Drawing.Point(16, 39);
             this.radGp.Name = "radGp";
-            this.radGp.Size = new System.Drawing.Size(47, 16);
+            this.radGp.Size = new System.Drawing.Size(54, 17);
             this.radGp.TabIndex = 6;
             this.radGp.TabStop = true;
             this.radGp.Text = "固票";
@@ -320,7 +320,7 @@
             this.radZk.AutoSize = true;
             this.radZk.Location = new System.Drawing.Point(16, 8);
             this.radZk.Name = "radZk";
-            this.radZk.Size = new System.Drawing.Size(47, 16);
+            this.radZk.Size = new System.Drawing.Size(54, 17);
             this.radZk.TabIndex = 5;
             this.radZk.Text = "做孔";
             this.radZk.UseVisualStyleBackColor = true;
@@ -436,7 +436,7 @@
             this.radBet.AutoSize = true;
             this.radBet.Location = new System.Drawing.Point(78, 17);
             this.radBet.Name = "radBet";
-            this.radBet.Size = new System.Drawing.Size(35, 16);
+            this.radBet.Size = new System.Drawing.Size(41, 17);
             this.radBet.TabIndex = 1;
             this.radBet.Text = "赌";
             this.radBet.UseVisualStyleBackColor = true;
@@ -447,7 +447,7 @@
             this.radEat.Checked = true;
             this.radEat.Location = new System.Drawing.Point(15, 17);
             this.radEat.Name = "radEat";
-            this.radEat.Size = new System.Drawing.Size(35, 16);
+            this.radEat.Size = new System.Drawing.Size(41, 17);
             this.radEat.TabIndex = 0;
             this.radEat.TabStop = true;
             this.radEat.Text = "吃";
@@ -485,7 +485,7 @@
             this.radT.AutoSize = true;
             this.radT.Location = new System.Drawing.Point(79, 18);
             this.radT.Name = "radT";
-            this.radT.Size = new System.Drawing.Size(35, 16);
+            this.radT.Size = new System.Drawing.Size(41, 17);
             this.radT.TabIndex = 1;
             this.radT.Text = "拖";
             this.radT.UseVisualStyleBackColor = true;
@@ -496,7 +496,7 @@
             this.radX.Checked = true;
             this.radX.Location = new System.Drawing.Point(5, 18);
             this.radX.Name = "radX";
-            this.radX.Size = new System.Drawing.Size(47, 16);
+            this.radX.Size = new System.Drawing.Size(54, 17);
             this.radX.TabIndex = 0;
             this.radX.TabStop = true;
             this.radX.Text = "交叉";
@@ -530,7 +530,7 @@
             this.checkBox11.AutoSize = true;
             this.checkBox11.Location = new System.Drawing.Point(398, 51);
             this.checkBox11.Name = "checkBox11";
-            this.checkBox11.Size = new System.Drawing.Size(36, 16);
+            this.checkBox11.Size = new System.Drawing.Size(43, 17);
             this.checkBox11.TabIndex = 15;
             this.checkBox11.Text = "16";
             this.checkBox11.UseVisualStyleBackColor = true;
@@ -540,7 +540,7 @@
             this.checkBox12.AutoSize = true;
             this.checkBox12.Location = new System.Drawing.Point(342, 51);
             this.checkBox12.Name = "checkBox12";
-            this.checkBox12.Size = new System.Drawing.Size(36, 16);
+            this.checkBox12.Size = new System.Drawing.Size(43, 17);
             this.checkBox12.TabIndex = 14;
             this.checkBox12.Text = "15";
             this.checkBox12.UseVisualStyleBackColor = true;
@@ -550,7 +550,7 @@
             this.checkBox13.AutoSize = true;
             this.checkBox13.Location = new System.Drawing.Point(286, 51);
             this.checkBox13.Name = "checkBox13";
-            this.checkBox13.Size = new System.Drawing.Size(36, 16);
+            this.checkBox13.Size = new System.Drawing.Size(43, 17);
             this.checkBox13.TabIndex = 13;
             this.checkBox13.Text = "14";
             this.checkBox13.UseVisualStyleBackColor = true;
@@ -560,7 +560,7 @@
             this.checkBox14.AutoSize = true;
             this.checkBox14.Location = new System.Drawing.Point(230, 51);
             this.checkBox14.Name = "checkBox14";
-            this.checkBox14.Size = new System.Drawing.Size(36, 16);
+            this.checkBox14.Size = new System.Drawing.Size(43, 17);
             this.checkBox14.TabIndex = 12;
             this.checkBox14.Text = "13";
             this.checkBox14.UseVisualStyleBackColor = true;
@@ -570,7 +570,7 @@
             this.checkBox15.AutoSize = true;
             this.checkBox15.Location = new System.Drawing.Point(174, 51);
             this.checkBox15.Name = "checkBox15";
-            this.checkBox15.Size = new System.Drawing.Size(36, 16);
+            this.checkBox15.Size = new System.Drawing.Size(43, 17);
             this.checkBox15.TabIndex = 11;
             this.checkBox15.Text = "12";
             this.checkBox15.UseVisualStyleBackColor = true;
@@ -580,7 +580,7 @@
             this.checkBox16.AutoSize = true;
             this.checkBox16.Location = new System.Drawing.Point(118, 51);
             this.checkBox16.Name = "checkBox16";
-            this.checkBox16.Size = new System.Drawing.Size(36, 16);
+            this.checkBox16.Size = new System.Drawing.Size(43, 17);
             this.checkBox16.TabIndex = 10;
             this.checkBox16.Text = "11";
             this.checkBox16.UseVisualStyleBackColor = true;
@@ -590,7 +590,7 @@
             this.checkBox17.AutoSize = true;
             this.checkBox17.Location = new System.Drawing.Point(62, 51);
             this.checkBox17.Name = "checkBox17";
-            this.checkBox17.Size = new System.Drawing.Size(36, 16);
+            this.checkBox17.Size = new System.Drawing.Size(43, 17);
             this.checkBox17.TabIndex = 9;
             this.checkBox17.Text = "10";
             this.checkBox17.UseVisualStyleBackColor = true;
@@ -600,7 +600,7 @@
             this.checkBox18.AutoSize = true;
             this.checkBox18.Location = new System.Drawing.Point(6, 51);
             this.checkBox18.Name = "checkBox18";
-            this.checkBox18.Size = new System.Drawing.Size(30, 16);
+            this.checkBox18.Size = new System.Drawing.Size(36, 17);
             this.checkBox18.TabIndex = 8;
             this.checkBox18.Text = "9";
             this.checkBox18.UseVisualStyleBackColor = true;
@@ -610,7 +610,7 @@
             this.checkBox7.AutoSize = true;
             this.checkBox7.Location = new System.Drawing.Point(398, 11);
             this.checkBox7.Name = "checkBox7";
-            this.checkBox7.Size = new System.Drawing.Size(30, 16);
+            this.checkBox7.Size = new System.Drawing.Size(36, 17);
             this.checkBox7.TabIndex = 7;
             this.checkBox7.Text = "8";
             this.checkBox7.UseVisualStyleBackColor = true;
@@ -620,7 +620,7 @@
             this.checkBox8.AutoSize = true;
             this.checkBox8.Location = new System.Drawing.Point(342, 11);
             this.checkBox8.Name = "checkBox8";
-            this.checkBox8.Size = new System.Drawing.Size(30, 16);
+            this.checkBox8.Size = new System.Drawing.Size(36, 17);
             this.checkBox8.TabIndex = 6;
             this.checkBox8.Text = "7";
             this.checkBox8.UseVisualStyleBackColor = true;
@@ -630,7 +630,7 @@
             this.checkBox9.AutoSize = true;
             this.checkBox9.Location = new System.Drawing.Point(286, 11);
             this.checkBox9.Name = "checkBox9";
-            this.checkBox9.Size = new System.Drawing.Size(30, 16);
+            this.checkBox9.Size = new System.Drawing.Size(36, 17);
             this.checkBox9.TabIndex = 5;
             this.checkBox9.Text = "6";
             this.checkBox9.UseVisualStyleBackColor = true;
@@ -640,7 +640,7 @@
             this.checkBox10.AutoSize = true;
             this.checkBox10.Location = new System.Drawing.Point(230, 11);
             this.checkBox10.Name = "checkBox10";
-            this.checkBox10.Size = new System.Drawing.Size(30, 16);
+            this.checkBox10.Size = new System.Drawing.Size(36, 17);
             this.checkBox10.TabIndex = 4;
             this.checkBox10.Text = "5";
             this.checkBox10.UseVisualStyleBackColor = true;
@@ -650,7 +650,7 @@
             this.checkBox5.AutoSize = true;
             this.checkBox5.Location = new System.Drawing.Point(174, 11);
             this.checkBox5.Name = "checkBox5";
-            this.checkBox5.Size = new System.Drawing.Size(30, 16);
+            this.checkBox5.Size = new System.Drawing.Size(36, 17);
             this.checkBox5.TabIndex = 3;
             this.checkBox5.Text = "4";
             this.checkBox5.UseVisualStyleBackColor = true;
@@ -660,7 +660,7 @@
             this.checkBox6.AutoSize = true;
             this.checkBox6.Location = new System.Drawing.Point(118, 11);
             this.checkBox6.Name = "checkBox6";
-            this.checkBox6.Size = new System.Drawing.Size(30, 16);
+            this.checkBox6.Size = new System.Drawing.Size(36, 17);
             this.checkBox6.TabIndex = 2;
             this.checkBox6.Text = "3";
             this.checkBox6.UseVisualStyleBackColor = true;
@@ -670,7 +670,7 @@
             this.checkBox4.AutoSize = true;
             this.checkBox4.Location = new System.Drawing.Point(62, 11);
             this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(30, 16);
+            this.checkBox4.Size = new System.Drawing.Size(36, 17);
             this.checkBox4.TabIndex = 1;
             this.checkBox4.Text = "2";
             this.checkBox4.UseVisualStyleBackColor = true;
@@ -680,7 +680,7 @@
             this.checkBox3.AutoSize = true;
             this.checkBox3.Location = new System.Drawing.Point(6, 11);
             this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(30, 16);
+            this.checkBox3.Size = new System.Drawing.Size(36, 17);
             this.checkBox3.TabIndex = 0;
             this.checkBox3.Text = "1";
             this.checkBox3.UseVisualStyleBackColor = true;
@@ -699,7 +699,7 @@
             this.chkM2.AutoSize = true;
             this.chkM2.Location = new System.Drawing.Point(96, 7);
             this.chkM2.Name = "chkM2";
-            this.chkM2.Size = new System.Drawing.Size(54, 16);
+            this.chkM2.Size = new System.Drawing.Size(62, 17);
             this.chkM2.TabIndex = 1;
             this.chkM2.Text = "会员2";
             this.chkM2.UseVisualStyleBackColor = true;
@@ -711,7 +711,7 @@
             this.chkM1.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkM1.Location = new System.Drawing.Point(3, 7);
             this.chkM1.Name = "chkM1";
-            this.chkM1.Size = new System.Drawing.Size(54, 16);
+            this.chkM1.Size = new System.Drawing.Size(62, 17);
             this.chkM1.TabIndex = 0;
             this.chkM1.Text = "会员1";
             this.chkM1.UseVisualStyleBackColor = true;
@@ -732,7 +732,7 @@
             this.radP.AutoSize = true;
             this.radP.Location = new System.Drawing.Point(163, 8);
             this.radP.Name = "radP";
-            this.radP.Size = new System.Drawing.Size(29, 16);
+            this.radP.Size = new System.Drawing.Size(35, 17);
             this.radP.TabIndex = 3;
             this.radP.Text = "P";
             this.radP.UseVisualStyleBackColor = true;
@@ -742,7 +742,7 @@
             this.radW.AutoSize = true;
             this.radW.Location = new System.Drawing.Point(111, 8);
             this.radW.Name = "radW";
-            this.radW.Size = new System.Drawing.Size(29, 16);
+            this.radW.Size = new System.Drawing.Size(35, 17);
             this.radW.TabIndex = 2;
             this.radW.Text = "W";
             this.radW.UseVisualStyleBackColor = true;
@@ -752,7 +752,7 @@
             this.radWP.AutoSize = true;
             this.radWP.Location = new System.Drawing.Point(60, 8);
             this.radWP.Name = "radWP";
-            this.radWP.Size = new System.Drawing.Size(35, 16);
+            this.radWP.Size = new System.Drawing.Size(42, 17);
             this.radWP.TabIndex = 1;
             this.radWP.Text = "WP";
             this.radWP.UseVisualStyleBackColor = true;
@@ -763,7 +763,7 @@
             this.radQ.Checked = true;
             this.radQ.Location = new System.Drawing.Point(5, 8);
             this.radQ.Name = "radQ";
-            this.radQ.Size = new System.Drawing.Size(29, 16);
+            this.radQ.Size = new System.Drawing.Size(35, 17);
             this.radQ.TabIndex = 0;
             this.radQ.TabStop = true;
             this.radQ.Text = "Q";
@@ -814,7 +814,7 @@
             this.label15.Location = new System.Drawing.Point(335, 6);
             this.label15.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(29, 12);
+            this.label15.Size = new System.Drawing.Size(33, 13);
             this.label15.TabIndex = 66;
             this.label15.Text = "账号";
             // 
@@ -833,7 +833,7 @@
             this.label16.Location = new System.Drawing.Point(459, 6);
             this.label16.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(29, 12);
+            this.label16.Size = new System.Drawing.Size(33, 13);
             this.label16.TabIndex = 68;
             this.label16.Text = "密码";
             // 
@@ -882,7 +882,7 @@
             this.label1.Location = new System.Drawing.Point(2, 6);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(29, 12);
+            this.label1.Size = new System.Drawing.Size(33, 13);
             this.label1.TabIndex = 48;
             this.label1.Text = "账号";
             // 
@@ -901,7 +901,7 @@
             this.label2.Location = new System.Drawing.Point(126, 6);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(29, 12);
+            this.label2.Size = new System.Drawing.Size(33, 13);
             this.label2.TabIndex = 50;
             this.label2.Text = "密码";
             // 
@@ -946,7 +946,7 @@
             this.label23.Location = new System.Drawing.Point(203, 76);
             this.label23.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(29, 12);
+            this.label23.Size = new System.Drawing.Size(33, 13);
             this.label23.TabIndex = 58;
             this.label23.Text = "场次";
             // 
@@ -1010,7 +1010,7 @@
             this.label22.Location = new System.Drawing.Point(8, 75);
             this.label22.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(29, 12);
+            this.label22.Size = new System.Drawing.Size(33, 13);
             this.label22.TabIndex = 56;
             this.label22.Text = "网址";
             // 
@@ -1039,7 +1039,7 @@
             this.label4.Location = new System.Drawing.Point(8, 101);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(29, 12);
+            this.label4.Size = new System.Drawing.Size(33, 13);
             this.label4.TabIndex = 54;
             this.label4.Text = "赛事";
             // 
@@ -1049,7 +1049,7 @@
             this.label3.Location = new System.Drawing.Point(8, 27);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(23, 12);
+            this.label3.Size = new System.Drawing.Size(28, 13);
             this.label3.TabIndex = 52;
             this.label3.Text = "Pin";
             // 
@@ -1161,7 +1161,7 @@
             this.label26.AutoSize = true;
             this.label26.Location = new System.Drawing.Point(6, 87);
             this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(53, 12);
+            this.label26.Size = new System.Drawing.Size(59, 13);
             this.label26.TabIndex = 4;
             this.label26.Text = "做孔票数";
             // 
@@ -1177,7 +1177,7 @@
             this.label27.AutoSize = true;
             this.label27.Location = new System.Drawing.Point(6, 58);
             this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(53, 12);
+            this.label27.Size = new System.Drawing.Size(59, 13);
             this.label27.TabIndex = 2;
             this.label27.Text = "挂赌折扣";
             // 
@@ -1193,7 +1193,7 @@
             this.label30.AutoSize = true;
             this.label30.Location = new System.Drawing.Point(6, 28);
             this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(53, 12);
+            this.label30.Size = new System.Drawing.Size(59, 13);
             this.label30.TabIndex = 0;
             this.label30.Text = "挂吃折扣";
             // 
@@ -1224,7 +1224,7 @@
             this.label34.AutoSize = true;
             this.label34.Location = new System.Drawing.Point(6, 75);
             this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(53, 12);
+            this.label34.Size = new System.Drawing.Size(59, 13);
             this.label34.TabIndex = 4;
             this.label34.Text = "做孔票数";
             // 
@@ -1240,7 +1240,7 @@
             this.label35.AutoSize = true;
             this.label35.Location = new System.Drawing.Point(6, 51);
             this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(53, 12);
+            this.label35.Size = new System.Drawing.Size(59, 13);
             this.label35.TabIndex = 2;
             this.label35.Text = "挂赌折扣";
             // 
@@ -1256,7 +1256,7 @@
             this.label38.AutoSize = true;
             this.label38.Location = new System.Drawing.Point(6, 28);
             this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(53, 12);
+            this.label38.Size = new System.Drawing.Size(59, 13);
             this.label38.TabIndex = 0;
             this.label38.Text = "挂吃折扣";
             // 
@@ -1287,7 +1287,7 @@
             this.label45.AutoSize = true;
             this.label45.Location = new System.Drawing.Point(6, 87);
             this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(53, 12);
+            this.label45.Size = new System.Drawing.Size(59, 13);
             this.label45.TabIndex = 4;
             this.label45.Text = "做孔票数";
             // 
@@ -1303,7 +1303,7 @@
             this.label46.AutoSize = true;
             this.label46.Location = new System.Drawing.Point(6, 55);
             this.label46.Name = "label46";
-            this.label46.Size = new System.Drawing.Size(53, 12);
+            this.label46.Size = new System.Drawing.Size(59, 13);
             this.label46.TabIndex = 2;
             this.label46.Text = "挂赌折扣";
             // 
@@ -1319,7 +1319,7 @@
             this.label47.AutoSize = true;
             this.label47.Location = new System.Drawing.Point(6, 28);
             this.label47.Name = "label47";
-            this.label47.Size = new System.Drawing.Size(53, 12);
+            this.label47.Size = new System.Drawing.Size(59, 13);
             this.label47.TabIndex = 0;
             this.label47.Text = "挂吃折扣";
             // 
@@ -1361,7 +1361,7 @@
             this.label28.AutoSize = true;
             this.label28.Location = new System.Drawing.Point(6, 85);
             this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(53, 12);
+            this.label28.Size = new System.Drawing.Size(59, 13);
             this.label28.TabIndex = 2;
             this.label28.Text = "挂赌折扣";
             // 
@@ -1377,7 +1377,7 @@
             this.label29.AutoSize = true;
             this.label29.Location = new System.Drawing.Point(6, 28);
             this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(53, 12);
+            this.label29.Size = new System.Drawing.Size(59, 13);
             this.label29.TabIndex = 0;
             this.label29.Text = "挂吃折扣";
             // 
@@ -1406,7 +1406,7 @@
             this.label32.AutoSize = true;
             this.label32.Location = new System.Drawing.Point(6, 85);
             this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(53, 12);
+            this.label32.Size = new System.Drawing.Size(59, 13);
             this.label32.TabIndex = 2;
             this.label32.Text = "挂赌折扣";
             // 
@@ -1422,7 +1422,7 @@
             this.label33.AutoSize = true;
             this.label33.Location = new System.Drawing.Point(6, 28);
             this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(53, 12);
+            this.label33.Size = new System.Drawing.Size(59, 13);
             this.label33.TabIndex = 0;
             this.label33.Text = "挂吃折扣";
             // 
@@ -1451,7 +1451,7 @@
             this.label36.AutoSize = true;
             this.label36.Location = new System.Drawing.Point(6, 85);
             this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(53, 12);
+            this.label36.Size = new System.Drawing.Size(59, 13);
             this.label36.TabIndex = 2;
             this.label36.Text = "挂赌折扣";
             // 
@@ -1467,7 +1467,7 @@
             this.label37.AutoSize = true;
             this.label37.Location = new System.Drawing.Point(6, 28);
             this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(53, 12);
+            this.label37.Size = new System.Drawing.Size(59, 13);
             this.label37.TabIndex = 0;
             this.label37.Text = "挂吃折扣";
             // 
@@ -1496,7 +1496,7 @@
             this.label40.AutoSize = true;
             this.label40.Location = new System.Drawing.Point(6, 85);
             this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(53, 12);
+            this.label40.Size = new System.Drawing.Size(59, 13);
             this.label40.TabIndex = 2;
             this.label40.Text = "挂赌折扣";
             // 
@@ -1512,7 +1512,7 @@
             this.label41.AutoSize = true;
             this.label41.Location = new System.Drawing.Point(6, 28);
             this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(53, 12);
+            this.label41.Size = new System.Drawing.Size(59, 13);
             this.label41.TabIndex = 0;
             this.label41.Text = "挂吃折扣";
             // 
@@ -1558,7 +1558,7 @@
             this.label20.AutoSize = true;
             this.label20.Location = new System.Drawing.Point(6, 115);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(53, 12);
+            this.label20.Size = new System.Drawing.Size(59, 13);
             this.label20.TabIndex = 6;
             this.label20.Text = "固定票数";
             // 
@@ -1574,7 +1574,7 @@
             this.label21.AutoSize = true;
             this.label21.Location = new System.Drawing.Point(6, 87);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(53, 12);
+            this.label21.Size = new System.Drawing.Size(59, 13);
             this.label21.TabIndex = 4;
             this.label21.Text = "做孔票数";
             // 
@@ -1590,7 +1590,7 @@
             this.label24.AutoSize = true;
             this.label24.Location = new System.Drawing.Point(6, 58);
             this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(53, 12);
+            this.label24.Size = new System.Drawing.Size(59, 13);
             this.label24.TabIndex = 2;
             this.label24.Text = "挂赌折扣";
             // 
@@ -1606,7 +1606,7 @@
             this.label25.AutoSize = true;
             this.label25.Location = new System.Drawing.Point(6, 28);
             this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(53, 12);
+            this.label25.Size = new System.Drawing.Size(59, 13);
             this.label25.TabIndex = 0;
             this.label25.Text = "挂吃折扣";
             // 
@@ -1639,7 +1639,7 @@
             this.label13.AutoSize = true;
             this.label13.Location = new System.Drawing.Point(6, 99);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(53, 12);
+            this.label13.Size = new System.Drawing.Size(59, 13);
             this.label13.TabIndex = 6;
             this.label13.Text = "固定票数";
             // 
@@ -1655,7 +1655,7 @@
             this.label14.AutoSize = true;
             this.label14.Location = new System.Drawing.Point(6, 75);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(53, 12);
+            this.label14.Size = new System.Drawing.Size(59, 13);
             this.label14.TabIndex = 4;
             this.label14.Text = "做孔票数";
             // 
@@ -1671,7 +1671,7 @@
             this.label18.AutoSize = true;
             this.label18.Location = new System.Drawing.Point(6, 51);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(53, 12);
+            this.label18.Size = new System.Drawing.Size(59, 13);
             this.label18.TabIndex = 2;
             this.label18.Text = "挂赌折扣";
             // 
@@ -1687,7 +1687,7 @@
             this.label19.AutoSize = true;
             this.label19.Location = new System.Drawing.Point(6, 28);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(53, 12);
+            this.label19.Size = new System.Drawing.Size(59, 13);
             this.label19.TabIndex = 0;
             this.label19.Text = "挂吃折扣";
             // 
@@ -1718,7 +1718,7 @@
             this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(6, 114);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(53, 12);
+            this.label9.Size = new System.Drawing.Size(59, 13);
             this.label9.TabIndex = 6;
             this.label9.Text = "固定票数";
             // 
@@ -1734,7 +1734,7 @@
             this.label11.AutoSize = true;
             this.label11.Location = new System.Drawing.Point(6, 58);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(53, 12);
+            this.label11.Size = new System.Drawing.Size(59, 13);
             this.label11.TabIndex = 2;
             this.label11.Text = "挂赌折扣";
             // 
@@ -1750,7 +1750,7 @@
             this.label12.AutoSize = true;
             this.label12.Location = new System.Drawing.Point(6, 28);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(53, 12);
+            this.label12.Size = new System.Drawing.Size(59, 13);
             this.label12.TabIndex = 0;
             this.label12.Text = "挂吃折扣";
             // 
@@ -1783,7 +1783,7 @@
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(6, 113);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(53, 12);
+            this.label8.Size = new System.Drawing.Size(59, 13);
             this.label8.TabIndex = 6;
             this.label8.Text = "固定票数";
             // 
@@ -1799,7 +1799,7 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(6, 87);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(53, 12);
+            this.label7.Size = new System.Drawing.Size(59, 13);
             this.label7.TabIndex = 4;
             this.label7.Text = "做孔票数";
             // 
@@ -1815,7 +1815,7 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(6, 55);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(53, 12);
+            this.label6.Size = new System.Drawing.Size(59, 13);
             this.label6.TabIndex = 2;
             this.label6.Text = "挂赌折扣";
             // 
@@ -1831,7 +1831,7 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(6, 28);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(53, 12);
+            this.label5.Size = new System.Drawing.Size(59, 13);
             this.label5.TabIndex = 0;
             this.label5.Text = "挂吃折扣";
             // 

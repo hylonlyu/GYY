@@ -1153,7 +1153,7 @@ namespace GuaDan
             frmBrowser.Text = "2";
             frmBrowser.Show();
         }
-
+         
         private void btnMatch2_Click(object sender, EventArgs e)
         {
             FrmWebbrowser frmMatch = new FrmWebbrowser();
