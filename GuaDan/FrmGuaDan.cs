@@ -1660,6 +1660,11 @@ namespace GuaDan
             Hashtable argument = new Hashtable();
             worker.RunWorkerAsync(argument);
         }
+
+        private void FrmGuaDan_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Environment.Exit(0);
+        }
     }
 
     class BetInfo

@@ -1924,6 +1924,7 @@
             this.Controls.Add(this.splitContainer1);
             this.Name = "FrmGuaDan";
             this.Text = "FrmGuaDan";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmGuaDan_FormClosed);
             this.Load += new System.EventHandler(this.FrmGuaDan_Load);
             this.tabPage4.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
