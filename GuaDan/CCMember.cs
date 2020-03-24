@@ -1585,7 +1585,7 @@ namespace GuaDan
                         }
 
                         //q的挂单
-                        Regex re5 = new Regex(@"\[D#[EB]#mr\('(?'id'\d+),[^#]+#(?'race'\d+)#Q#(?'horse'\d+-\d+)#(?'piao'\d+)#(?'zhe'\d+)#(?'lim'\d+)", RegexOptions.None);
+                        Regex re5 = new Regex(@"\[D#[EB]#mr\('(?'id'\d+),[^#]+#(?'race'\d+)#[QFC]+#(?'horse'\d+-\d+)#(?'piao'\d+)#(?'zhe'\d+)#(?'lim'\d+)", RegexOptions.None);
                         Match mc5 = re5.Match(str);
                         if (mc5.Success)
                         {

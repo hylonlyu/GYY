@@ -457,6 +457,7 @@ namespace GuaDan
             Button btnThis = sender as Button;
             btnThis.Enabled = false;
 
+            ShowInfoMsg("一次下单开始");
             if (radGp.Checked)
             {
                 DoBetGuPiao();
@@ -467,6 +468,7 @@ namespace GuaDan
                 DoBetZuoKong();
             }
             btnThis.Enabled = true;
+            ShowInfoMsg("一次下单结束");
 
         }
 
@@ -1170,7 +1172,7 @@ namespace GuaDan
             lstTask.Clear();
             Button btnThis = sender as Button;
             btnThis.Enabled = false;
-
+            ShowInfoMsg("二次下单开始");
             if (radGp.Checked)
             {
                 Ecxd(CCmemberInstance);
@@ -1182,6 +1184,7 @@ namespace GuaDan
                 Zkecxd(CCmemberInstance2);
             }
             btnThis.Enabled = true;
+            ShowInfoMsg("二次下单结束");
         }
         /// <summary>
         /// 做孔二次下单
@@ -1522,12 +1525,13 @@ namespace GuaDan
 
             Button btnThis = sender as Button;
             btnThis.Enabled = false;
-
+            ShowInfoMsg("再次下单开始");
             if (radZk.Checked)
             {
                 DoBetZuoKong(true);
             }
             btnThis.Enabled = true;
+            ShowInfoMsg("再次下单结束");
         }
 
         private void AddBetFail(BetInfo info,string reason)
