@@ -484,16 +484,16 @@ namespace GuaDan
                 switch (type)
                 {
                     case "Q":
-                        DoBetQ(horse, member, playtype, Config.Qgdps);
+                        DoBetQ(horse, member, playtype, Config.Qgdps,"");
                         break;
                     case "WP":
                         DoBetWP(horse, member, playtype, Config.WPgdps);
                         break;
                     case "W":
-                        DoBetW(horse, member, playtype, Config.Wgdps);
+                        DoBetW(horse, member, playtype, Config.Wgdps,"");
                         break;
                     case "P":
-                        DoBetP(horse, member, playtype, Config.Pgdps);
+                        DoBetP(horse, member, playtype, Config.Pgdps,"");
                         break;
                 }
             }
@@ -561,7 +561,7 @@ namespace GuaDan
                                 }
                                 piao = Util.Closeto5(piao);
                                 int times = next ? 3 : 1;
-                                DoBetW(h, member, playtype, piao,times);
+                                DoBetW(h, member, playtype, piao,pei.ToString(),times);
                             }
                             else
                             {
@@ -612,7 +612,7 @@ namespace GuaDan
                                 }
                                 piao = Util.Closeto5(piao);
                                 int times = next ? 3 : 1;
-                                DoBetP(h, member, playtype, piao,times);
+                                DoBetP(h, member, playtype, piao,pei.ToString(),times);
                             }
                             else
                             {
@@ -661,7 +661,7 @@ namespace GuaDan
                     }
                     piao = piao >= 10 ? piao : 10;
                     int times = next ? 3 : 1;
-                    DoBetQ($"{item.Item1}_{item.Item2}", member, playtype, piao,times);
+                    DoBetQ($"{item.Item1}_{item.Item2}", member, playtype, piao,pei.ToString(),times);
                 }
                 else
                 {
@@ -728,7 +728,7 @@ namespace GuaDan
                 }
             }
         }
-        private void DoBetQ(string horse, string member, string playtype, int amount, int times = 1)
+        private void DoBetQ(string horse, string member, string playtype, int amount,string odds, int times = 1)
         {
             string qtype = horse.Contains("*") ? "1" : "0";
             RaceInfoItem item = new RaceInfoItem();
@@ -737,6 +737,7 @@ namespace GuaDan
             item.Race = Config.Race;
             item.Win = amount;
             item.Place = 0;
+            item.Odds = odds;
             if (times == 1)
             {
                 item.Zhe = playtype.Equals("吃") ? Config.Qgqzk : Config.Qgdzk;
@@ -798,7 +799,7 @@ namespace GuaDan
             }
         }
 
-        private void DoBetW(string horse, string member, string playtype, int amount, int times = 1)
+        private void DoBetW(string horse, string member, string playtype, int amount,string odds, int times = 1)
         {
             if (!string.IsNullOrEmpty(horse))
             {
@@ -813,6 +814,7 @@ namespace GuaDan
                         item.Race = Config.Race;
                         item.Win = amount;
                         item.Place = 0;
+                        item.Odds = odds;
                         if (times == 1)
                         {
                             item.Zhe = playtype.Equals("吃") ? Config.Wgqzk : Config.Wgdzk;
@@ -835,7 +837,7 @@ namespace GuaDan
             }
         }
 
-        private void DoBetP(string horse, string member, string playtype, int amount, int times = 1)
+        private void DoBetP(string horse, string member, string playtype, int amount,string odds, int times = 1)
         {
             if (!string.IsNullOrEmpty(horse))
             {
@@ -850,6 +852,7 @@ namespace GuaDan
                         item.Race = Config.Race;
                         item.Win = 0;
                         item.Place = amount;
+                        item.Odds = odds;
                         if (times == 1)
                         {
                             item.Zhe = playtype.Equals("吃") ? Config.Pgqzk : Config.Pgdzk;
@@ -882,7 +885,7 @@ namespace GuaDan
                         Task t = Task.Run<bool>(() =>
                         {
                             bool b = CCmemberInstance.QiPiaoGua(item, out BetResultInfo info);
-                            ShowInfoMsg($"会员1{b}# {item.ToString()}");
+                            ShowInfoMsg($"会员1{b}# {item.ToString()}#赔率{item.Odds}");
                             if (!b)
                             {
                                 BetInfo binfo = new BetInfo
@@ -902,7 +905,7 @@ namespace GuaDan
                         Task t = Task.Run<bool>(() =>
                         {
                             bool b = CCmemberInstance.XiaZhuGua(item, out BetResultInfo info);
-                            ShowInfoMsg($"会员1{b}# {item.ToString()}");
+                            ShowInfoMsg($"会员1{b}# {item.ToString()}#赔率{item.Odds}");
                             if (!b)
                             {
                                 BetInfo binfo = new BetInfo
@@ -925,7 +928,7 @@ namespace GuaDan
                         Task t = Task.Run<bool>(() =>
                         {
                             bool b = CCmemberInstance2.QiPiaoGua(item, out BetResultInfo info);
-                            ShowInfoMsg($"会员2{b}# {item.ToString()}");
+                            ShowInfoMsg($"会员2{b}# {item.ToString()}#赔率{item.Odds}");
                             if (!b)
                             {
                                 BetInfo binfo = new BetInfo
@@ -945,7 +948,7 @@ namespace GuaDan
                         Task t = Task.Run<bool>(() =>
                         {
                             bool b = CCmemberInstance2.XiaZhuGua(item, out BetResultInfo info);
-                            ShowInfoMsg($"会员2{b}# {item.ToString()}");
+                            ShowInfoMsg($"会员2{b}# {item.ToString()}#赔率{item.Odds}");
                             if (!b)
                             {
                                 BetInfo binfo = new BetInfo
@@ -968,7 +971,7 @@ namespace GuaDan
                         Task t = Task.Run<bool>(() =>
                         {
                             bool b = CCmemberInstance.QiPiaoGua(item, out BetResultInfo info);
-                            ShowInfoMsg($"会员1{b}# {item.ToString()}");
+                            ShowInfoMsg($"会员1{b}# {item.ToString()}#赔率{item.Odds}");
                             if (!b)
                             {
                                 BetInfo binfo = new BetInfo
@@ -981,7 +984,7 @@ namespace GuaDan
                             };
 
                             b = CCmemberInstance2.QiPiaoGua(item, out BetResultInfo info2);
-                            ShowInfoMsg($"会员2{b}# {item.ToString()}");
+                            ShowInfoMsg($"会员2{b}# {item.ToString()}#赔率{item.Odds}");
                             if (!b)
                             {
                                 BetInfo binfo = new BetInfo
@@ -1001,7 +1004,7 @@ namespace GuaDan
                         Task t = Task.Run<bool>(() =>
                         {
                             bool b = CCmemberInstance.XiaZhuGua(item, out BetResultInfo info);
-                            ShowInfoMsg($"会员1{b}# {item.ToString()}");
+                            ShowInfoMsg($"会员1{b}# {item.ToString()}#赔率{item.Odds}");
 
                             if (!b)
                             {
@@ -1014,7 +1017,7 @@ namespace GuaDan
                                 AddBetFail(binfo, info.StrAnswer);
                             };
                             b = CCmemberInstance2.XiaZhuGua(item, out BetResultInfo info2);
-                            ShowInfoMsg($"会员2{b}# {item.ToString()}");
+                            ShowInfoMsg($"会员2{b}# {item.ToString()}#赔率{item.Odds}");
                             if (!b)
                             {
                                 BetInfo binfo = new BetInfo
@@ -1040,7 +1043,7 @@ namespace GuaDan
                     Task t1 = Task.Run<bool>(() =>
                     {
                         bool b = CCmemberInstance.QiPiaoGuaQ(item, out BetResultInfo info, qtype);
-                        ShowInfoMsg($"会员1{b}# {item.ToString()}");
+                        ShowInfoMsg($"会员1{b}# {item.ToString()}#赔率{item.Odds}");
                         if (!b)
                         {
                             BetInfo binfo = new BetInfo
@@ -1061,7 +1064,7 @@ namespace GuaDan
                     Task t2 = Task.Run<bool>(() =>
                     {
                         bool b = CCmemberInstance2.QiPiaoGuaQ(item, out BetResultInfo info, qtype);
-                        ShowInfoMsg($"会员2{b}# {item.ToString()}");
+                        ShowInfoMsg($"会员2{b}# {item.ToString()}#赔率{item.Odds}");
                         if (!b)
                         {
                             BetInfo binfo = new BetInfo
@@ -1080,7 +1083,7 @@ namespace GuaDan
                     Task t = Task.Run<bool>(() =>
                     {
                         bool b = CCmemberInstance.QiPiaoGuaQ(item, out BetResultInfo info, qtype);
-                        ShowInfoMsg($"会员1{b}# {item.ToString()}");
+                        ShowInfoMsg($"会员1{b}# {item.ToString()}#赔率{item.Odds}");
 
                         if (!b)
                         {
@@ -1104,7 +1107,7 @@ namespace GuaDan
                             };
                             AddBetFail(binfo, info.StrAnswer);
                         };
-                        ShowInfoMsg($"会员2{b}# {item.ToString()}");
+                        ShowInfoMsg($"会员2{b}# {item.ToString()}#赔率{item.Odds}");
                         return b;
                     });
                     lstTask.Add(t);
@@ -1250,7 +1253,7 @@ namespace GuaDan
                             playtype = item.playtype.Equals("吃") ? "赌" : "吃";
                         }
                         piao = Math.Abs(gap) >= 10 ? Math.Abs(gap) : 10;
-                        DoBetQ(item.horse, member, playtype, piao, 2);
+                        DoBetQ(item.horse, member, playtype, piao,pei.ToString() ,2);
                     }
                     else
                     {
@@ -1289,7 +1292,7 @@ namespace GuaDan
                                 playtype = item.playtype.Equals("吃") ? "赌" : "吃";
                             }
                             piao = Util.Closeto5(Math.Abs(gap));
-                            DoBetW(item.horse, member, playtype, piao, 2);
+                            DoBetW(item.horse, member, playtype, piao, pei.ToString(),2);
                         }
                         else
                         {
@@ -1333,7 +1336,7 @@ namespace GuaDan
                                 playtype = item.playtype.Equals("吃") ? "赌" : "吃";
                             }
                             piao = Util.Closeto5(Math.Abs(gap));
-                            DoBetP(item.horse, member, playtype, piao, 2);
+                            DoBetP(item.horse, member, playtype, piao,pei.ToString(), 2);
                         }
                         else
                         {
@@ -1494,7 +1497,7 @@ namespace GuaDan
                             //Q
                             if (win.Equals("Q"))
                             {
-                                DoBetQ(horse, member, playtype, iplace, 2);
+                                DoBetQ(horse, member, playtype, iplace, "",2);
                             }
                             else
                             {
@@ -1504,11 +1507,11 @@ namespace GuaDan
                                 }
                                 else if (iwin == 0)
                                 {
-                                    DoBetP(horse, member, playtype, iplace, 2);
+                                    DoBetP(horse, member, playtype, iplace,"", 2);
                                 }
                                 else
                                 {
-                                    DoBetW(horse, member, playtype, iwin, 2);
+                                    DoBetW(horse, member, playtype, iwin,"", 2);
                                 }
                             }
                         }
@@ -1580,20 +1583,20 @@ namespace GuaDan
             string member = cc.Equals(CCmemberInstance) ? "1" : "2";
             if(dicQodds!=null && dicQodds["Q"] != null)
             {
-                ShowInfoMsg($"会员{member}获取Q赔率成功");
+                ShowInfoMsg($"会员{member}获取{Config.MatchCombol},第{Config.Race}场Q赔率成功");
             }
             else
             {
-                ShowInfoMsg($"会员{member}获取Q赔率失败");
+                ShowInfoMsg($"会员{member}获取{Config.MatchCombol},第{Config.Race}场Q赔率失败");
             }
 
             if(dicWpOdds!=null && dicWpOdds.Count>0)
             {
-                ShowInfoMsg($"会员{member}获取WP赔率成功");
+                ShowInfoMsg($"会员{member}获取{Config.MatchCombol},第{Config.Race}场WP赔率成功");
             }
             else
             {
-                ShowInfoMsg($"会员{member}获取WP赔率失败");
+                ShowInfoMsg($"会员{member}获取{Config.MatchCombol},第{Config.Race}场WP赔率失败");
             }
         }
 
