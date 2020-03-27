@@ -1849,6 +1849,7 @@
             // 
             // dgvBetResult
             // 
+            this.dgvBetResult.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dgvBetResult.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvBetResult.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.time,
@@ -1872,49 +1873,49 @@
             this.time.HeaderText = "时间";
             this.time.MinimumWidth = 6;
             this.time.Name = "time";
-            this.time.Width = 125;
+            this.time.Width = 62;
             // 
             // match
             // 
             this.match.HeaderText = "赛事";
             this.match.MinimumWidth = 6;
             this.match.Name = "match";
-            this.match.Width = 125;
+            this.match.Width = 62;
             // 
             // race
             // 
             this.race.HeaderText = "场次";
             this.race.MinimumWidth = 6;
             this.race.Name = "race";
-            this.race.Width = 125;
+            this.race.Width = 62;
             // 
             // horsen
             // 
             this.horsen.HeaderText = "马";
             this.horsen.MinimumWidth = 6;
             this.horsen.Name = "horsen";
-            this.horsen.Width = 125;
+            this.horsen.Width = 49;
             // 
             // bettype
             // 
             this.bettype.HeaderText = "类型";
             this.bettype.MinimumWidth = 6;
             this.bettype.Name = "bettype";
-            this.bettype.Width = 125;
+            this.bettype.Width = 62;
             // 
             // playtype2
             // 
             this.playtype2.HeaderText = "吃/赌";
             this.playtype2.MinimumWidth = 6;
             this.playtype2.Name = "playtype2";
-            this.playtype2.Width = 125;
+            this.playtype2.Width = 69;
             // 
             // reason
             // 
             this.reason.HeaderText = "原因";
             this.reason.MinimumWidth = 6;
             this.reason.Name = "reason";
-            this.reason.Width = 125;
+            this.reason.Width = 62;
             // 
             // FrmGuaDan
             // 
