@@ -4,7 +4,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
@@ -86,7 +88,7 @@ namespace GuaDan
         #endregion
         public CookieContainer cc = new CookieContainer();
 
-        public GdConfig Config
+        public GtConfig Config
         {
             get;
             set;
@@ -163,6 +165,61 @@ namespace GuaDan
                 return ht;
             }
         }
+        private string Request_www_ctbwp_com(string cDoMain, string code, CookieContainer cc)
+        {
+
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"https://{cDoMain}/verifypin");
+
+                request.KeepAlive = true;
+                request.Headers.Set(HttpRequestHeader.CacheControl, "max-age=0");
+                request.Headers.Add("sec-ch-ua", @"""Google Chrome"";v=""119"", ""Chromium"";v=""119"", ""Not?A_Brand"";v=""24""");
+                request.Headers.Add("sec-ch-ua-mobile", @"?0");
+                request.Headers.Add("sec-ch-ua-platform", @"""Windows""");
+                request.Headers.Add("Upgrade-Insecure-Requests", @"1");
+                request.Headers.Add("Origin", $"https://{cDoMain}");
+                request.ContentType = "application/x-www-form-urlencoded";
+                request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36";
+                request.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7";
+                request.Headers.Add("Sec-Fetch-Site", @"same-origin");
+                request.Headers.Add("Sec-Fetch-Mode", @"navigate");
+                request.Headers.Add("Sec-Fetch-User", @"?1");
+                request.Headers.Add("Sec-Fetch-Dest", @"document");
+                request.Referer = $"https://{cDoMain}/validate_pin.jsp";
+                request.Headers.Set(HttpRequestHeader.AcceptEncoding, "gzip, deflate, br");
+                request.Headers.Set(HttpRequestHeader.AcceptLanguage, "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7");
+
+                request.CookieContainer = cc;
+                request.Method = "POST";
+                request.ServicePoint.Expect100Continue = false;
+
+                string body = $"code={code}&trafficStatistics=3948524944&trafficStatisticsCanvas=2080537705&trafficStatisticsActivex=3948524944&trafficStatisticsResolution=2809515294&trafficStatistics2=87978939256ea25538911da4e0cc9113";
+                byte[] postBytes = System.Text.Encoding.UTF8.GetBytes(body);
+                request.ContentLength = postBytes.Length;
+                Stream stream = request.GetRequestStream();
+                stream.Write(postBytes, 0, postBytes.Length);
+                stream.Close();
+
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Stream responseStream = response.GetResponseStream();
+                string str = null;
+                StreamReader reader = new StreamReader(responseStream, Encoding.GetEncoding("gb2312"));
+                str = reader.ReadToEnd();
+                reader.Close();
+
+
+                responseStream.Close();
+                response.Close();
+                return str;
+
+            }
+            catch (WebException e)
+            {
+                return null;
+            }
+        }
+
         public Hashtable DoLogin(CookieContainer cc, string cDoMain, UserInfo uInfo, string vCode, string cLoginData)
         {
             AccountInfo = uInfo;
@@ -175,15 +232,17 @@ namespace GuaDan
                 string secureItem = item.Replace("\"", "").Replace(".", "");
                 string securepre = secureItem;
                 string tmpurl = cDoMain.Substring(cDoMain.IndexOf("."));
-                string secureUrl = string.Format("http://{0}{1}", securepre, tmpurl);
+                string secureUrl = string.Format("https://{0}{1}", securepre, tmpurl);
                 string cLoginData2 = "uid2=&pass2=&code2=&uid={0}&pass={1}&code={2}&valid={3}&lang=CH";
                 string pwd = (string)Util.GetCitiPwd(cLoginData, vCode, uInfo.CUserName, uInfo.CPassword);
                 cLoginData = string.Format(cLoginData2, uInfo.CUserName, pwd, vCode, cLoginData);
                 //string cUrl = "https://secure.citibet.net/login";
-                string cUrl = string.Format("{0}/login", secureUrl);
+                string cUrl = string.Format("{0}/login?uid={1}&pass={2}&code={3}&lang=CH&ssl=https:", secureUrl, uInfo.CUserName, pwd, vCode);
                 string refer = "http://{0}/_index.jsp";
                 string refer2 = string.Format(refer, cDoMain);
-                string cDoc = Connect.postDocument(cUrl, cLoginData, cc, null, refer2, "utf-8");
+
+                //string cDoc = Connect.postDocument(cUrl, cLoginData, cc, null, refer2, "utf-8");
+                string cDoc = Connect.getDocument(cUrl, cc, refer2, "utf-8");
                 if (cDoc != null)
                 {
                     if (cDoc.Contains("login.jsp?e=5&s=true"))
@@ -196,91 +255,67 @@ namespace GuaDan
                     }
                     else
                     {
-                        if (cDoc.IndexOf("location =") > 0)
+                        if (cDoc != null)
                         {
-                            refer = cUrl;
-                            string tmp = cDoc.Substring(cDoc.IndexOf("location =")).Replace("location =", "").Replace(";</script>", "").Replace("'", "").Replace("+", "").Replace(" ", "");
-                            Uri secureUri = new Uri(tmp);
-                            //cUrl = "https://secure.citibet.net/validate_pin.jsp";
-                            cUrl = tmp;
-                            //cDoc = Connect.getDocument(cUrl, cc, refer, "utf-8");
+                            cUrl = string.Format("https://{0}/validate_pin.jsp?sml=m", cDoMain);
+                            cDoc = Connect.getDocument(cUrl, cc, cUrl, "utf-8");
                             if (cDoc != null)
                             {
-                                refer = cUrl;
-                                //cUrl = "https://securemx3.citibet.net/validate_pin.jsp?sml=m";
-                                cUrl = string.Format("http://{0}/validate_pin.jsp?sml=m", secureUri.Authority);
-                                cDoc = Connect.getDocument(cUrl, cc, refer, "utf-8");
-                                if (cDoc != null)
+                                Regex re = new Regex(@"r1='(?'r1'[^']+)'", RegexOptions.None);
+                                Match mc = re.Match(cDoc);
+                                if (mc.Success)
                                 {
-                                    Regex re = new Regex(@"r1='(?'r1'[^']+)'", RegexOptions.None);
-                                    Match mc = re.Match(cDoc);
+                                    string r1 = mc.Groups["r1"].Value;
+                                    re = new Regex(@"r2='(?'r2'[^']+)'", RegexOptions.None);
+                                    mc = re.Match(cDoc);
                                     if (mc.Success)
                                     {
-                                        string r1 = mc.Groups["r1"].Value;
-                                        re = new Regex(@"r2='(?'r2'[^']+)'", RegexOptions.None);
-                                        mc = re.Match(cDoc);
-                                        if (mc.Success)
+                                        string r2 = mc.Groups["r2"].Value;
+                                        string pin = (string)Util.GetCitiPin(r1, r2, uInfo.CUserName, uInfo.CPin);
+                                        cUrl = string.Format("https://{0}/verifypin", cDoMain);
+                                        cDoc = Request_www_ctbwp_com(cDoMain, pin, cc);
+                                        if (cDoc != null)
                                         {
-                                            string r2 = mc.Groups["r2"].Value;
-                                            string pin = (string)Util.GetCitiPin(r1, r2, uInfo.CUserName, uInfo.CPin);
-                                            refer = cUrl;
-                                            //cUrl = "https://securemx3.citibet.net/verifypin";
-                                            cUrl = string.Format("http://{0}/verifypin", secureUri.Authority);
-                                            string code = "code={0}";
-                                            code = string.Format(code, pin);
-                                            cDoc = Connect.postDocument(cUrl, code, cc, null, refer, "utf-8");
-                                            if (cDoc != null)
+                                            if (cDoc.Contains("validate_pin.jsp"))
                                             {
-                                                if (cDoc.Contains("validate_pin.jsp"))
+                                                OnShowMsg("二代密保错误");
+                                            }
+                                            else
+                                            {
+                                                //cUrl = " https://racing.citibet.net/terms.jsp";
+                                                refer = cUrl;
+                                                cUrl = string.Format("https://{0}{1}/terms.jsp", securepre, tmpurl);
+                                                cDoc = Connect.getDocument(cUrl, cc, refer, "utf-8");
+                                                //if (cDoc != null && cDoc.Contains("639052209421"))
+                                                if (cDoc != null)
                                                 {
-                                                    OnShowMsg("二代密保错误");
-                                                }
-                                                else
-                                                {
+                                                    //https://kimercs.citibet.net/select.jsp?mode=hk
                                                     refer = cUrl;
-                                                    //"http://secure.ctb988.net/dispatch.jsp"
-                                                    cUrl = string.Format("http://{0}{1}/dispatch.jsp", securepre, tmpurl);
+                                                    //cUrl = "https://{0}/select.jsp?mode=hk";
+                                                    cUrl = string.Format("https://{0}/playerhk.jsp", cDoMain);
                                                     cDoc = Connect.getDocument(cUrl, cc, refer, "utf-8");
-                                                    if (cDoc != null)
+
+                                                    if (cDoc != null && cDoc.Contains("即将开始"))
                                                     {
-                                                        //cUrl = " http://racing.citibet.net/terms.jsp";
+                                                        dtMatchList = ParseMatchList(cDoc);
                                                         refer = cUrl;
-                                                        cUrl = string.Format("http://{0}{1}/terms.jsp", securepre, tmpurl);
+
+                                                        cUrl = string.Format("https://{0}/imagecontroller?action=1&x=0.9125365756917745", cDoMain);
                                                         cDoc = Connect.getDocument(cUrl, cc, refer, "utf-8");
-                                                        //if (cDoc != null && cDoc.Contains("639052209421"))
-                                                        if (cDoc != null)
-                                                        {
-                                                            //http://kimercs.citibet.net/select.jsp?mode=hk
-                                                            refer = cUrl;
-                                                            //cUrl = "http://{0}/select.jsp?mode=hk";
-                                                            cUrl = string.Format("http://{0}{1}/playerhk.jsp", "web", tmpurl);
-                                                            cDoc = Connect.getDocument(cUrl, cc, refer, "utf-8");
-                                                            //cUrl = "http://racing.citibet.net/citibethk.jsp";
-                                                            //cUrl = string.Format("http://data{0}/citibethk.jsp", tmpurl);
-                                                            //cDoc = Connect.getDocument(cUrl, cc, null, "utf-8");
-                                                            if (cDoc != null && cDoc.Contains("即将开始"))
-                                                            {
-                                                                dtMatchList = ParseMatchList(cDoc);
-                                                                refer = cUrl;
-                                                                //http://{0}/imagecontroller?action=1&x=0.9125365756917745
-                                                                cUrl = string.Format("http://{0}{1}/imagecontroller?action=1&x=0.9125365756917745", securepre, tmpurl);
-                                                                cDoc = Connect.getDocument(cUrl, cc, refer, "utf-8");
-                                                                string tmp3 = cDoc.Substring(cDoc.IndexOf("(["));
-                                                                tmp3 = tmp3.Substring(0, tmp3.IndexOf("])"));
-                                                                tmp3 = tmp3.Replace("([", "").Replace("])", "").Replace("\"", "");
+                                                        string tmp3 = cDoc.Substring(cDoc.IndexOf("(["));
+                                                        tmp3 = tmp3.Substring(0, tmp3.IndexOf("])"));
+                                                        tmp3 = tmp3.Replace("([", "").Replace("])", "").Replace("\"", "");
 
-                                                                Uri uri = new Uri(cUrl);
-                                                                string host = uri.Host;
-                                                                DoMain = host;
-                                                                Hashtable ht = new Hashtable();
-                                                                ht.Add(1, true);
-                                                                ht.Add(2, host);
-                                                                ht.Add(3, tmp3);
-                                                                ht.Add(4, dtMatchList);
+                                                        Uri uri = new Uri(cUrl);
+                                                        string host = uri.Host;
+                                                        DoMain = host;
+                                                        Hashtable ht = new Hashtable();
+                                                        ht.Add(1, true);
+                                                        ht.Add(2, host);
+                                                        ht.Add(3, tmp3);
+                                                        ht.Add(4, dtMatchList);
 
-                                                                return ht;
-                                                            }
-                                                        }
+                                                        return ht;
                                                     }
                                                 }
                                             }
@@ -350,6 +385,10 @@ namespace GuaDan
                                         //{
                                         //    continue;
                                         //}
+                                        if (type.ToUpper().Trim() == "FC" || type.ToUpper().Trim() == "Q")
+                                        {
+                                            continue;
+                                        }
                                         DataRow dr = dt.NewRow();
 
                                         dr["tip"] = string.Format("{0}_{1}_{2}_{3}_{4}_{5}", country, location, type, race, url, date2.ToShortDateString());
@@ -479,7 +518,7 @@ namespace GuaDan
 
         public Hashtable GetvCode(CookieContainer cc, string cDoMain)
         {
-            string cUrl = string.Format("http://{0}/", cDoMain);
+            string cUrl = string.Format("https://{0}/", cDoMain);
             string refer = string.Empty;
             string cDoc = Connect.getDocument(cUrl, cc, null, "utf-8");
             string valid = string.Empty;
@@ -497,7 +536,7 @@ namespace GuaDan
                 {
                     string ext = mc.Groups["ext"].Value;
                     refer = cUrl;
-                    cUrl = string.Format("http://{0}/{1}", cDoMain, ext);
+                    cUrl = string.Format("https://{0}/{1}", cDoMain, ext);
                     cDoc = Connect.getDocument(cUrl, cc, refer, "utf-8");
                     if (cDoc != null && cDoc.Contains("_index.jsp"))
                     {
@@ -518,7 +557,7 @@ namespace GuaDan
 
 
                             refer = cUrl;
-                            cUrl = "http://{0}/img.jpg?{1}";
+                            cUrl = "https://{0}/img.jpg?{1}";
                             cUrl = string.Format(cUrl, cDoMain, DateTime.Now.Millisecond);
                             cDoc = Connect.getPic(cUrl, cc, cUrl, null, cPath);
                             CheckForbidAccess(cDoc);
@@ -620,7 +659,7 @@ namespace GuaDan
             {
                 if (IsLogin)
                 {
-                    string cUrl = string.Format("http://{0}/playerhk.jsp", DoMain);
+                    string cUrl = string.Format("https://{0}/playerhk.jsp", DoMain);
                     string str = Connect.getDocument(cUrl, cc, null, "utf-8");
                     CheckLogout(str);
                 }
@@ -655,8 +694,8 @@ namespace GuaDan
         public MemberInfo GetAccountInfo()
         {
             MemberInfo info = new MemberInfo();
-            //http://cqfexhv.ctb988.net/acc_profile_overview.jsp
-            string url = $"http://{DoMain}/acc_profile_overview.jsp";
+            //https://cqfexhv.ctb988.net/acc_profile_overview.jsp
+            string url = $"https://{DoMain}/acc_profile_overview.jsp";
             string str = Connect.getDocument(url, cc, "", "utf-8");
             CheckLogout(str);
             if (!string.IsNullOrEmpty(str))
@@ -745,9 +784,9 @@ namespace GuaDan
                     string[] tmp = tip.Split("_".ToCharArray());
                     string date = tmp[5];
                     string[] tmp2 = date.Split("//".ToCharArray());
-                    _year = tmp2[0];
-                    _mon = tmp2[1];
-                    _date = tmp2[2];
+                    _mon = tmp2[0];
+                    _date = tmp2[1];
+                    _year = tmp2[2];
 
                     _mon = _mon.PadLeft(2, '0');
                     //日是两位
@@ -874,7 +913,7 @@ namespace GuaDan
         {
             List<int> lst = new List<int>();
             string _now = GetNow(strMatch);
-            string url = $"http://{DoMain}/playerhk.jsp?race_type={strMatch}&race_date={_now}&tab=c&sml=s";
+            string url = $"https://{DoMain}/playerhk.jsp?race_type={strMatch}&race_date={_now}&tab=c&sml=s";
             string doc = Connect.getDocument(url, cc, url, "utf-8");
             CheckLogout(doc);
             if (doc != null)
@@ -1334,6 +1373,12 @@ namespace GuaDan
         #endregion
 
         #region 获取进单情况
+        public RaceInfoEnity GetRaceInfo()
+        {
+            bool isempty;
+            RaceInfoEnity htRace = GetRaceInfo(AccountInfo.CUserName, out isempty);
+            return htRace;
+        }
         public RaceInfoEnity GetRaceInfo(string uid, out bool isempty)
         {
             RaceInfoEnity raceinfo = new RaceInfoEnity();
@@ -1342,10 +1387,10 @@ namespace GuaDan
             isempty = true;
             if (IsLogin)
             {
-                //http://web.ctb988.com/history.jsp?uid=aabc1
+                //https://web.ctb988.com/history.jsp?uid=aabc1
                 string domain = GetWebPrefixUrl();
-                string url = $"http://{domain}/history.jsp?uid={uid}";
-                //string refer = $"http://{DoMain}/pt_main3.jsp";
+                //string url = $"https://{domain}/history.jsp?uid={uid}";
+                string url = $"https://{DoMain}/new_history_live.jsp";
                 string str = Connect.getDocument(url, cc, "", "utf-8");
                 CheckLogout(str);
                 if (!string.IsNullOrEmpty(str))
@@ -1394,8 +1439,8 @@ namespace GuaDan
         /*
         public Hashtable GetNewBetInfo()
         {
-            //http://web.ctb988.com/new_history_live.jsp?uid=abbb6
-            string url = $"http://{DoMain}/new_history_live.jsp?uid={AccountInfo.CUserName}";
+            //https://web.ctb988.com/new_history_live.jsp?uid=abbb6
+            string url = $"https://{DoMain}/new_history_live.jsp?uid={AccountInfo.CUserName}";
             string str = Connect.getDocument(url, cc, null, "utf-8");
             CheckLogout(str);
             return ParseWPPopup(str);
@@ -1466,8 +1511,8 @@ namespace GuaDan
         /// <returns></returns>
         public object[] GetBetInfo(out string betInfo)
         {
-            string url = $"http://{DoMain}/datastore?q=n&l=x&race_date={GetNow(Config.MatchUrl)}&race_type={Config.MatchUrl}&rc={Config.Race}&x={new Random().NextDouble()}6&tnum=4&txnrnd={new Random().NextDouble()}";
-            string refer = $"http://{DoMain}/citibethk.jsp?race_type={Config.MatchUrl}&race_date={GetNow(Config.MatchUrl)}&tab=u&sml=s";
+            string url = $"https://{DoMain}/datastore?q=n&l=x&race_date={GetNow(Config.MatchUrl)}&race_type={Config.MatchUrl}&rc={Config.Race}&x={new Random().NextDouble()}6&tnum=4&txnrnd={new Random().NextDouble()}";
+            string refer = $"https://{DoMain}/citibethk.jsp?race_type={Config.MatchUrl}&race_date={GetNow(Config.MatchUrl)}&tab=u&sml=s";
             string str = Connect.getDocument(url, cc, refer, "utf-8");
             CheckLogout(str);
             betInfo = str;
@@ -1618,9 +1663,9 @@ namespace GuaDan
         public MatchTimeInfo GetRaceLastTime(string strMatch, string strRace)
         {
             string _now = GetNow();
-            //string cUrl = "http://kihtjkk.citibet.net/datastore?race_date=22-12-2012&race_type=9U&rc=2&x=0.4857978920917958&tnum=1&txnrnd=0.9773911167867482";
-            string url = $"http://{DoMain}/datastore?race_date={_now}&race_type={strMatch}&rc={strRace}&x=0.{new Random().Next(100000, 999999)}&tnum=1&txnrnd=0.{new Random().Next(100000, 999999)}";
-            string refer = $"http://{DoMain}/";
+            //string cUrl = "https://kihtjkk.citibet.net/datastore?race_date=22-12-2012&race_type=9U&rc=2&x=0.4857978920917958&tnum=1&txnrnd=0.9773911167867482";
+            string url = $"https://{DoMain}/datastore?race_date={_now}&race_type={strMatch}&rc={strRace}&x=0.{new Random().Next(100000, 999999)}&tnum=1&txnrnd=0.{new Random().Next(100000, 999999)}";
+            string refer = $"https://{DoMain}/";
             string str = Connect.getDocument(url, cc, refer, "utf-8");
             CheckLogout(str);
             return ParseLastTime(str);
@@ -1698,9 +1743,9 @@ namespace GuaDan
         {
             List<RaceInfoItem> lstRace = new List<RaceInfoItem>();
             string _now = GetNow();
-            string url = $"http://{DoMain}/qdata?q={type}&race_date={_now}&race_type={strMatch}&rc={strRace}&m=HK&c=3";
-            //string refer = "http://data.citibet.net/betdata?race_date=18-08-2012&race_type=60A&rc=10&m=HK&c=3";
-            string refer = $"http://{DoMain}/betdata?race_date={_now}&race_type={strMatch}&rc={strRace}&m=HK&c=3";
+            string url = $"https://{DoMain}/qdata?q={type}&race_date={_now}&race_type={strMatch}&rc={strRace}&m=HK&c=3";
+            //string refer = "https://data.citibet.net/betdata?race_date=18-08-2012&race_type=60A&rc=10&m=HK&c=3";
+            string refer = $"https://{DoMain}/betdata?race_date={_now}&race_type={strMatch}&rc={strRace}&m=HK&c=3";
             string str = Connect.getDocument(url, cc, refer, "utf-8");
             CheckLogout(str);
             lstRace = ParseGetData(str, strMatch, type);
@@ -1779,11 +1824,11 @@ namespace GuaDan
                 Random ron = new Random();
                 int ser = ron.Next(100000000, 999999999);
                 string rd = string.Format("0.{0}", ser);
-                //string url = "http://cvyorfp.citibet.net/bookings?t=frm&race=11&horse=7&win=5&place=5&amount=76&l_win=110&l_place=30&race_type=63A&race_date=17-08-2012&show=11&post=1&rd=0.9929689666416468";
-                //string url = "http://{0}/bookings?t=frm&race={1}&horse={2}&win={3}&place={4}&amount={5}&l_win={6}&l_place={7}&race_type={8}&race_date={9}&lu=0&show={10}&post={11}&rd={12}";
+                //string url = "https://cvyorfp.citibet.net/bookings?t=frm&race=11&horse=7&win=5&place=5&amount=76&l_win=110&l_place=30&race_type=63A&race_date=17-08-2012&show=11&post=1&rd=0.9929689666416468";
+                //string url = "https://{0}/bookings?t=frm&race={1}&horse={2}&win={3}&place={4}&amount={5}&l_win={6}&l_place={7}&race_type={8}&race_date={9}&lu=0&show={10}&post={11}&rd={12}";
 
-                string url = $"http://{DoMain}/bookings?t=frm&race={item.Race}&horse={item.Horse}&win={item.Win}&place={item.Place}&amount={item.Zhe}&l_win={item.LWin}&l_place={item.LPlace}&race_type={item.Url}&race_date={item.Date}&lu=1&show={item.Race}&post=1&rd={rd}";
-                string refer = $"http://{DoMain}/citibethk.jsp?race_type={item.Url}&race_date={item.Date}&tab=u&sml=s";
+                string url = $"https://{DoMain}/bookings?t=frm&race={item.Race}&horse={item.Horse}&win={item.Win}&place={item.Place}&amount={item.Zhe}&l_win={item.LWin}&l_place={item.LPlace}&race_type={item.Url}&race_date={item.Date}&lu=1&show={item.Race}&post=1&rd={rd}";
+                string refer = $"https://{DoMain}/citibethk.jsp?race_type={item.Url}&race_date={item.Date}&tab=u&sml=s";
 
                 BetItem betItem = new BetItem();
                 betItem.StrRace = item.Race;
@@ -1846,11 +1891,11 @@ namespace GuaDan
                 Random ron = new Random();
                 int ser = ron.Next(100000000, 999999999);
                 string rd = string.Format("0.{0}", ser);
-                //string url = "http://cvyorfp.citibet.net/bookings?t=frm&race=11&horse=7&win=5&place=5&amount=76&l_win=110&l_place=30&race_type=63A&race_date=17-08-2012&show=11&post=1&rd=0.9929689666416468";
-                //string url = "http://{0}/bookings?t=frm&race={1}&horse={2}&win={3}&place={4}&amount={5}&l_win={6}&l_place={7}&race_type={8}&race_date={9}&lu=0&show={10}&post={11}&rd={12}";
+                //string url = "https://cvyorfp.citibet.net/bookings?t=frm&race=11&horse=7&win=5&place=5&amount=76&l_win=110&l_place=30&race_type=63A&race_date=17-08-2012&show=11&post=1&rd=0.9929689666416468";
+                //string url = "https://{0}/bookings?t=frm&race={1}&horse={2}&win={3}&place={4}&amount={5}&l_win={6}&l_place={7}&race_type={8}&race_date={9}&lu=0&show={10}&post={11}&rd={12}";
 
-                string url = $"http://{DoMain}/bookings?t=frm&race={item.Race}&horse={item.Horse}&win={item.Win}&place={item.Place}&amount={item.Zhe}&l_win={item.LWin}&l_place={item.LPlace}&race_type={item.Url}&race_date={item.Date}&lu=0&show={item.Race}&post=1&rd={rd}";
-                string refer = $"http://{DoMain}/citibethk.jsp?race_type={item.Url}&race_date={item.Date}&tab=u&sml=s";
+                string url = $"https://{DoMain}/bookings?t=frm&race={item.Race}&horse={item.Horse}&win={item.Win}&place={item.Place}&amount={item.Zhe}&l_win={item.LWin}&l_place={item.LPlace}&race_type={item.Url}&race_date={item.Date}&lu=0&show={item.Race}&post=1&rd={rd}";
+                string refer = $"https://{DoMain}/citibethk.jsp?race_type={item.Url}&race_date={item.Date}&tab=u&sml=s";
 
                 BetItem betItem = new BetItem();
                 betItem.StrRace = item.Race;
@@ -1915,9 +1960,9 @@ namespace GuaDan
                 string rd = string.Format("0.{0}", ser);
 
 
-                //string url = "http://cvyorfp.citibet.net/bets?t=frm&race=11&horse=2&win=5&place=5&amount=76&l_win=60&l_place=30&race_type=63A&race_date=17-08-2012&show=11&post=1&rd=0.11408325472378111";
-                string url = $"http://{DoMain}/bets?t=frm&race={item.Race}&horse={item.Horse}&win={item.Win}&place={item.Place}&amount={item.Zhe}&l_win={item.LWin}&l_place={item.LPlace}&race_type={item.Url}&race_date={item.Date}&lu=0&show={10}&post=1&rd={rd}";
-                string refer = $"http://{DoMain}/citibethk.jsp?race_type={item.Url}&race_date={item.Date}&tab=u&sml=s";
+                //string url = "https://cvyorfp.citibet.net/bets?t=frm&race=11&horse=2&win=5&place=5&amount=76&l_win=60&l_place=30&race_type=63A&race_date=17-08-2012&show=11&post=1&rd=0.11408325472378111";
+                string url = $"https://{DoMain}/bets?t=frm&race={item.Race}&horse={item.Horse}&win={item.Win}&place={item.Place}&amount={item.Zhe}&l_win={item.LWin}&l_place={item.LPlace}&race_type={item.Url}&race_date={item.Date}&lu=0&show={10}&post=1&rd={rd}";
+                string refer = $"https://{DoMain}/citibethk.jsp?race_type={item.Url}&race_date={item.Date}&tab=u&sml=s";
 
                 BetItem betItem = new BetItem();
                 betItem.StrRace = item.Race;
@@ -2031,9 +2076,9 @@ namespace GuaDan
                 }
                 betItem.StrDiscount = amount.ToString();
 
-                string url = $"http://{DoMain}/forecast?task=betBox&combo={combo}&Tix={tix}&Race={item.Race}&Hss={Hss}&fctype={fctype}&Q=Q&type={type}&overflow=1&amount={amount}&fclmt={fclmt}&race_type={item.Url}&race_date={item.Date}&show={item.Race}&rd={rd}";
-                //string refer = "http://cvyorfp.citibet.net/citibethk.jsp?race_type=63A&race_date=17-08-2012&tab=u&sml=s";
-                string refer = $"http://{DoMain}/citibethk.jsp?race_type={item.Url}&race_date={item.Date}&tab=u&sml=s";
+                string url = $"https://{DoMain}/forecast?task=betBox&combo={combo}&Tix={tix}&Race={item.Race}&Hss={Hss}&fctype={fctype}&Q=Q&type={type}&overflow=1&amount={amount}&fclmt={fclmt}&race_type={item.Url}&race_date={item.Date}&show={item.Race}&rd={rd}";
+                //string refer = "https://cvyorfp.citibet.net/citibethk.jsp?race_type=63A&race_date=17-08-2012&tab=u&sml=s";
+                string refer = $"https://{DoMain}/citibethk.jsp?race_type={item.Url}&race_date={item.Date}&tab=u&sml=s";
 
 
                 info.ObjBetItem = betItem;
@@ -2082,7 +2127,7 @@ namespace GuaDan
             bool bRet = false;
             if (!string.IsNullOrEmpty(strBetinfo))
             {
-                Regex re = new Regex(@"\[DA#mr\('(?'bid'\d+),(?'x'\d+),\w+,(?'race_date'\d+-\d+-\d+),(?'race_type'\w+),(?'race'\d+)'\)#Rc \d+#FC/P/Q EAT BET pending\]", RegexOptions.None);
+                Regex re = new Regex(@"\[DA#mr\('(?'bid'\d+),(?'x'\d+),\w+,(?'race_date'\d+-\d+-\d+),(?'race_type'\w+),(?'race'\d+)'\)#Rc \d+#FC/P/Q BET pending\]", RegexOptions.None);
                 Match mc = re.Match(strBetinfo);
                 string bid = "";
                 string x = "";
@@ -2097,8 +2142,8 @@ namespace GuaDan
                     race_type = mc.Groups["race_type"].Value;
                     race = mc.Groups["race"].Value;
 
-                    string url = $"http://{DoMain}/transactions?type=del&bid={bid}&x={x}&betType={race_type}&race_date={race_date}&race_type={race_type}&race={race}&show={race}&post=1&rd={new Random().NextDouble()}";
-                    string refer = $"http://{DoMain}/jsp/trans_mt.jsp?s=S";
+                    string url = $"https://{DoMain}/transactions?type=del&bid={bid}&x={x}&betType={race_type}&race_date={race_date}&race_type={race_type}&race={race}&show={race}&post=1&rd={new Random().NextDouble()}";
+                    string refer = $"https://{DoMain}/jsp/trans_mt.jsp?s=S";
                     string str = Connect.getDocument(url, cc, refer, "utf-8");
                     CheckLogout(str);
                     CheckUnableBet(str);
@@ -2116,7 +2161,7 @@ namespace GuaDan
             bool bRet = false;
             if (!string.IsNullOrEmpty(strBetinfo))
             {
-                Regex re = new Regex(@"\[DA#mr\('(?'bid'\d+),(?'x'\d+),\w+,(?'race_date'\d+-\d+-\d+),(?'race_type'\w+),(?'race'\d+)'\)#Rc \d+#FC/P/Q EAT EAT pending\]", RegexOptions.None);
+                Regex re = new Regex(@"\[DA#mr\('(?'bid'\d+),(?'x'\d+),\w+,(?'race_date'\d+-\d+-\d+),(?'race_type'\w+),(?'race'\d+)'\)#Rc \d+#FC/P/Q EAT pending\]", RegexOptions.None);
                 Match mc = re.Match(strBetinfo);
                 string bid = "";
                 string x = "";
@@ -2131,8 +2176,8 @@ namespace GuaDan
                     race_type = mc.Groups["race_type"].Value;
                     race = mc.Groups["race"].Value;
 
-                    string url = $"http://{DoMain}/transactions?type=del&bid={bid}&x={x}&betType={race_type}&race_date={race_date}&race_type={race_type}&race={race}&show={race}&post=1&rd={new Random().NextDouble()}";
-                    string refer = $"http://{DoMain}/jsp/trans_mt.jsp?s=S";
+                    string url = $"https://{DoMain}/transactions?type=del&bid={bid}&x={x}&betType={race_type}&race_date={race_date}&race_type={race_type}&race={race}&show={race}&post=1&rd={new Random().NextDouble()}";
+                    string refer = $"https://{DoMain}/jsp/trans_mt.jsp?s=S";
                     string str = Connect.getDocument(url, cc, refer, "utf-8");
                     CheckLogout(str);
                     CheckUnableBet(str);
@@ -2165,8 +2210,8 @@ namespace GuaDan
                     race_type = mc.Groups["race_type"].Value;
                     race = mc.Groups["race"].Value;
 
-                    string url = $"http://{DoMain}/transactions?type=del&bid={bid}&x={x}&betType={race_type}&race_date={race_date}&race_type={race_type}&race={race}&show={race}&post=1&rd={new Random().NextDouble()}";
-                    string refer = $"http://{DoMain}/jsp/trans_mt.jsp?s=S";
+                    string url = $"https://{DoMain}/transactions?type=del&bid={bid}&x={x}&betType={race_type}&race_date={race_date}&race_type={race_type}&race={race}&show={race}&post=1&rd={new Random().NextDouble()}";
+                    string refer = $"https://{DoMain}/jsp/trans_mt.jsp?s=S";
                     string str = Connect.getDocument(url, cc, refer, "utf-8");
                     CheckLogout(str);
                     CheckUnableBet(str);
@@ -2200,8 +2245,8 @@ namespace GuaDan
                     race_type = mc.Groups["race_type"].Value;
                     race = mc.Groups["race"].Value;
 
-                    string url = $"http://{DoMain}/transactions?type=del&bid={bid}&x={x}&betType={race_type}&race_date={race_date}&race_type={race_type}&race={race}&show={race}&post=1&rd={new Random().NextDouble()}";
-                    string refer = $"http://{DoMain}/jsp/trans_mt.jsp?s=S";
+                    string url = $"https://{DoMain}/transactions?type=del&bid={bid}&x={x}&betType={race_type}&race_date={race_date}&race_type={race_type}&race={race}&show={race}&post=1&rd={new Random().NextDouble()}";
+                    string refer = $"https://{DoMain}/jsp/trans_mt.jsp?s=S";
                     string str = Connect.getDocument(url, cc, refer, "utf-8");
                     CheckLogout(str);
                     CheckUnableBet(str);
@@ -2234,8 +2279,8 @@ namespace GuaDan
                     race_type = mc.Groups["race_type"].Value;
                     race = mc.Groups["race"].Value;
 
-                    string url = $"http://{DoMain}/transactions?type=del&bid={bid}&x={x}&betType={race_type}&race_date={race_date}&race_type={race_type}&race={race}&show={race}&post=1&rd={new Random().NextDouble()}";
-                    string refer = $"http://{DoMain}/jsp/trans_mt.jsp?s=S";
+                    string url = $"https://{DoMain}/transactions?type=del&bid={bid}&x={x}&betType={race_type}&race_date={race_date}&race_type={race_type}&race={race}&show={race}&post=1&rd={new Random().NextDouble()}";
+                    string refer = $"https://{DoMain}/jsp/trans_mt.jsp?s=S";
                     string str = Connect.getDocument(url, cc, refer, "utf-8");
                     CheckLogout(str);
                     CheckUnableBet(str);
@@ -2269,8 +2314,8 @@ namespace GuaDan
                     race_type = mc.Groups["race_type"].Value;
                     race = mc.Groups["race"].Value;
 
-                    string url = $"http://{DoMain}/transactions?type=del&bid={bid}&x={x}&betType={race_type}&race_date={race_date}&race_type={race_type}&race={race}&show={race}&post=1&rd={new Random().NextDouble()}";
-                    string refer = $"http://{DoMain}/jsp/trans_mt.jsp?s=S";
+                    string url = $"https://{DoMain}/transactions?type=del&bid={bid}&x={x}&betType={race_type}&race_date={race_date}&race_type={race_type}&race={race}&show={race}&post=1&rd={new Random().NextDouble()}";
+                    string refer = $"https://{DoMain}/jsp/trans_mt.jsp?s=S";
                     string str = Connect.getDocument(url, cc, refer, "utf-8");
                     CheckLogout(str);
                     CheckUnableBet(str);
@@ -2337,10 +2382,10 @@ namespace GuaDan
         public Dictionary<string, string[,]> GetPeiData14(RaceInfoItem item)
         {
             string _now = GetNow(item.Url);
-            //http://ksifvch.ctb988.com/totedata?race_date=28-08-2018&qMode=QQ&race_type=31A&rc=9&x=0.4302389970655378&rcs=8
-            string url = $"http://{DoMain}/totedata?race_date={_now}&qMode=QQ&race_type={item.Url}&rc={item.Race}&x=0.4302389970655378&rcs=8";
-            //string refer = "http://data.citibet.net/betdata?race_date=18-08-2012&race_type=60A&rc=10&m=HK&c=3";
-            string refer = $"http://{DoMain}/betdata?race_date={_now}&race_type={item.Url}&rc={item.Race}&m=HK&c=3";
+            //https://ksifvch.ctb988.com/totedata?race_date=28-08-2018&qMode=QQ&race_type=31A&rc=9&x=0.4302389970655378&rcs=8
+            string url = $"https://{DoMain}/totedata?race_date={_now}&qMode=QQ&race_type={item.Url}&rc={item.Race}&x=0.4302389970655378&rcs=8";
+            //string refer = "https://data.citibet.net/betdata?race_date=18-08-2012&race_type=60A&rc=10&m=HK&c=3";
+            string refer = $"https://{DoMain}/betdata?race_date={_now}&race_type={item.Url}&rc={item.Race}&m=HK&c=3";
             string str = Connect.getDocument(url, cc, refer, "utf-8");
             CheckLogout(str);
             Dictionary<string, string[,]> dicPei = new Dictionary<string, string[,]>();
@@ -2368,10 +2413,10 @@ namespace GuaDan
         public Dictionary<string, string[,]> GetPeiData24(RaceInfoItem item)
         {
             string _now = GetNow();
-            //http://data.ctb988.com/totedata?race_date=24-11-2019&oversea=hkoq&qMode=QQ&race_type=14H&rc=2&x=0.4270748651324312&rcs=2
-            string url = $"http://{DoMain}/totedata?race_date={_now}&oversea=hkoq&qMode=QQ&race_type={item.Url}&rc={item.Race}&x=0.4302389970655378&rcs=8";
-            //http://data.ctb988.com/HKOQ.jsp?race_date=24-11-2019&race=2&race_type=14H
-            string refer = $"http://{DoMain}/HKOQ.jsp?race_date={_now}&race={item.Race}&race_type={item.Url}";
+            //https://data.ctb988.com/totedata?race_date=24-11-2019&oversea=hkoq&qMode=QQ&race_type=14H&rc=2&x=0.4270748651324312&rcs=2
+            string url = $"https://{DoMain}/totedata?race_date={_now}&oversea=hkoq&qMode=QQ&race_type={item.Url}&rc={item.Race}&x=0.4302389970655378&rcs=8";
+            //https://data.ctb988.com/HKOQ.jsp?race_date=24-11-2019&race=2&race_type=14H
+            string refer = $"https://{DoMain}/HKOQ.jsp?race_date={_now}&race={item.Race}&race_type={item.Url}";
             string str = Connect.getDocument(url, cc, refer, "utf-8");
             CheckLogout(str);
             Dictionary<string, string[,]> dicPei = new Dictionary<string, string[,]>();
@@ -2396,8 +2441,8 @@ namespace GuaDan
         public Dictionary<string, WPOdds> GetWPPeiData(RaceInfoItem item)
         {
             string _now = GetNow(item.Url);
-            //http://cqfexhv.ctb988.net/totedata?race_date=15-02-2019&race_type=1S&rc=2&currRC=2&x=0.8111822838958027
-            string url = $"http://{DoMain}/totedata?race_date={_now}&race_type={item.Url}&rc={item.Race}&currRC={item.Race}&x={new Random().NextDouble()}";
+            //https://cqfexhv.ctb988.net/totedata?race_date=15-02-2019&race_type=1S&rc=2&currRC=2&x=0.8111822838958027
+            string url = $"https://{DoMain}/totedata?race_date={_now}&race_type={item.Url}&rc={item.Race}&currRC={item.Race}&x={new Random().NextDouble()}";
             string refer = url;
             string str = Connect.getDocument(url, cc, refer, "utf-8");
             CheckLogout(str);

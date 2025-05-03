@@ -57,7 +57,7 @@ namespace GuaDan
         UserInfo uInfo = new UserInfo();
         UserInfo uInfo2 = new UserInfo();
         private List<Task> lstTask = new List<Task>();
-        private GdConfig Config = new GdConfig();
+        private GtConfig Config = new GtConfig();
         /// <summary>
         /// 二次下单时的Q赔率
         /// </summary>
@@ -198,7 +198,7 @@ namespace GuaDan
         }
 
         #region Config
-        private void SaveConfig()
+        /* private void SaveConfig()
         {
             if (!string.IsNullOrEmpty(cobMatch.Text.Trim()))
             {
@@ -270,7 +270,43 @@ namespace GuaDan
                 bf.Serialize(fs, Config);
             }
         }
+        */
+        private void SaveConfig() {
 
+            if (!string.IsNullOrEmpty(cobMatch.Text.Trim()))
+            {
+                Config.MatchCombol = $"{cobMatch.Text.Trim()}|{cobMatch.SelectedValue.ToString().Trim()}";
+            }
+            if (cobMatch.SelectedValue != null)
+            {
+                Config.MatchUrl = cobMatch.SelectedValue.ToString();
+            }
+
+            Config.SiteUrl = txtUrl.Text.Trim();
+            Config.Accout = txtAccount.Text.Trim();
+            Config.Pwd = txtPwd.Text.Trim();
+            Config.Pin = txtPin.Text.Trim();
+            Config.Race = cobRace.Text.Trim();
+            Config.Accout2 = txtAccount2.Text.Trim();
+            Config.Pwd2 = txtPwd2.Text.Trim();
+            Config.Pin2 = txtPin2.Text.Trim();
+
+            Config.ZheQ =Util.Text2Double(txtZheQ.Text.Trim());
+            Config.LlimQ =Util.Text2Int(txtLlimQ.Text.Trim());
+            Config.RLimQ = Util.Text2Int(txtRlimQ.Text.Trim());
+
+            Config.ZheQp =Util.Text2Double(txtZheQp.Text.Trim());
+            Config.LlimQp =Util.Text2Int(txtLlimQp.Text.Trim());
+            Config.RLimQp =Util.Text2Int(txtRlimQp.Text.Trim());
+
+            Config.Gdz = Util.Text2Int(txtGdz.Text.Trim());
+            string file = string.Format(@"setting\{0}.jpg", "FrmEatZd");
+            using (FileStream fs = new FileStream(file, FileMode.Create))
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                bf.Serialize(fs, Config);
+            }
+        }
         private void LoadConfig()
         {
             string file = string.Format(@"setting\{0}.jpg", "FrmEatZd");
@@ -281,22 +317,22 @@ namespace GuaDan
                     using (FileStream fs = new FileStream(file, FileMode.Open))
                     {
                         BinaryFormatter bf = new BinaryFormatter();
-                        Config = bf.Deserialize(fs) as GdConfig;
+                        Config = bf.Deserialize(fs) as GtConfig;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Config = new GdConfig();
+                    Config = new GtConfig();
                 }
 
             }
             else
             {
-                Config = new GdConfig();
+                Config = new GtConfig();
             }
             SetConfig();
         }
-
+        /*
         private void SetConfig()
         {
             try
@@ -360,6 +396,36 @@ namespace GuaDan
                 radGp.Checked = Config.bGp;
             }
             catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        */
+        private void SetConfig()
+        {
+            try
+            {
+                txtUrl.Text = Config.SiteUrl;
+                txtAccount.Text = Config.Accout;
+                txtPwd.Text = Config.Pwd;
+                txtPin.Text = Config.Pin;
+                cobRace.Text = Config.Race;
+
+                txtAccount2.Text = Config.Accout2;
+                txtPwd2.Text = Config.Pwd2;
+                txtPin2.Text = Config.Pin2;
+
+                txtZheQ.Text = Config.ZheQ.ToString();
+                txtLlimQ.Text = Config.LlimQ.ToString();
+                txtRlimQ.Text = Config.RLimQ.ToString();
+
+                txtZheQp.Text = Config.ZheQp.ToString();
+                txtLlimQp.Text = Config.LlimQp.ToString();
+                txtRlimQp.Text = Config.RLimQp.ToString();
+
+                txtGdz.Text = Config.Gdz.ToString();
+            }
+            catch(Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
@@ -481,21 +547,21 @@ namespace GuaDan
                 string type = dgvDan.Rows[i].Cells[1].Value.ToString();
                 string member = dgvDan.Rows[i].Cells[2].Value.ToString();
                 string playtype = dgvDan.Rows[i].Cells[3].Value.ToString();
-                switch (type)
-                {
-                    case "Q":
-                        DoBetQ(horse, member, playtype, Config.Qgdps,"");
-                        break;
-                    case "WP":
-                        DoBetWP(horse, member, playtype, Config.WPgdps);
-                        break;
-                    case "W":
-                        DoBetW(horse, member, playtype, Config.Wgdps,"");
-                        break;
-                    case "P":
-                        DoBetP(horse, member, playtype, Config.Pgdps,"");
-                        break;
-                }
+            //    switch (type)
+            //    {
+            //        case "Q":
+            //            DoBetQ(horse, member, playtype, Config.Qgdps,"");
+            //            break;
+            //        case "WP":
+            //            DoBetWP(horse, member, playtype, Config.WPgdps);
+            //            break;
+            //        case "W":
+            //            DoBetW(horse, member, playtype, Config.Wgdps,"");
+            //            break;
+            //        case "P":
+            //            DoBetP(horse, member, playtype, Config.Pgdps,"");
+            //            break;
+            //    }
             }
             Task.WhenAll(lstTask).ContinueWith((t) =>
             {
@@ -541,6 +607,7 @@ namespace GuaDan
         }
         private void DoBetWbyZK(string horse, string member, string playtype, Dictionary<string, WPOdds> dicWpOdds,bool next = false)
         {
+            /*
             if (!string.IsNullOrEmpty(horse))
             {
                 string[] hs = horse.Split("_".ToCharArray());
@@ -587,11 +654,12 @@ namespace GuaDan
                     }
                 }
             }
-
+ */
         }
 
         private void DoBetPbyZK(string horse, string member, string playtype, Dictionary<string, WPOdds> dicWpOdds,bool next = false)
         {
+            /*
             if (!string.IsNullOrEmpty(horse))
             {
                 string[] hs = horse.Split("_".ToCharArray());
@@ -638,6 +706,7 @@ namespace GuaDan
                     }
                 }
             }
+           */
         }
         /// <summary>
         /// Q的做孔打法
@@ -647,6 +716,7 @@ namespace GuaDan
         /// <param name="playtype"></param>
         private void DoBetQbyZK(string horse, string member, string playtype,bool next = false)
         {
+            /*
             List<Tuple<int, int>> lstHorses = GetHorsePair(horse);
             foreach (var item in lstHorses)
             {
@@ -670,7 +740,7 @@ namespace GuaDan
                     AddBetFail(info, "赔率为0");
                 }
             }
-
+*/
         }
 
         /// <summary>
@@ -730,6 +800,7 @@ namespace GuaDan
         }
         private void DoBetQ(string horse, string member, string playtype, int amount,string odds, int times = 1)
         {
+            /*
             string qtype = horse.Contains("*") ? "1" : "0";
             RaceInfoItem item = new RaceInfoItem();
             item.Url = Config.MatchUrl;
@@ -765,9 +836,11 @@ namespace GuaDan
             item.Date = CCmemberInstance.GetNow(Config.MatchUrl);
 
             DoBetQ(member, item, qtype);
+            */
         }
         private void DoBetWP(string horse, string member, string playtype, int amount, int times = 1)
         {
+            /*
             if (!string.IsNullOrEmpty(horse))
             {
                 string[] hs = horse.Split("_".ToCharArray());
@@ -797,10 +870,12 @@ namespace GuaDan
 
                 }
             }
+            */
         }
 
         private void DoBetW(string horse, string member, string playtype, int amount,string odds, int times = 1)
         {
+            /*
             if (!string.IsNullOrEmpty(horse))
             {
                 string[] hs = horse.Split("_".ToCharArray());
@@ -835,10 +910,12 @@ namespace GuaDan
 
                 }
             }
+            */
         }
 
         private void DoBetP(string horse, string member, string playtype, int amount,string odds, int times = 1)
         {
+            /*
             if (!string.IsNullOrEmpty(horse))
             {
                 string[] hs = horse.Split("_".ToCharArray());
@@ -872,6 +949,7 @@ namespace GuaDan
                     }
                 }
             }
+            */
         }
 
 
@@ -1228,6 +1306,7 @@ namespace GuaDan
 
         private void DoBetQbyZK2(BetInfo item, CCMember cc)
         {
+            /*
             string member = cc.Equals(CCmemberInstance) ? "1" : "2";
             //得到现在赔率下应该下多少票
             string[] horses = item.horse.Split("-".ToCharArray());
@@ -1265,10 +1344,11 @@ namespace GuaDan
                     AddBetFail(item, "赔率为0");
                 }
             }
-
+            */
         }
         private void DoBetWbyZK2(BetInfo item, CCMember cc, Dictionary<string, WPOdds> dicWpOdds)
         {
+            /*
             string member = cc.Equals(CCmemberInstance) ? "1" : "2";
             if (!string.IsNullOrEmpty(item.horse))
             {
@@ -1310,9 +1390,11 @@ namespace GuaDan
                     AddBetFail(item, "不包含此马赔率");
                 }
             }
+            */
         }
         private void DoBetPbyZK2(BetInfo item, CCMember cc, Dictionary<string, WPOdds> dicWpOdds)
         {
+            /*
             string member = cc.Equals(CCmemberInstance) ? "1" : "2";
             if (!string.IsNullOrEmpty(item.horse))
             {
@@ -1353,6 +1435,7 @@ namespace GuaDan
                     AddBetFail(item, "不包含此马赔率");
                 }
             }
+            */
         }
         /// <summary>
         /// 根据下单情况，获取每只马获得了多少票
@@ -1671,6 +1754,356 @@ namespace GuaDan
         private void FrmGuaDan_FormClosed(object sender, FormClosedEventArgs e)
         {
             Environment.Exit(0);
+        }
+
+        private void btnQdz_Click(object sender, EventArgs e)
+        {
+            string race = cobRace.Text.Trim();
+            var tuEat = GetQRaceInfo(CCmemberInstance, "EAT", race);
+            var tuBet = GetQRaceInfo(CCmemberInstance2, "BET", race);
+
+            Dictionary<string, RaceInfoItem> dicQEat = tuEat.Item1;
+            Dictionary<string, RaceInfoItem> dicQPEat = tuEat.Item2;
+
+            Dictionary<string, RaceInfoItem> dicQBet = tuBet.Item1;
+            Dictionary<string, RaceInfoItem> dicQPBet = tuBet.Item2;
+
+   
+            Dictionary<string, RaceInfoItem> dicQ = GetQiDaZhi(dicQEat, dicQBet);
+            string ret = ProcessQ(dicQ);
+            Dictionary<string, RaceInfoItem> dicQP = GetQiDaZhi(dicQPEat, dicQPBet,"QP");
+            ret += ProcessQP(dicQP);
+            txtReport.Text = ret;
+            if (!string.IsNullOrEmpty(ret))
+            {
+                Clipboard.SetText(ret);
+            }
+        }
+
+        private Tuple<Dictionary<string, RaceInfoItem>, Dictionary<string, RaceInfoItem>> GetQRaceInfo(CCMember ccm,string bettype,string race)
+        {
+            RaceInfoEnity re = ccm.GetRaceInfo();
+            Dictionary<string, RaceInfoItem> dicQP = new Dictionary<string, RaceInfoItem>();
+            Dictionary<string, RaceInfoItem> dicQ = new Dictionary<string, RaceInfoItem>();
+           
+
+            foreach (var item in re.DicRaceInfo)
+            {
+                RaceInfoItem ri = item.Value as RaceInfoItem;
+                if (ri != null && ri.Bettype.ToString().Equals(bettype) && ri.Race.Equals(race))
+                {
+                    if ((ri.Playtype.ToString().Equals("QP") && ri.ClassType.ToString().Equals("QP")) || (ri.Playtype.ToString().Equals("FORECAST") && ri.ClassType.ToString().Equals("PFT")))
+                    {
+                        dicQP.Add(item.Key, ri);
+                    }
+                    if ((ri.Playtype.ToString().Equals("QP") && ri.ClassType.ToString().Equals("Q")) || (ri.Playtype.ToString().Equals("FORECAST") && ri.ClassType.ToString().Equals("FC")))
+                    {
+                        dicQ.Add(item.Key, ri);
+                    }
+                }
+            }
+
+            return Tuple.Create(dicQ, dicQP);
+        }
+
+        private Dictionary<string, RaceInfoItem> GetQiDaZhi(Dictionary<string, RaceInfoItem> dicQEat, Dictionary<string, RaceInfoItem> dicQBet,string bettype="Q")
+        {
+            Dictionary<string, RaceInfoItem> dicQ = new Dictionary<string, RaceInfoItem>();
+            dicQEat= GetSumRaceInfo(dicQEat, bettype);
+            dicQBet = GetSumRaceInfo(dicQBet, bettype);
+            foreach (var item in dicQEat)
+            {
+                string horse = item.Value.Horse;
+                double piao = bettype.Equals("Q") ? item.Value.Win * -1.0 : item.Value.Place * -1.0;
+                bool bfind = false;
+                foreach(var item2 in dicQBet)
+                {
+                    string horse2 = item2.Value.Horse;
+                    double piao2 = bettype.Equals("Q") ? item2.Value.Win  : item2.Value.Place ;
+                    if (horse == horse2)
+                    {
+                        if(Math.Abs(piao+piao2)>= Config.Gdz)
+                        {
+                            RaceInfoItem ri = item.Value.Clone();
+                            if(bettype.Equals("Q"))
+                            {
+                                ri.Win = Math.Abs(piao + piao2);
+                            }
+                            else
+                            {
+                                ri.Place = Math.Abs(piao + piao2);
+                            }
+                            dicQ.Add(item.Key,ri);
+                        }
+                        bfind = true;
+                        break;
+                    }
+                }
+                if (!bfind)
+                {
+                    if (Math.Abs(piao) >= Config.Gdz)
+                    {
+                        dicQ.Add(item.Key, item.Value);
+                    }
+                }
+            }
+            return dicQ;
+        }
+
+        private  Dictionary<string, RaceInfoItem> GetSumRaceInfo(Dictionary<string, RaceInfoItem> dicRi,string bettype ="Q")
+        {
+            Dictionary<string, RaceInfoItem> dicRet = new Dictionary<string, RaceInfoItem>();
+            Dictionary<string, KeyValuePair<string, RaceInfoItem>> dicPiao = new Dictionary<string, KeyValuePair<string, RaceInfoItem>> ();
+            foreach (var item in dicRi)
+            {
+                if (!dicPiao.ContainsKey(item.Value.Horse))
+                {
+                    dicPiao.Add(item.Value.Horse, item);
+                }
+                else
+                {
+                    if (bettype.Equals("Q"))
+                    {
+                        dicPiao[item.Value.Horse].Value.Win += item.Value.Win;
+                    }
+                    else
+                    {
+                        dicPiao[item.Value.Horse].Value.Place += item.Value.Place;
+                    }
+                }
+            }
+            foreach(var item in dicPiao)
+            {
+                dicRet.Add(item.Value.Key,item.Value.Value);
+            }
+            return dicRet;
+        }
+
+        private string ProcessQP(Dictionary<string, RaceInfoItem> dicQP)
+        {
+            string strRet = "负Q:" + Environment.NewLine;
+            Dictionary<double, List<string>> dic = new Dictionary<double, List<string>>();
+            Dictionary<string, double> dicPiao = new Dictionary<string, double>();
+            foreach (var item in dicQP)
+            {
+                if (!dicPiao.ContainsKey(item.Value.Horse))
+                {
+                    dicPiao.Add(item.Value.Horse, item.Value.Place);
+                }
+                else
+                {
+                    dicPiao[item.Value.Horse] += item.Value.Place;
+                }
+            }
+            foreach (var item in dicPiao)
+            {
+                if (!dic.ContainsKey(item.Value))
+                {
+                    List<string> strings = new List<string>();
+                    strings.Add(item.Key);
+                    dic.Add(item.Value, strings);
+                }
+                else
+                {
+                    dic[item.Value].Add(item.Key);
+                }
+            }
+            string tip = ProcessQitem(dic);
+            strRet = string.IsNullOrEmpty(tip) ? "" : strRet + tip;
+            return strRet;
+        }
+
+        private string ProcessQ(Dictionary<string, RaceInfoItem> dicQ)
+        {
+            string strRet = "正Q:" + Environment.NewLine;
+            Dictionary<double, List<string>> dic = new Dictionary<double, List<string>>();
+            Dictionary<string, double> dicPiao = new Dictionary<string, double>();
+            foreach (var item in dicQ)
+            {
+                if (!dicPiao.ContainsKey(item.Value.Horse))
+                {
+                    dicPiao.Add(item.Value.Horse, item.Value.Win);
+                }
+                else
+                {
+                    dicPiao[item.Value.Horse] += item.Value.Win;
+                }
+            }
+            foreach (var item in dicPiao)
+            {
+                if (!dic.ContainsKey(item.Value))
+                {
+                    List<string> strings = new List<string>();
+                    strings.Add(item.Key);
+                    dic.Add(item.Value, strings);
+                }
+                else
+                {
+                    dic[item.Value].Add(item.Key);
+                }
+            }
+            string tip = ProcessQitem(dic);
+            strRet = string.IsNullOrEmpty(tip) ? "" : strRet + tip;
+
+            return strRet;
+        }
+        private string ProcessQitem(Dictionary<double, List<string>> dicQ)
+        {
+            string strRet = "";
+            foreach (var item in dicQ)
+            {
+                double piao = item.Key;
+                List<string> lstHorses = item.Value;
+
+                string tip = ProcessQitemDetail(piao, lstHorses);
+
+                strRet += tip;
+            }
+            return strRet;
+        }
+
+        private string ProcessQitemDetail(double piao, List<string> lstHorses)
+        {
+            string strRet = "";
+            while (lstHorses.Count > 0)
+            {
+
+                Dictionary<string, int> dicHorseCount = new Dictionary<string, int>();
+                foreach (var horses in lstHorses)
+                {
+                    string h = horses.Replace("(", "").Replace(")", "");
+                    string h1 = h.Split("-".ToCharArray())[0].Trim();
+                    string h2 = h.Split("-".ToCharArray())[1].Trim();
+                    if (!dicHorseCount.ContainsKey(h1))
+                    {
+                        dicHorseCount.Add(h1, 1);
+                    }
+                    else
+                    {
+                        dicHorseCount[h1] += 1;
+                    }
+
+                    if (!dicHorseCount.ContainsKey(h2))
+                    {
+                        dicHorseCount.Add(h2, 1);
+                    }
+                    else
+                    {
+                        dicHorseCount[h2] += 1;
+                    }
+                }
+
+                int max = 0;
+                string Head = "";
+                foreach (var horsecount in dicHorseCount)
+                {
+                    if (horsecount.Value >= max)
+                    {
+                        Head = horsecount.Key;
+                        max = horsecount.Value;
+                    }
+                }
+
+                string tip = $"{Head}拖";
+                List<string> lstHorses2 = new List<string>();
+                foreach (var horses in lstHorses)
+                {
+                    string h = horses.Replace("(", "").Replace(")", "");
+                    string h1 = h.Split("-".ToCharArray())[0].Trim();
+                    string h2 = h.Split("-".ToCharArray())[1].Trim();
+                    if (Head.Equals(h1))
+                    {
+                        tip += $"{h2},";
+                    }
+                    else if (Head.Equals(h2))
+                    {
+                        tip += $"{h1},";
+                    }
+                    else
+                    {
+                        lstHorses2.Add(horses);
+                    }
+                }
+                tip += $"#{RoundToNearestTen(piao)}";
+                lstHorses = lstHorses2;
+                strRet += tip + Environment.NewLine;
+            }
+            return strRet;
+        }
+
+        public int RoundToNearestTen(double number)
+        {
+            if (number % 10 == 0)
+            {
+                return (int)number;
+            }
+            else
+            {
+                return (int)(((int)(number / 10) + 1) * 10);
+            }
+        }
+
+        private void btnXie_Click(object sender, EventArgs e)
+        {
+            cCmemberInstance.GetBetInfo(out string betinfo);
+            CCmemberInstance.DeleteAllQEatGuaDan(betinfo);
+            cCmemberInstance2.GetBetInfo(out string betinfo2);
+            bool bq = cCmemberInstance2.DeleteAllQEatGuaDan(betinfo2);
+            CCmemberInstance2.DeleteAllQBetGuaDan(betinfo2);
+           
+            if (bq)
+            {
+                ShowInfoMsg("删除Q/PQ挂单成功");
+            }
+
+            string race = cobRace.Text.Trim();
+            var tuEat = GetQRaceInfo(CCmemberInstance, "EAT", race);
+            var tuBet = GetQRaceInfo(CCmemberInstance2, "BET", race);
+
+            Dictionary<string, RaceInfoItem> dicQEat = tuEat.Item1;
+            Dictionary<string, RaceInfoItem> dicQPEat = tuEat.Item2;
+
+            Dictionary<string, RaceInfoItem> dicQBet = tuBet.Item1;
+            Dictionary<string, RaceInfoItem> dicQPBet = tuBet.Item2;
+
+
+            Dictionary<string, RaceInfoItem> dicQ = GetQiDaZhi(dicQEat, dicQBet);
+            Xie(dicQ);
+    
+            Dictionary<string, RaceInfoItem> dicQP = GetQiDaZhi(dicQPEat, dicQPBet, "QP");
+            Xie(dicQP,"QP");
+        }
+
+        private void Xie(Dictionary<string, RaceInfoItem> dicQ, string bettype = "Q")
+        {
+            foreach (var item in dicQ)
+            {
+                RaceInfoItem ri = item.Value;
+                ri.Bettype = BetType.BET;
+                if (bettype.Equals("Q"))
+                {
+                    ri.Playtype = PlayType.Q;
+                    ri.Win = RoundToNearestTen(ri.Win);
+                    //ri.Place = RoundToNearestTen(ri.Win);
+                    ri.Zhe = Config.ZheQ;
+                    ri.LWin = Config.LlimQ;
+                    ri.LPlace = Config.RLimQ;
+                }
+                else
+                {
+                    ri.Playtype = PlayType.QP;
+                   // ri.Win= RoundToNearestTen(ri.Place);
+                    ri.Place = RoundToNearestTen(ri.Place);
+                    ri.Zhe = Config.ZheQp;
+                    ri.LWin = Config.LlimQp;
+                    ri.LPlace = Config.RLimQp;
+                }
+                bool b = CCmemberInstance2.QiPiaoGuaQ(ri, out BetResultInfo info);
+                if(b)
+                {
+                    ShowInfoMsg(ri.ToString());
+                }
+            }
         }
     }
 

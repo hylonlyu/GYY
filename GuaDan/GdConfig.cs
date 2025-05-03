@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.SqlServer.Server;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -59,5 +60,22 @@ namespace GuaDan
 
         public bool bZk;
         public bool bGp;
+    }
+    [Serializable]
+    public class GtConfig: AppConfig
+    {
+        public string Accout2;
+        public string Pwd2;
+        public string Pin2;
+
+        public double ZheQ;
+        public int LlimQ;
+        public int RLimQ;
+
+        public double ZheQp;
+        public int LlimQp;
+        public int RLimQp;
+
+        public int Gdz;
     }
 }

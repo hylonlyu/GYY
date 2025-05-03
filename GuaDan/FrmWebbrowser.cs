@@ -1,22 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Web.WebView2.Core;
 
 namespace GuaDan
 {
     public partial class FrmWebbrowser : Form
     {
-        [DllImport("wininet.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern bool InternetSetCookie(string lpszUrlName, string lbszCookieName, string lpszCookieData);
-
         public string Url
         {
             get;
@@ -27,25 +17,34 @@ namespace GuaDan
             get;
             set;
         }
+
+
         public FrmWebbrowser()
         {
             InitializeComponent();
         }
 
-        private void FrmWebbrowser_Load(object sender, EventArgs e)
+        private async void FrmWeb_Load(object sender, EventArgs e)
         {
-            try
-            {
-                SetCookie();
-                webBrowser1.ScriptErrorsSuppressed = true;
-                webBrowser1.IsWebBrowserContextMenuEnabled = false;
-                webBrowser1.Navigate(Url);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            await webView21.EnsureCoreWebView2Async();
+            webView21.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
+            Init();
+            webView21.CoreWebView2.Navigate(Url);
+        }
 
+        private void CoreWebView2_NewWindowRequested(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs e)
+        {
+            String url = e.Uri.ToString();
+            if (!url.Contains("oauth"))
+            {
+                webView21.Source = new Uri(url);
+                e.Handled = true;//禁止弹窗
+            }
+        }
+
+        private void Init()
+        {
+            SetCookie();
         }
 
         private void SetCookie()
@@ -54,42 +53,37 @@ namespace GuaDan
             string cDomain = uri.Host;
             CookieContainer container = CC;
             CookieCollection cc = container.GetCookies(new Uri(Url));
-            foreach (Cookie c in cc)
+            foreach (System.Net.Cookie c in cc)
             {
-                InternetSetCookie("http://" + cDomain, c.Name.ToString(), c.Value.ToString());
+                var cookie = webView21.CoreWebView2.CookieManager.CreateCookie(c.Name.ToString(), c.Value.ToString(), cDomain, "/");
+                cookie.IsHttpOnly = true;
+                //cookie.IsSecure = true;
+                webView21.CoreWebView2.CookieManager.AddOrUpdateCookie(cookie);
             }
-        }
-
-        private void webBrowser1_BeforeNewWindow(object sender, WebBrowserExtendedNavigatingEventArgs e)
-        {
-            e.Cancel = true;
-            SetCookie();
-            webBrowser1.Navigate(e.Url);
         }
 
         private void toolForward_Click(object sender, EventArgs e)
         {
             SetCookie();
-            webBrowser1.GoForward();
+            webView21.GoForward();
         }
 
         private void toolBack_Click(object sender, EventArgs e)
         {
             SetCookie();
-            webBrowser1.GoBack();
+            webView21.GoBack();
         }
 
         private void toolRefresh_Click(object sender, EventArgs e)
         {
             SetCookie();
-            webBrowser1.Refresh();
+            webView21.CoreWebView2.Reload();
         }
 
-        private void webBrowser1_BeforeNavigate(object sender, WebBrowserExtendedNavigatingEventArgs e)
+        private void webView21_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
         {
-            //e.Cancel = true;
-            SetCookie();
-            //webBrowser1.Navigate(e.Url);
+            this.toolBack.Enabled = webView21.CanGoBack ? true : false;
+            this.toolForward.Enabled = webView21.CanGoForward ? true : false;
         }
     }
 }

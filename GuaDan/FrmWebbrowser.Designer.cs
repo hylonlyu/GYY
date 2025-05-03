@@ -28,35 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmWebbrowser));
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolForward = new System.Windows.Forms.ToolStripButton();
             this.toolBack = new System.Windows.Forms.ToolStripButton();
             this.toolRefresh = new System.Windows.Forms.ToolStripButton();
-            this.webBrowser1 = new GuaDan.ExtendedWebBrowser();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.toolClear = new System.Windows.Forms.ToolStripButton();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.toolStrip1.SuspendLayout();
-            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.webView21)).BeginInit();
             this.SuspendLayout();
-            // 
-            // toolStrip1
-            // 
-            this.toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolForward,
-            this.toolBack,
-            this.toolRefresh});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
-            this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(825, 27);
-            this.toolStrip1.TabIndex = 1;
-            this.toolStrip1.Text = "toolStrip1";
             // 
             // toolForward
             // 
             this.toolForward.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolForward.Name = "toolForward";
-            this.toolForward.Size = new System.Drawing.Size(43, 24);
+            this.toolForward.Size = new System.Drawing.Size(43, 28);
             this.toolForward.Text = "前进";
             this.toolForward.Click += new System.EventHandler(this.toolForward_Click);
             // 
@@ -64,7 +50,7 @@
             // 
             this.toolBack.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolBack.Name = "toolBack";
-            this.toolBack.Size = new System.Drawing.Size(43, 24);
+            this.toolBack.Size = new System.Drawing.Size(43, 28);
             this.toolBack.Text = "后退";
             this.toolBack.Click += new System.EventHandler(this.toolBack_Click);
             // 
@@ -72,48 +58,66 @@
             // 
             this.toolRefresh.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolRefresh.Name = "toolRefresh";
-            this.toolRefresh.Size = new System.Drawing.Size(43, 24);
+            this.toolRefresh.Size = new System.Drawing.Size(43, 28);
             this.toolRefresh.Text = "刷新";
             this.toolRefresh.Click += new System.EventHandler(this.toolRefresh_Click);
             // 
-            // webBrowser1
+            // toolClear
             // 
-            this.webBrowser1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.webBrowser1.Location = new System.Drawing.Point(0, 0);
-            this.webBrowser1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.webBrowser1.MinimumSize = new System.Drawing.Size(13, 13);
-            this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.ScriptErrorsSuppressed = true;
-            this.webBrowser1.Size = new System.Drawing.Size(825, 400);
-            this.webBrowser1.TabIndex = 0;
-            this.webBrowser1.BeforeNavigate += new System.EventHandler<GuaDan.WebBrowserExtendedNavigatingEventArgs>(this.webBrowser1_BeforeNavigate);
-            this.webBrowser1.BeforeNewWindow += new System.EventHandler<GuaDan.WebBrowserExtendedNavigatingEventArgs>(this.webBrowser1_BeforeNewWindow);
+            this.toolClear.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolClear.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolClear.Name = "toolClear";
+            this.toolClear.Size = new System.Drawing.Size(43, 28);
+            this.toolClear.Text = "清除";
             // 
-            // panel1
+            // toolStrip1
             // 
-            this.panel1.Controls.Add(this.webBrowser1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 27);
-            this.panel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(825, 400);
-            this.panel1.TabIndex = 2;
+            this.toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolForward,
+            this.toolBack,
+            this.toolRefresh,
+            this.toolClear});
+            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Margin = new System.Windows.Forms.Padding(0, 25, 0, 0);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Padding = new System.Windows.Forms.Padding(0);
+            this.toolStrip1.Size = new System.Drawing.Size(1662, 31);
+            this.toolStrip1.TabIndex = 3;
+            this.toolStrip1.Text = "toolStrip1";
+            // 
+            // webView21
+            // 
+            this.webView21.AllowExternalDrop = true;
+            this.webView21.CreationProperties = null;
+            this.webView21.DefaultBackgroundColor = System.Drawing.Color.White;
+            this.webView21.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.webView21.Location = new System.Drawing.Point(0, 31);
+            this.webView21.Margin = new System.Windows.Forms.Padding(4);
+            this.webView21.Name = "webView21";
+            this.webView21.Size = new System.Drawing.Size(1662, 1002);
+            this.webView21.TabIndex = 4;
+            this.webView21.ZoomFactor = 1D;
+            this.webView21.NavigationCompleted += new System.EventHandler<Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs>(this.webView21_NavigationCompleted);
             // 
             // FrmWebbrowser
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(825, 427);
-            this.Controls.Add(this.panel1);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.AutoScroll = true;
+            this.AutoSize = true;
+            this.ClientSize = new System.Drawing.Size(1662, 1033);
+            this.Controls.Add(this.webView21);
             this.Controls.Add(this.toolStrip1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(4);
+            this.MinimumSize = new System.Drawing.Size(1394, 1028);
             this.Name = "FrmWebbrowser";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Load += new System.EventHandler(this.FrmWebbrowser_Load);
+            this.Text = "FrmWebbrowser";
+            this.Load += new System.EventHandler(this.FrmWeb_Load);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
-            this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.webView21)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -121,11 +125,11 @@
 
         #endregion
 
-        private ExtendedWebBrowser webBrowser1;
-        private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton toolForward;
         private System.Windows.Forms.ToolStripButton toolBack;
         private System.Windows.Forms.ToolStripButton toolRefresh;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.ToolStripButton toolClear;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private Microsoft.Web.WebView2.WinForms.WebView2 webView21;
     }
 }
