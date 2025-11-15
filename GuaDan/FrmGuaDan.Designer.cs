@@ -111,7 +111,18 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.btnDelIP = new System.Windows.Forms.Button();
+            this.btnAddIP = new System.Windows.Forms.Button();
+            this.txtIP = new System.Windows.Forms.TextBox();
+            this.lstIP = new System.Windows.Forms.ListBox();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.radZfq = new System.Windows.Forms.RadioButton();
+            this.radFs = new System.Windows.Forms.RadioButton();
+            this.radZs = new System.Windows.Forms.RadioButton();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.label50 = new System.Windows.Forms.Label();
+            this.label49 = new System.Windows.Forms.Label();
             this.txtRlimQp = new System.Windows.Forms.TextBox();
             this.label43 = new System.Windows.Forms.Label();
             this.txtLlimQp = new System.Windows.Forms.TextBox();
@@ -214,8 +225,6 @@
             this.bettype = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.playtype2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.reason = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.label49 = new System.Windows.Forms.Label();
-            this.label50 = new System.Windows.Forms.Label();
             this.tabPage4.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox12.SuspendLayout();
@@ -236,6 +245,8 @@
             this.splitContainer1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.panel5.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.panel3.SuspendLayout();
             this.groupBox13.SuspendLayout();
             this.groupBox14.SuspendLayout();
@@ -257,10 +268,10 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(503, 286);
+            this.btnSave.Location = new System.Drawing.Point(317, 6);
             this.btnSave.Margin = new System.Windows.Forms.Padding(2);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(86, 39);
+            this.btnSave.Size = new System.Drawing.Size(45, 28);
             this.btnSave.TabIndex = 2;
             this.btnSave.Text = "保存";
             this.btnSave.UseVisualStyleBackColor = true;
@@ -290,7 +301,7 @@
             this.tabPage4.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage4.Size = new System.Drawing.Size(992, 464);
+            this.tabPage4.Size = new System.Drawing.Size(990, 495);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "比赛进单";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -1022,8 +1033,8 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.lstInfo);
-            this.splitContainer2.Size = new System.Drawing.Size(1000, 156);
-            this.splitContainer2.SplitterDistance = 399;
+            this.splitContainer2.Size = new System.Drawing.Size(1173, 156);
+            this.splitContainer2.SplitterDistance = 363;
             this.splitContainer2.SplitterWidth = 3;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -1039,12 +1050,12 @@
             // 
             // btnQdz
             // 
-            this.btnQdz.Location = new System.Drawing.Point(302, 79);
+            this.btnQdz.Location = new System.Drawing.Point(302, 76);
             this.btnQdz.Margin = new System.Windows.Forms.Padding(2);
             this.btnQdz.Name = "btnQdz";
-            this.btnQdz.Size = new System.Drawing.Size(62, 22);
+            this.btnQdz.Size = new System.Drawing.Size(46, 22);
             this.btnQdz.TabIndex = 75;
-            this.btnQdz.Text = "吃大值";
+            this.btnQdz.Text = "生成";
             this.btnQdz.UseVisualStyleBackColor = true;
             this.btnQdz.Click += new System.EventHandler(this.btnQdz_Click);
             // 
@@ -1114,7 +1125,7 @@
             this.lstInfo.Location = new System.Drawing.Point(0, 0);
             this.lstInfo.Margin = new System.Windows.Forms.Padding(2);
             this.lstInfo.Name = "lstInfo";
-            this.lstInfo.Size = new System.Drawing.Size(598, 156);
+            this.lstInfo.Size = new System.Drawing.Size(807, 156);
             this.lstInfo.TabIndex = 0;
             // 
             // splitContainer1
@@ -1133,7 +1144,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
-            this.splitContainer1.Size = new System.Drawing.Size(1000, 649);
+            this.splitContainer1.Size = new System.Drawing.Size(1173, 782);
             this.splitContainer1.SplitterDistance = 156;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 1;
@@ -1141,18 +1152,19 @@
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1000, 490);
+            this.tabControl1.Size = new System.Drawing.Size(1173, 623);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.panel5);
+            this.tabPage2.Controls.Add(this.panel4);
             this.tabPage2.Controls.Add(this.panel3);
             this.tabPage2.Controls.Add(this.txtReport);
             this.tabPage2.Controls.Add(this.txtGdz);
@@ -1165,10 +1177,99 @@
             this.tabPage2.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage2.Size = new System.Drawing.Size(992, 464);
+            this.tabPage2.Size = new System.Drawing.Size(1165, 597);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "打单设置";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // panel5
+            // 
+            this.panel5.Controls.Add(this.btnDelIP);
+            this.panel5.Controls.Add(this.btnAddIP);
+            this.panel5.Controls.Add(this.txtIP);
+            this.panel5.Controls.Add(this.lstIP);
+            this.panel5.Location = new System.Drawing.Point(317, 232);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(436, 271);
+            this.panel5.TabIndex = 14;
+            // 
+            // btnDelIP
+            // 
+            this.btnDelIP.Location = new System.Drawing.Point(227, 126);
+            this.btnDelIP.Name = "btnDelIP";
+            this.btnDelIP.Size = new System.Drawing.Size(75, 23);
+            this.btnDelIP.TabIndex = 3;
+            this.btnDelIP.Text = "删除";
+            this.btnDelIP.UseVisualStyleBackColor = true;
+            this.btnDelIP.Click += new System.EventHandler(this.btnDelIP_Click);
+            // 
+            // btnAddIP
+            // 
+            this.btnAddIP.Location = new System.Drawing.Point(227, 64);
+            this.btnAddIP.Name = "btnAddIP";
+            this.btnAddIP.Size = new System.Drawing.Size(75, 23);
+            this.btnAddIP.TabIndex = 2;
+            this.btnAddIP.Text = "增加";
+            this.btnAddIP.UseVisualStyleBackColor = true;
+            this.btnAddIP.Click += new System.EventHandler(this.btnAddIP_Click);
+            // 
+            // txtIP
+            // 
+            this.txtIP.Location = new System.Drawing.Point(8, 28);
+            this.txtIP.Name = "txtIP";
+            this.txtIP.Size = new System.Drawing.Size(195, 21);
+            this.txtIP.TabIndex = 1;
+            // 
+            // lstIP
+            // 
+            this.lstIP.FormattingEnabled = true;
+            this.lstIP.ItemHeight = 12;
+            this.lstIP.Location = new System.Drawing.Point(8, 55);
+            this.lstIP.Name = "lstIP";
+            this.lstIP.Size = new System.Drawing.Size(195, 196);
+            this.lstIP.TabIndex = 0;
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.radZfq);
+            this.panel4.Controls.Add(this.radFs);
+            this.panel4.Controls.Add(this.radZs);
+            this.panel4.Location = new System.Drawing.Point(317, 165);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(436, 60);
+            this.panel4.TabIndex = 13;
+            // 
+            // radZfq
+            // 
+            this.radZfq.AutoSize = true;
+            this.radZfq.Checked = true;
+            this.radZfq.Location = new System.Drawing.Point(3, 28);
+            this.radZfq.Name = "radZfq";
+            this.radZfq.Size = new System.Drawing.Size(77, 16);
+            this.radZfq.TabIndex = 10;
+            this.radZfq.TabStop = true;
+            this.radZfq.Text = "正副Q模式";
+            this.radZfq.UseVisualStyleBackColor = true;
+            // 
+            // radFs
+            // 
+            this.radFs.AutoSize = true;
+            this.radFs.Location = new System.Drawing.Point(206, 26);
+            this.radFs.Name = "radFs";
+            this.radFs.Size = new System.Drawing.Size(71, 16);
+            this.radFs.TabIndex = 12;
+            this.radFs.Text = "副双模式";
+            this.radFs.UseVisualStyleBackColor = true;
+            // 
+            // radZs
+            // 
+            this.radZs.AutoSize = true;
+            this.radZs.Location = new System.Drawing.Point(111, 26);
+            this.radZs.Name = "radZs";
+            this.radZs.Size = new System.Drawing.Size(71, 16);
+            this.radZs.TabIndex = 11;
+            this.radZs.Text = "正双模式";
+            this.radZs.UseVisualStyleBackColor = true;
             // 
             // panel3
             // 
@@ -1186,22 +1287,41 @@
             this.panel3.Controls.Add(this.label39);
             this.panel3.Controls.Add(this.txtZheQ);
             this.panel3.Controls.Add(this.label31);
-            this.panel3.Location = new System.Drawing.Point(317, 71);
+            this.panel3.Location = new System.Drawing.Point(317, 39);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(667, 143);
+            this.panel3.Size = new System.Drawing.Size(667, 106);
             this.panel3.TabIndex = 9;
+            // 
+            // label50
+            // 
+            this.label50.AutoSize = true;
+            this.label50.Location = new System.Drawing.Point(39, 65);
+            this.label50.Name = "label50";
+            this.label50.Size = new System.Drawing.Size(17, 12);
+            this.label50.TabIndex = 13;
+            this.label50.Text = "QP";
+            // 
+            // label49
+            // 
+            this.label49.AutoSize = true;
+            this.label49.Location = new System.Drawing.Point(39, 21);
+            this.label49.Name = "label49";
+            this.label49.Size = new System.Drawing.Size(11, 12);
+            this.label49.TabIndex = 12;
+            this.label49.Text = "Q";
             // 
             // txtRlimQp
             // 
-            this.txtRlimQp.Location = new System.Drawing.Point(447, 62);
+            this.txtRlimQp.Location = new System.Drawing.Point(278, 62);
             this.txtRlimQp.Name = "txtRlimQp";
-            this.txtRlimQp.Size = new System.Drawing.Size(70, 21);
+            this.txtRlimQp.Size = new System.Drawing.Size(38, 21);
             this.txtRlimQp.TabIndex = 11;
+            this.txtRlimQp.Text = "400";
             // 
             // label43
             // 
             this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(394, 65);
+            this.label43.Location = new System.Drawing.Point(232, 65);
             this.label43.Name = "label43";
             this.label43.Size = new System.Drawing.Size(41, 12);
             this.label43.TabIndex = 10;
@@ -1209,15 +1329,16 @@
             // 
             // txtLlimQp
             // 
-            this.txtLlimQp.Location = new System.Drawing.Point(303, 62);
+            this.txtLlimQp.Location = new System.Drawing.Point(187, 62);
             this.txtLlimQp.Name = "txtLlimQp";
-            this.txtLlimQp.Size = new System.Drawing.Size(70, 21);
+            this.txtLlimQp.Size = new System.Drawing.Size(38, 21);
             this.txtLlimQp.TabIndex = 9;
+            this.txtLlimQp.Text = "400";
             // 
             // label44
             // 
             this.label44.AutoSize = true;
-            this.label44.Location = new System.Drawing.Point(250, 65);
+            this.label44.Location = new System.Drawing.Point(141, 65);
             this.label44.Name = "label44";
             this.label44.Size = new System.Drawing.Size(41, 12);
             this.label44.TabIndex = 8;
@@ -1225,15 +1346,16 @@
             // 
             // txtZheQp
             // 
-            this.txtZheQp.Location = new System.Drawing.Point(147, 62);
+            this.txtZheQp.Location = new System.Drawing.Point(90, 62);
             this.txtZheQp.Name = "txtZheQp";
-            this.txtZheQp.Size = new System.Drawing.Size(70, 21);
+            this.txtZheQp.Size = new System.Drawing.Size(38, 21);
             this.txtZheQp.TabIndex = 7;
+            this.txtZheQp.Text = "81";
             // 
             // label48
             // 
             this.label48.AutoSize = true;
-            this.label48.Location = new System.Drawing.Point(94, 65);
+            this.label48.Location = new System.Drawing.Point(56, 65);
             this.label48.Name = "label48";
             this.label48.Size = new System.Drawing.Size(29, 12);
             this.label48.TabIndex = 6;
@@ -1241,15 +1363,16 @@
             // 
             // txtRlimQ
             // 
-            this.txtRlimQ.Location = new System.Drawing.Point(447, 18);
+            this.txtRlimQ.Location = new System.Drawing.Point(278, 18);
             this.txtRlimQ.Name = "txtRlimQ";
-            this.txtRlimQ.Size = new System.Drawing.Size(70, 21);
+            this.txtRlimQ.Size = new System.Drawing.Size(38, 21);
             this.txtRlimQ.TabIndex = 5;
+            this.txtRlimQ.Text = "700";
             // 
             // label42
             // 
             this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(394, 21);
+            this.label42.Location = new System.Drawing.Point(232, 21);
             this.label42.Name = "label42";
             this.label42.Size = new System.Drawing.Size(41, 12);
             this.label42.TabIndex = 4;
@@ -1257,15 +1380,16 @@
             // 
             // txtLlimQ
             // 
-            this.txtLlimQ.Location = new System.Drawing.Point(303, 18);
+            this.txtLlimQ.Location = new System.Drawing.Point(186, 18);
             this.txtLlimQ.Name = "txtLlimQ";
-            this.txtLlimQ.Size = new System.Drawing.Size(70, 21);
+            this.txtLlimQ.Size = new System.Drawing.Size(38, 21);
             this.txtLlimQ.TabIndex = 3;
+            this.txtLlimQ.Text = "700";
             // 
             // label39
             // 
             this.label39.AutoSize = true;
-            this.label39.Location = new System.Drawing.Point(250, 21);
+            this.label39.Location = new System.Drawing.Point(141, 21);
             this.label39.Name = "label39";
             this.label39.Size = new System.Drawing.Size(41, 12);
             this.label39.TabIndex = 2;
@@ -1273,15 +1397,16 @@
             // 
             // txtZheQ
             // 
-            this.txtZheQ.Location = new System.Drawing.Point(147, 18);
+            this.txtZheQ.Location = new System.Drawing.Point(90, 18);
             this.txtZheQ.Name = "txtZheQ";
-            this.txtZheQ.Size = new System.Drawing.Size(70, 21);
+            this.txtZheQ.Size = new System.Drawing.Size(38, 21);
             this.txtZheQ.TabIndex = 1;
+            this.txtZheQ.Text = "81";
             // 
             // label31
             // 
             this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(94, 21);
+            this.label31.Location = new System.Drawing.Point(56, 21);
             this.label31.Name = "label31";
             this.label31.Size = new System.Drawing.Size(29, 12);
             this.label31.TabIndex = 0;
@@ -1297,15 +1422,16 @@
             // 
             // txtGdz
             // 
-            this.txtGdz.Location = new System.Drawing.Point(591, 22);
+            this.txtGdz.Location = new System.Drawing.Point(434, 12);
             this.txtGdz.Name = "txtGdz";
             this.txtGdz.Size = new System.Drawing.Size(41, 21);
             this.txtGdz.TabIndex = 7;
+            this.txtGdz.Text = "10";
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(536, 25);
+            this.label10.Location = new System.Drawing.Point(380, 14);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(41, 12);
             this.label10.TabIndex = 6;
@@ -1322,6 +1448,7 @@
             this.groupBox13.TabIndex = 5;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = "再次下单";
+            this.groupBox13.Visible = false;
             // 
             // groupBox14
             // 
@@ -1524,6 +1651,7 @@
             this.groupBox6.TabIndex = 4;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "二次下单";
+            this.groupBox6.Visible = false;
             // 
             // groupBox7
             // 
@@ -1717,6 +1845,7 @@
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "一次下单";
+            this.groupBox1.Visible = false;
             // 
             // groupBox5
             // 
@@ -2031,7 +2160,7 @@
             this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage1.Size = new System.Drawing.Size(992, 464);
+            this.tabPage1.Size = new System.Drawing.Size(1165, 597);
             this.tabPage1.TabIndex = 4;
             this.tabPage1.Text = "原因";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -2054,7 +2183,7 @@
             this.dgvBetResult.Name = "dgvBetResult";
             this.dgvBetResult.RowHeadersWidth = 51;
             this.dgvBetResult.RowTemplate.Height = 30;
-            this.dgvBetResult.Size = new System.Drawing.Size(988, 460);
+            this.dgvBetResult.Size = new System.Drawing.Size(1161, 593);
             this.dgvBetResult.TabIndex = 0;
             // 
             // time
@@ -2106,34 +2235,18 @@
             this.reason.Name = "reason";
             this.reason.Width = 54;
             // 
-            // label49
-            // 
-            this.label49.AutoSize = true;
-            this.label49.Location = new System.Drawing.Point(39, 21);
-            this.label49.Name = "label49";
-            this.label49.Size = new System.Drawing.Size(11, 12);
-            this.label49.TabIndex = 12;
-            this.label49.Text = "Q";
-            // 
-            // label50
-            // 
-            this.label50.AutoSize = true;
-            this.label50.Location = new System.Drawing.Point(39, 65);
-            this.label50.Name = "label50";
-            this.label50.Size = new System.Drawing.Size(17, 12);
-            this.label50.TabIndex = 13;
-            this.label50.Text = "QP";
-            // 
             // FrmGuaDan
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1000, 649);
+            this.AutoSize = true;
+            this.ClientSize = new System.Drawing.Size(1173, 782);
             this.Controls.Add(this.splitContainer1);
-            this.MaximumSize = new System.Drawing.Size(1016, 968);
-            this.MinimumSize = new System.Drawing.Size(1016, 688);
+            this.MaximumSize = new System.Drawing.Size(1515, 965);
+            this.MinimumSize = new System.Drawing.Size(1189, 685);
             this.Name = "FrmGuaDan";
-            this.Text = "FrmGNT";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "FrmGYY";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmGuaDan_FormClosed);
             this.Load += new System.EventHandler(this.FrmGuaDan_Load);
             this.tabPage4.ResumeLayout(false);
@@ -2164,6 +2277,10 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.groupBox13.ResumeLayout(false);
@@ -2386,5 +2503,14 @@
         private System.Windows.Forms.Label label31;
         private System.Windows.Forms.Label label50;
         private System.Windows.Forms.Label label49;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.RadioButton radZfq;
+        private System.Windows.Forms.RadioButton radFs;
+        private System.Windows.Forms.RadioButton radZs;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Button btnDelIP;
+        private System.Windows.Forms.Button btnAddIP;
+        private System.Windows.Forms.TextBox txtIP;
+        private System.Windows.Forms.ListBox lstIP;
     }
 }

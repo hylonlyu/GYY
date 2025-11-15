@@ -144,15 +144,24 @@ namespace GuaDan
                     }
 
                     //只打香港的比赛
-                    //DataTable TempDT = dtMatch.Clone();
-                    //DataRow[] drs = dtMatch.Select("tip like '%3H%'");
-                    //foreach (DataRow dr in drs)
-                    //{
-                    //    TempDT.ImportRow(dr);
-                    //}
-                    //cobMatch.DataSource = TempDT;
+                    //string[] FilterMatch = new string[] { "香港","澳洲" };
+                    string[] FilterMatch = new string[] { "香港" };
+                    DataTable TempDT = dtMatch.Clone();
+                    foreach (DataRow dr in dtMatch.Rows)
+                    {
+                        foreach (var item in FilterMatch)
+                        {
+                            if (dr["tip"].ToString().StartsWith(item))
+                            {
+                                TempDT.ImportRow(dr);
+                                break;
+                            }
+                        }
 
-                    cobMatch.DataSource = dtMatch;
+                    }
+                    cobMatch.DataSource = TempDT;
+
+                    //cobMatch.DataSource = dtMatch;
                     cobMatch.DisplayMember = "tip";
                     cobMatch.ValueMember = "url";
                 }
@@ -1213,7 +1222,7 @@ namespace GuaDan
         private void btnTrade_Click(object sender, EventArgs e)
         {
             FrmWebbrowser frmBrowser = new FrmWebbrowser();
-            frmBrowser.Url = $"http://{CCmemberInstance.DoMain}/new_history_live.jsp";
+            frmBrowser.Url = $"http://{CCmemberInstance.DoMain}/new_history_live.jsp?{new Random().NextDouble()}";
             frmBrowser.CC = CCmemberInstance.cc;
             frmBrowser.Text = "1";
             frmBrowser.Show();
@@ -1222,7 +1231,7 @@ namespace GuaDan
         private void btnMatch_Click(object sender, EventArgs e)
         {
             FrmWebbrowser frmMatch = new FrmWebbrowser();
-            frmMatch.Url = $"http://{CCmemberInstance.DoMain}/playerhk.jsp";
+            frmMatch.Url = $"http://{CCmemberInstance.DoMain}/playerhk.jsp?{new Random().NextDouble()}";
             frmMatch.CC = CCmemberInstance.cc;
             frmMatch.Text = "1";
             frmMatch.Show();
@@ -2046,8 +2055,17 @@ namespace GuaDan
         private void btnXie_Click(object sender, EventArgs e)
         {
             cCmemberInstance.GetBetInfo(out string betinfo);
+            if (string.IsNullOrEmpty(betinfo))
+            {
+                ShowInfoMsg("获取吃进单情况失败");
+            }
             CCmemberInstance.DeleteAllQEatGuaDan(betinfo);
             cCmemberInstance2.GetBetInfo(out string betinfo2);
+            if (string.IsNullOrEmpty(betinfo2))
+            {
+                ShowInfoMsg("获取赌进单情况失败");
+            }
+
             bool bq = cCmemberInstance2.DeleteAllQEatGuaDan(betinfo2);
             CCmemberInstance2.DeleteAllQBetGuaDan(betinfo2);
            
@@ -2101,8 +2119,68 @@ namespace GuaDan
                 bool b = CCmemberInstance2.QiPiaoGuaQ(ri, out BetResultInfo info);
                 if(b)
                 {
-                    ShowInfoMsg(ri.ToString());
+                    //ShowInfoMsg(ri.ToString());
                 }
+                else
+                {
+                    ShowInfoMsg(info.StrAnswer);
+                }
+            }
+        }
+
+        private void btnAddIP_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string ip = txtIP?.Text?.Trim();
+                if (string.IsNullOrEmpty(ip))
+                {
+                    ShowInfoMsg("请输入IP地址或文本");
+                    return;
+                }
+
+                // 如果列表中已经包含，则不重复添加
+                foreach (var item in lstIP.Items)
+                {
+                    if (item != null && item.ToString().Equals(ip, StringComparison.OrdinalIgnoreCase))
+                    {
+                        ShowInfoMsg($"已存在: {ip}");
+                        txtIP.Clear();
+                        return;
+                    }
+                }
+
+                lstIP.Items.Add(ip);
+                txtIP.Clear();
+                ShowInfoMsg($"已添加: {ip}");
+            }
+            catch (Exception ex)
+            {
+                ShowInfoMsg($"添加IP失败: {ex.Message}");
+            }
+        }
+
+        private void btnDelIP_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (lstIP.SelectedItems == null || lstIP.SelectedItems.Count == 0)
+                {
+                    ShowInfoMsg("请先选择要删除的 IP");
+                    return;
+                }
+
+                // 复制选中项到列表，避免边遍历边修改集合引发异常
+                var toRemove = lstIP.SelectedItems.Cast<object>().ToList();
+                foreach (var item in toRemove)
+                {
+                    lstIP.Items.Remove(item);
+                    ShowInfoMsg($"已删除: {item}");
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowInfoMsg($"删除 IP 失败: {ex.Message}");
             }
         }
     }

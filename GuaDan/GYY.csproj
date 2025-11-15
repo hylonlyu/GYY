@@ -7,7 +7,7 @@
     <ProjectGuid>{28CC78B4-AE79-4C25-85E1-F6A32361CC59}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>GuaDan</RootNamespace>
-    <AssemblyName>GNT</AssemblyName>
+    <AssemblyName>GYY</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

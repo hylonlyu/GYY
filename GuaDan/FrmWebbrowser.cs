@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Windows.Forms;
 using Microsoft.Web.WebView2.Core;
@@ -26,7 +27,10 @@ namespace GuaDan
 
         private async void FrmWeb_Load(object sender, EventArgs e)
         {
-            await webView21.EnsureCoreWebView2Async();
+            string userDataFolder1 = Path.Combine(Application.StartupPath, Text);
+            CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions();
+            CoreWebView2Environment environment1 = await CoreWebView2Environment.CreateAsync(null, userDataFolder1, options);
+            await webView21.EnsureCoreWebView2Async(environment1);
             webView21.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
             Init();
             webView21.CoreWebView2.Navigate(Url);

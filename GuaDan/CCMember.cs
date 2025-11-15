@@ -300,7 +300,7 @@ namespace GuaDan
                                                         dtMatchList = ParseMatchList(cDoc);
                                                         refer = cUrl;
 
-                                                        cUrl = string.Format("https://{0}/imagecontroller?action=1&x=0.9125365756917745", cDoMain);
+                                                        //cUrl = string.Format("https://{0}/imagecontroller?action=1&x=0.9125365756917745", cDoMain);
                                                         cDoc = Connect.getDocument(cUrl, cc, refer, "utf-8");
                                                         string tmp3 = cDoc.Substring(cDoc.IndexOf("(["));
                                                         tmp3 = tmp3.Substring(0, tmp3.IndexOf("])"));
@@ -784,9 +784,9 @@ namespace GuaDan
                     string[] tmp = tip.Split("_".ToCharArray());
                     string date = tmp[5];
                     string[] tmp2 = date.Split("//".ToCharArray());
-                    _mon = tmp2[0];
-                    _date = tmp2[1];
-                    _year = tmp2[2];
+                    _mon = tmp2[1];
+                    _date = tmp2[2];
+                    _year = tmp2[0];
 
                     _mon = _mon.PadLeft(2, '0');
                     //日是两位
