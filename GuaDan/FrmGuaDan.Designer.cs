@@ -112,6 +112,7 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.panel5 = new System.Windows.Forms.Panel();
+            this.btnSend = new System.Windows.Forms.Button();
             this.btnDelIP = new System.Windows.Forms.Button();
             this.btnAddIP = new System.Windows.Forms.Button();
             this.txtIP = new System.Windows.Forms.TextBox();
@@ -225,7 +226,6 @@
             this.bettype = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.playtype2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.reason = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.btnSend = new System.Windows.Forms.Button();
             this.tabPage4.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox12.SuspendLayout();
@@ -1194,6 +1194,16 @@
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(436, 271);
             this.panel5.TabIndex = 14;
+            // 
+            // btnSend
+            // 
+            this.btnSend.Location = new System.Drawing.Point(227, 176);
+            this.btnSend.Name = "btnSend";
+            this.btnSend.Size = new System.Drawing.Size(75, 23);
+            this.btnSend.TabIndex = 4;
+            this.btnSend.Text = "发送";
+            this.btnSend.UseVisualStyleBackColor = true;
+            this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
             // 
             // btnDelIP
             // 
@@ -2236,15 +2246,6 @@
             this.reason.MinimumWidth = 6;
             this.reason.Name = "reason";
             this.reason.Width = 54;
-            // 
-            // btnSend
-            // 
-            this.btnSend.Location = new System.Drawing.Point(227, 176);
-            this.btnSend.Name = "btnSend";
-            this.btnSend.Size = new System.Drawing.Size(75, 23);
-            this.btnSend.TabIndex = 4;
-            this.btnSend.Text = "发送";
-            this.btnSend.UseVisualStyleBackColor = true;
             // 
             // FrmGuaDan
             // 
