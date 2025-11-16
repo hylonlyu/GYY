@@ -6,6 +6,8 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -204,6 +206,8 @@ namespace GuaDan
         {
             SaveConfig();
             SetInstanceConfig();
+            // 保存 panel4 和 lstIP 的额外设置
+            SaveExtraSettings();
         }
 
         #region Config
@@ -340,76 +344,10 @@ namespace GuaDan
                 Config = new GtConfig();
             }
             SetConfig();
+            // 加载 panel4 和 lstIP 的额外设置
+            LoadExtraSettings();
         }
-        /*
-        private void SetConfig()
-        {
-            try
-            {
-                txtUrl.Text = Config.SiteUrl;
-                txtAccount.Text = Config.Accout;
-                txtPwd.Text = Config.Pwd;
-                txtPin.Text = Config.Pin;
-                cobRace.Text = Config.Race;
 
-                txtAccount2.Text = Config.Accout2;
-                txtPwd2.Text = Config.Pwd2;
-                txtPin2.Text = Config.Pin2;
-
-
-                txtQgqzk.Text = Config.Qgqzk.ToString();
-                txtQgdzk.Text = Config.Qgdzk.ToString();
-                txtQzkps.Text = Config.Qzkps.ToString();
-                txtQgdps.Text = Config.Qgdps.ToString();
-
-                txtWPgqzk.Text = Config.WPgqzk.ToString();
-                txtWPgdzk.Text = Config.WPgdzk.ToString();
-                txtWPgdps.Text = Config.WPgdps.ToString();
-
-                txtWgqzk.Text = Config.Wgqzk.ToString();
-                txtWgdzk.Text = Config.Wgdzk.ToString();
-                txtWzkps.Text = Config.Wzkps.ToString();
-                txtWgdps.Text = Config.Wgdps.ToString();
-
-                txtPgqzk.Text = Config.Pgqzk.ToString();
-                txtPgdzk.Text = Config.Pgdzk.ToString();
-                txtPzkps.Text = Config.Pzkps.ToString();
-                txtPgdps.Text = Config.Pgdps.ToString();
-
-
-                txtQgqzk3.Text = Config.Qgqzk3.ToString();
-                txtQgdzk3.Text = Config.Qgdzk3.ToString();
-                txtQzkps3.Text = Config.Qzkps3.ToString();
-
-                txtWgqzk3.Text = Config.Wgqzk3.ToString();
-                txtWgdzk3.Text = Config.Wgdzk3.ToString();
-                txtWzkps3.Text = Config.Wzkps3.ToString();
-
-                txtPgqzk3.Text = Config.Pgqzk3.ToString();
-                txtPgdzk3.Text = Config.Pgdzk3.ToString();
-                txtPzkps3.Text = Config.Pzkps3.ToString();
-
-                txtQgqzk2.Text = Config.Qgqzk2.ToString();
-                txtQgdzk2.Text = Config.Qgdzk2.ToString();
-
-                txtWPgqzk2.Text = Config.WPgqzk2.ToString();
-                txtWPgdzk2.Text = Config.WPgdzk2.ToString();
-
-                txtWgqzk2.Text = Config.Wgqzk2.ToString();
-                txtWgdzk2.Text = Config.Wgdzk2.ToString();
-
-                txtPgqzk2.Text = Config.Pgqzk2.ToString();
-                txtPgdzk2.Text = Config.Pgdzk2.ToString();
-
-                radZk.Checked = Config.bZk;
-                radGp.Checked = Config.bGp;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-        */
         private void SetConfig()
         {
             try
@@ -437,6 +375,126 @@ namespace GuaDan
             catch(Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+        }
+
+        [Serializable]
+        private class FrmExtraSetting
+        {
+            public Dictionary<string, bool> ControlChecks = new Dictionary<string, bool>();
+            public Dictionary<string, string> ControlTexts = new Dictionary<string, string>();
+            public List<string> IPs = new List<string>();
+        }
+
+        private void SaveExtraSettings()
+        {
+            try
+            {
+                if (!Directory.Exists("setting")) Directory.CreateDirectory("setting");
+                FrmExtraSetting extra = new FrmExtraSetting();
+                // 保存 panel4 中的选项状态和文本
+                if (this.panel4 != null)
+                {
+                    foreach (Control c in panel4.Controls)
+                    {
+                        if (c is CheckBox cb)
+                        {
+                            extra.ControlChecks[c.Name] = cb.Checked;
+                        }
+                        else if (c is RadioButton rb)
+                        {
+                            extra.ControlChecks[c.Name] = rb.Checked;
+                        }
+                        else if (c is TextBox tb)
+                        {
+                            extra.ControlTexts[c.Name] = tb.Text;
+                        }
+                    }
+                }
+
+                // 保存 lstIP 中的内容
+                if (this.lstIP != null)
+                {
+                    foreach (var item in lstIP.Items)
+                    {
+                        if (item != null)
+                        {
+                            extra.IPs.Add(item.ToString());
+                        }
+                    }
+                }
+
+                string file = "setting\\FrmGuaDan_extra.bin";
+                using (FileStream fs = new FileStream(file, FileMode.Create))
+                {
+                    BinaryFormatter bf = new BinaryFormatter();
+                    bf.Serialize(fs, extra);
+                }
+                ShowInfoMsg("已保存额外设置");
+            }
+            catch (Exception ex)
+            {
+                ShowInfoMsg($"保存额外设置失败: {ex.Message}");
+            }
+        }
+
+        private void LoadExtraSettings()
+        {
+            try
+            {
+                string file = "setting\\FrmGuaDan_extra.bin";
+                if (!File.Exists(file)) return;
+                FrmExtraSetting extra = null;
+                using (FileStream fs = new FileStream(file, FileMode.Open))
+                {
+                    BinaryFormatter bf = new BinaryFormatter();
+                    extra = bf.Deserialize(fs) as FrmExtraSetting;
+                }
+                if (extra == null) return;
+
+                // 恢复 panel4 的状态
+                if (this.panel4 != null)
+                {
+                    foreach (Control c in panel4.Controls)
+                    {
+                        if (c is CheckBox cb)
+                        {
+                            if (extra.ControlChecks.ContainsKey(c.Name))
+                            {
+                                cb.Checked = extra.ControlChecks[c.Name];
+                            }
+                        }
+                        else if (c is RadioButton rb)
+                        {
+                            if (extra.ControlChecks.ContainsKey(c.Name))
+                            {
+                                rb.Checked = extra.ControlChecks[c.Name];
+                            }
+                        }
+                        else if (c is TextBox tb)
+                        {
+                            if (extra.ControlTexts.ContainsKey(c.Name))
+                            {
+                                tb.Text = extra.ControlTexts[c.Name];
+                            }
+                        }
+                    }
+                }
+
+                // 恢复 lstIP 的内容
+                if (this.lstIP != null)
+                {
+                    lstIP.Items.Clear();
+                    foreach (var ip in extra.IPs)
+                    {
+                        lstIP.Items.Add(ip);
+                    }
+                }
+                ShowInfoMsg("已加载额外设置");
+            }
+            catch (Exception ex)
+            {
+                ShowInfoMsg($"加载额外设置失败: {ex.Message}");
             }
         }
         #endregion
@@ -745,7 +803,7 @@ namespace GuaDan
                 else
                 {
                     BetInfo info = new BetInfo { horse=$"{item.Item1}-{item.Item2}",
-                    bettype="Q",playtype= playtype};
+                    bettype="Q",playtype= call };
                     AddBetFail(info, "赔率为0");
                 }
             }
@@ -2181,6 +2239,70 @@ namespace GuaDan
             catch (Exception ex)
             {
                 ShowInfoMsg($"删除 IP 失败: {ex.Message}");
+            }
+        }
+
+        private async void btnSend_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string msg = txtReport?.Text ?? "";
+                if (string.IsNullOrWhiteSpace(msg))
+                {
+                    ShowInfoMsg("发送内容为空，取消发送。");
+                    return;
+                }
+
+                if (lstIP == null || lstIP.Items.Count == 0)
+                {
+                    ShowInfoMsg("IP 列表为空，请先添加 IP。");
+                    return;
+                }
+
+                byte[] data = Encoding.UTF8.GetBytes(msg);
+                int defaultPort = 9000;
+
+                using (UdpClient client = new UdpClient())
+                {
+                    List<Task> tasks = new List<Task>();
+                    foreach (var item in lstIP.Items)
+                    {
+                        if (item == null) continue;
+                        string s = item.ToString().Trim();
+                        if (string.IsNullOrEmpty(s)) continue;
+
+                        string ipPart = s;
+                        int port = defaultPort;
+                        if (s.Contains(":"))
+                        {
+                            var parts = s.Split(new char[] { ':' }, 2);
+                            ipPart = parts[0].Trim();
+                            int.TryParse(parts[1].Trim(), out port);
+                            if (port <= 0) port = defaultPort;
+                        }
+
+                        tasks.Add(Task.Run(async () =>
+                        {
+                            try
+                            {
+                                await client.SendAsync(data, data.Length, ipPart, port);
+                                ShowInfoMsg($"已发送到 {ipPart}:{port}");
+                            }
+                            catch (Exception ex)
+                            {
+                                ShowInfoMsg($"发送到 {ipPart}:{port} 失败: {ex.Message}");
+                            }
+                        }));
+                    }
+
+                    await Task.WhenAll(tasks);
+                }
+
+                ShowInfoMsg("全部发送完成。");
+            }
+            catch (Exception ex)
+            {
+                ShowInfoMsg($"发送过程出现异常: {ex.Message}");
             }
         }
     }

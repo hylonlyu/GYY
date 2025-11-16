@@ -225,6 +225,7 @@
             this.bettype = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.playtype2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.reason = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnSend = new System.Windows.Forms.Button();
             this.tabPage4.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox12.SuspendLayout();
@@ -1184,6 +1185,7 @@
             // 
             // panel5
             // 
+            this.panel5.Controls.Add(this.btnSend);
             this.panel5.Controls.Add(this.btnDelIP);
             this.panel5.Controls.Add(this.btnAddIP);
             this.panel5.Controls.Add(this.txtIP);
@@ -2235,6 +2237,15 @@
             this.reason.Name = "reason";
             this.reason.Width = 54;
             // 
+            // btnSend
+            // 
+            this.btnSend.Location = new System.Drawing.Point(227, 176);
+            this.btnSend.Name = "btnSend";
+            this.btnSend.Size = new System.Drawing.Size(75, 23);
+            this.btnSend.TabIndex = 4;
+            this.btnSend.Text = "发送";
+            this.btnSend.UseVisualStyleBackColor = true;
+            // 
             // FrmGuaDan
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -2512,5 +2523,6 @@
         private System.Windows.Forms.Button btnAddIP;
         private System.Windows.Forms.TextBox txtIP;
         private System.Windows.Forms.ListBox lstIP;
+        private System.Windows.Forms.Button btnSend;
     }
 }
