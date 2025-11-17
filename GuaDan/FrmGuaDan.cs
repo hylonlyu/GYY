@@ -2190,31 +2190,65 @@ namespace GuaDan
         {
             try
             {
-                string ip = txtIP?.Text?.Trim();
-                if (string.IsNullOrEmpty(ip))
+                string input = txtIP?.Text?.Trim();
+                if (string.IsNullOrEmpty(input))
                 {
-                    ShowInfoMsg("请输入IP地址或文本");
+                    ShowInfoMsg("请输入 IP 或 IP:端口");
                     return;
                 }
 
-                // 如果列表中已经包含，则不重复添加
+                // 支持格式：host 或 host:port （host 可以是 IPv4/IPv6 或 主机名）
+                string hostPart = input;
+                int port = -1;
+                if (input.Contains(":"))
+                {
+                    var parts = input.Split(new char[] { ':' }, 2);
+                    hostPart = parts[0].Trim();
+                    if (string.IsNullOrEmpty(hostPart))
+                    {
+                        ShowInfoMsg("无效的主机名或 IP");
+                        return;
+                    }
+
+                    if (!int.TryParse(parts[1].Trim(), out port) || port < 1 || port > 65535)
+                    {
+                        ShowInfoMsg("端口必须是 1 到 65535 的整数");
+                        return;
+                    }
+                }
+
+                // 校验 host 是否为合法 IP 或合理的主机名
+                IPAddress tmp;
+                bool isIp = IPAddress.TryParse(hostPart, out tmp);
+                if (!isIp)
+                {
+                    // 简单校验主机名（不做 DNS 查询）：允许字母数字、连字符、点，且不能以 - 或 . 开头或结尾
+                    var hostRegex = new Regex(@"^[A-Za-z0-9](?:[A-Za-z0-9\.-]{0,253}[A-Za-z0-9])?$");
+                    if (!hostRegex.IsMatch(hostPart))
+                    {
+                        ShowInfoMsg("主机名或 IP 格式不正确");
+                        return;
+                    }
+                }
+
+                // 去重（忽略大小写）
                 foreach (var item in lstIP.Items)
                 {
-                    if (item != null && item.ToString().Equals(ip, StringComparison.OrdinalIgnoreCase))
+                    if (item != null && item.ToString().Equals(input, StringComparison.OrdinalIgnoreCase))
                     {
-                        ShowInfoMsg($"已存在: {ip}");
+                        ShowInfoMsg($"已存在: {input}");
                         txtIP.Clear();
                         return;
                     }
                 }
 
-                lstIP.Items.Add(ip);
+                lstIP.Items.Add(input);
                 txtIP.Clear();
-                ShowInfoMsg($"已添加: {ip}");
+                ShowInfoMsg($"已添加: {input}");
             }
             catch (Exception ex)
             {
-                ShowInfoMsg($"添加IP失败: {ex.Message}");
+                ShowInfoMsg($"添加 IP 失败: {ex.Message}");
             }
         }
 

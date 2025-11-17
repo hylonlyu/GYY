@@ -26,5 +26,20 @@ namespace WeControl.Properties
                 return defaultInstance;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Port
+        {
+            get
+            {
+                return ((string)(this["Port"]));
+            }
+            set
+            {
+                this["Port"] = value;
+            }
+        }
     }
 }
