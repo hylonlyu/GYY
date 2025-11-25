@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GYY", "GuaDan\GYY.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeControl", "WeControl\WeControl.csproj", "{E4148F5C-1CB8-46B3-820B-CEFA6BBCD800}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuaDan.Tests", "GuaDan.Tests\GuaDan.Tests.csproj", "{3D929C2E-750B-4372-B10A-3F07F19CFFFA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{E4148F5C-1CB8-46B3-820B-CEFA6BBCD800}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4148F5C-1CB8-46B3-820B-CEFA6BBCD800}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4148F5C-1CB8-46B3-820B-CEFA6BBCD800}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D929C2E-750B-4372-B10A-3F07F19CFFFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D929C2E-750B-4372-B10A-3F07F19CFFFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D929C2E-750B-4372-B10A-3F07F19CFFFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D929C2E-750B-4372-B10A-3F07F19CFFFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

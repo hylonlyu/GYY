@@ -1827,19 +1827,46 @@ namespace GuaDan
         {
             string race = cobRace.Text.Trim();
             var tuEat = GetQRaceInfo(CCmemberInstance, "EAT", race);
-            var tuBet = GetQRaceInfo(CCmemberInstance2, "BET", race);
+            //var tuBet = GetQRaceInfo(CCmemberInstance2, "BET", race);
 
             Dictionary<string, RaceInfoItem> dicQEat = tuEat.Item1;
             Dictionary<string, RaceInfoItem> dicQPEat = tuEat.Item2;
 
-            Dictionary<string, RaceInfoItem> dicQBet = tuBet.Item1;
-            Dictionary<string, RaceInfoItem> dicQPBet = tuBet.Item2;
+            //Dictionary<string, RaceInfoItem> dicQBet = tuBet.Item1;
+            //Dictionary<string, RaceInfoItem> dicQPBet = tuBet.Item2;
 
-   
-            Dictionary<string, RaceInfoItem> dicQ = GetQiDaZhi(dicQEat, dicQBet);
-            string ret = ProcessQ(dicQ);
-            Dictionary<string, RaceInfoItem> dicQP = GetQiDaZhi(dicQPEat, dicQPBet,"QP");
-            ret += ProcessQP(dicQP);
+            List<string> lstQEat = GetHorseList(dicQEat);
+            List<string> lstQPEat = GetHorseList(dicQPEat);
+
+           List<string> lstQGroup = GroupByFrequency(lstQEat);
+            List<string> lstQPGroup = GroupByFrequency(lstQPEat);
+
+            string ret = "";
+            if (radZfq.Checked)
+            {
+                foreach (var item in lstQGroup) 
+                { 
+                    ret += $"{item}正" + "\r\n";
+                }
+                foreach (var item in lstQPGroup)
+                {
+                    ret += $"{item}位" + "\r\n";
+                }
+            }
+            if (radZs.Checked)
+            {
+                foreach (var item in lstQGroup)
+                {
+                    ret += $"{item}双" + "\r\n";
+                }
+            }
+            if (radFs.Checked)
+            {
+                foreach (var item in lstQPGroup)
+                {
+                    ret += $"{item}双" + "\r\n";
+                }
+            }
             txtReport.Text = ret;
             if (!string.IsNullOrEmpty(ret))
             {
@@ -1847,6 +1874,96 @@ namespace GuaDan
             }
         }
 
+        private List<string> GetHorseList(Dictionary<string, RaceInfoItem> dicRi)
+        {
+            List<string> lstHorse = new List<string>();
+            foreach(var item in dicRi)
+            {
+                string horse = item.Value.Horse.Replace("(", "").Replace(")", "");
+                if (!lstHorse.Contains(horse))
+                {
+                    lstHorse.Add(horse);
+                }
+            }
+            return lstHorse;
+        }
+
+        public   List<string> GroupByFrequency(List<string> pairs)
+        {
+            if (pairs == null || pairs.Count == 0)
+                return new List<string>();
+
+            var pairData = new List<(int first, int second, string original)>();
+            foreach (var pair in pairs)
+            {
+                var parts = pair.Split('-');
+                if (parts.Length == 2 &&
+                    int.TryParse(parts[0], out int a) &&
+                    int.TryParse(parts[1], out int b))
+                {
+                    pairData.Add((a, b, pair));
+                }
+            }
+
+            var results = new List<string>();
+            var processedIndices = new HashSet<int>();
+
+            while (processedIndices.Count < pairData.Count)
+            {
+                var frequency = new Dictionary<int, int>();
+                for (int i = 0; i < pairData.Count; i++)
+                {
+                    if (processedIndices.Contains(i)) continue;
+
+                    var data = pairData[i];
+
+                    // 改用 TryGetValue 替代 GetValueOrDefault
+                    if (frequency.TryGetValue(data.first, out int count1))
+                        frequency[data.first] = count1 + 1;
+                    else
+                        frequency[data.first] = 1;
+
+                    if (frequency.TryGetValue(data.second, out int count2))
+                        frequency[data.second] = count2 + 1;
+                    else
+                        frequency[data.second] = 1;
+                }
+
+                if (!frequency.Any()) break;
+
+                int maxFreq = frequency.Values.Max();
+                int head = frequency
+                    .Where(kvp => kvp.Value == maxFreq)
+                    .Select(kvp => kvp.Key)
+                    .Min();
+
+                var tails = new HashSet<int>();
+                for (int i = 0; i < pairData.Count; i++)
+                {
+                    if (processedIndices.Contains(i)) continue;
+
+                    var data = pairData[i];
+                    if (data.first == head)
+                    {
+                        tails.Add(data.second);
+                        processedIndices.Add(i);
+                    }
+                    else if (data.second == head)
+                    {
+                        tails.Add(data.first);
+                        processedIndices.Add(i);
+                    }
+                }
+
+                if (tails.Any())
+                {
+                    var sortedTails = string.Join(",", tails.OrderBy(t => t));
+                    results.Add($"{head}-{sortedTails}");
+                }
+            }
+
+            return results;
+        }
         private Tuple<Dictionary<string, RaceInfoItem>, Dictionary<string, RaceInfoItem>> GetQRaceInfo(CCMember ccm,string bettype,string race)
         {
             RaceInfoEnity re = ccm.GetRaceInfo();
