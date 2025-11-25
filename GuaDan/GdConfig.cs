@@ -77,5 +77,8 @@ namespace GuaDan
         public int RLimQp;
 
         public int Gdz;
+
+        // TCP服务器配置
+        public int TcpServerPort = 8888;
     }
 }

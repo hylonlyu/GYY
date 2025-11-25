@@ -64,9 +64,17 @@ namespace GuaDan
         /// 二次下单时的Q赔率
         /// </summary>
         Dictionary<string, WPOdds> dicWpOdds = new Dictionary<string, WPOdds>();
+
+        // TCP服务器相关字段
+        private TcpServer tcpServer;
+        private Dictionary<string, TcpServer.ClientInfo> connectedClients = new Dictionary<string, TcpServer.ClientInfo>();
         public FrmGuaDan()
         {
             InitializeComponent();
+
+            // 初始化TCP服务器UI状态
+            UpdateServerStatus(false);
+
             CCmemberInstance.OnLoginOk += CCmemberInstance_OnLoginOk;
             CCmemberInstance.OnLoginFail += CCmemberInstance_OnLoginFail;
             CCmemberInstance.OnLogout += CCmemberInstance_OnLogout;
@@ -313,6 +321,10 @@ namespace GuaDan
             Config.RLimQp =Util.Text2Int(txtRlimQp.Text.Trim());
 
             Config.Gdz = Util.Text2Int(txtGdz.Text.Trim());
+
+            // 保存TCP服务器端口配置
+            Config.TcpServerPort = Util.Text2Int(txtPort.Text.Trim());
+
             string file = string.Format(@"setting\{0}.jpg", "FrmEatZd");
             using (FileStream fs = new FileStream(file, FileMode.Create))
             {
@@ -371,6 +383,9 @@ namespace GuaDan
                 txtRlimQp.Text = Config.RLimQp.ToString();
 
                 txtGdz.Text = Config.Gdz.ToString();
+
+                // 加载TCP服务器端口配置
+                txtPort.Text = Config.TcpServerPort.ToString();
             }
             catch(Exception ex)
             {
@@ -2284,6 +2299,331 @@ namespace GuaDan
             }
         }
 
+        #region TCP服务器相关方法
+
+        /// <summary>
+        /// 初始化TCP服务器
+        /// </summary>
+        private void InitializeTcpServer()
+        {
+            try
+            {
+                int port = int.Parse(txtPort.Text);
+                tcpServer = new TcpServer(port);
+
+                // 订阅TCP服务器事件
+                tcpServer.ClientConnected += OnClientConnected;
+                tcpServer.ClientDisconnected += OnClientDisconnected;
+                tcpServer.MessageReceived += OnMessageReceived;
+                tcpServer.ServerError += OnServerError;
+            }
+            catch (Exception ex)
+            {
+                AppendTcpLog($"TCP服务器初始化失败: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// 启动服务器
+        /// </summary>
+        private void StartServer()
+        {
+            try
+            {
+                if (tcpServer == null)
+                {
+                    InitializeTcpServer();
+                }
+
+                if (tcpServer != null && !tcpServer.IsRunning)
+                {
+                    tcpServer.Start();
+                    UpdateServerStatus(true);
+                    AppendTcpLog($"TCP服务器启动成功，监听端口: {tcpServer.ListeningPort}");
+                }
+            }
+            catch (Exception ex)
+            {
+                AppendTcpLog($"服务器启动失败: {ex.Message}");
+                UpdateServerStatus(false);
+            }
+        }
+
+        /// <summary>
+        /// 停止服务器
+        /// </summary>
+        private void StopServer()
+        {
+            try
+            {
+                if (tcpServer != null && tcpServer.IsRunning)
+                {
+                    tcpServer.Stop();
+                    UpdateServerStatus(false);
+                    UpdateClientList();
+                    AppendTcpLog("TCP服务器已停止");
+                }
+            }
+            catch (Exception ex)
+            {
+                AppendTcpLog($"服务器停止失败: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// 客户端连接事件处理
+        /// </summary>
+        private void OnClientConnected(TcpServer.ClientInfo client)
+        {
+            connectedClients[client.Id] = client;
+            UpdateClientList();
+            AppendTcpLog($"客户端连接: {client.RemoteEndPoint} (ID: {client.Id.Substring(0, 8)})");
+        }
+
+        /// <summary>
+        /// 客户端断开连接事件处理
+        /// </summary>
+        private void OnClientDisconnected(TcpServer.ClientInfo client)
+        {
+            connectedClients.Remove(client.Id);
+            UpdateClientList();
+            AppendTcpLog($"客户端断开: {client.RemoteEndPoint} (ID: {client.Id.Substring(0, 8)})");
+        }
+
+        /// <summary>
+        /// 收到消息事件处理
+        /// </summary>
+        private void OnMessageReceived(TcpServer.ClientInfo client, string message)
+        {
+            AppendTcpLog($"收到来自 {client.RemoteEndPoint} 的消息: {message}");
+        }
+
+        /// <summary>
+        /// 服务器错误事件处理
+        /// </summary>
+        private void OnServerError(Exception ex)
+        {
+            AppendTcpLog($"服务器错误: {ex.Message}");
+        }
+
+        /// <summary>
+        /// 更新服务器状态显示
+        /// </summary>
+        private void UpdateServerStatus(bool isRunning)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action<bool>(UpdateServerStatus), isRunning);
+                return;
+            }
+
+            btnStartServer.Enabled = !isRunning;
+            btnStopServer.Enabled = isRunning;
+            txtPort.Enabled = !isRunning;
+            btnSendMessage.Enabled = isRunning && lstClients.SelectedIndex >= 0;
+            btnBroadcastMessage.Enabled = isRunning;
+            btnDisconnectClient.Enabled = isRunning && lstClients.SelectedIndex >= 0;
+
+            lblServerStatus.Text = isRunning ? $"服务器运行中 (端口: {tcpServer?.ListeningPort})" : "服务器停止";
+            lblServerStatus.ForeColor = isRunning ? Color.Green : Color.Red;
+        }
+
+        /// <summary>
+        /// 更新客户端列表
+        /// </summary>
+        private void UpdateClientList()
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(UpdateClientList));
+                return;
+            }
+
+            lstClients.Items.Clear();
+            foreach (var client in connectedClients.Values)
+            {
+                string item = $"{client.RemoteEndPoint} | 连接时间: {client.ConnectedAt:HH:mm:ss}";
+                lstClients.Items.Add(item);
+            }
+
+            lblClientCount.Text = $"客户端数量: {connectedClients.Count}";
+        }
+
+        /// <summary>
+        /// 添加TCP日志
+        /// </summary>
+        private void AppendTcpLog(string message)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action<string>(AppendTcpLog), message);
+                return;
+            }
+
+            string timestamp = DateTime.Now.ToString("HH:mm:ss");
+            txtTcpLog.AppendText($"[{timestamp}] {message}{Environment.NewLine}");
+
+            // 限制日志行数，避免内存占用过多
+            if (txtTcpLog.Lines.Length > 500)
+            {
+                var lines = txtTcpLog.Lines;
+                var newLines = new string[lines.Length - 100];
+                Array.Copy(lines, 100, newLines, 0, newLines.Length);
+                txtTcpLog.Lines = newLines;
+            }
+        }
+
+        /// <summary>
+        /// 获取选中的客户端ID
+        /// </summary>
+        private string GetSelectedClientId()
+        {
+            if (lstClients.SelectedIndex >= 0)
+            {
+                var selectedKeys = connectedClients.Keys.ToList();
+                if (lstClients.SelectedIndex < selectedKeys.Count)
+                {
+                    return selectedKeys[lstClients.SelectedIndex];
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 发送消息给指定客户端
+        /// </summary>
+        private void SendToSelectedClient()
+        {
+            string clientId = GetSelectedClientId();
+            if (clientId != null)
+            {
+                string message = txtMessage.Text.Trim();
+                if (!string.IsNullOrEmpty(message))
+                {
+                    if (tcpServer.TrySendToClient(clientId, message))
+                    {
+                        AppendTcpLog($"发送消息到 {connectedClients[clientId].RemoteEndPoint}: {message}");
+                        txtMessage.Clear();
+                    }
+                    else
+                    {
+                        AppendTcpLog("发送消息失败");
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("请先选择一个客户端");
+            }
+        }
+
+        /// <summary>
+        /// 广播消息给所有客户端
+        /// </summary>
+        private void BroadcastMessage()
+        {
+            string message = txtMessage.Text.Trim();
+            if (!string.IsNullOrEmpty(message))
+            {
+                int successCount = 0;
+                int failCount = 0;
+
+                foreach (var clientId in connectedClients.Keys.ToList())
+                {
+                    if (tcpServer.TrySendToClient(clientId, message))
+                    {
+                        successCount++;
+                    }
+                    else
+                    {
+                        failCount++;
+                    }
+                }
+
+                AppendTcpLog($"广播消息: {message} (成功: {successCount}, 失败: {failCount})");
+                txtMessage.Clear();
+            }
+        }
+
+        /// <summary>
+        /// 断开选中的客户端
+        /// </summary>
+        private void DisconnectSelectedClient()
+        {
+            string clientId = GetSelectedClientId();
+            if (clientId != null)
+            {
+                string clientEndpoint = connectedClients[clientId].RemoteEndPoint;
+                tcpServer.DisconnectClient(clientId);
+                AppendTcpLog($"手动断开客户端: {clientEndpoint}");
+            }
+            else
+            {
+                MessageBox.Show("请先选择一个客户端");
+            }
+        }
+
+        #endregion
+
+        #region TCP控件事件处理程序
+
+        private void btnStartServer_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int port = int.Parse(txtPort.Text);
+                if (port < 1 || port > 65535)
+                {
+                    MessageBox.Show("端口号必须在1-65535之间");
+                    return;
+                }
+
+                StartServer();
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("请输入有效的端口号");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"启动服务器时发生错误: {ex.Message}");
+            }
+        }
+
+        private void btnStopServer_Click(object sender, EventArgs e)
+        {
+            StopServer();
+        }
+
+        private void btnDisconnectClient_Click(object sender, EventArgs e)
+        {
+            DisconnectSelectedClient();
+        }
+
+        private void btnSendMessage_Click(object sender, EventArgs e)
+        {
+            SendToSelectedClient();
+        }
+
+        private void btnBroadcastMessage_Click(object sender, EventArgs e)
+        {
+            BroadcastMessage();
+        }
+
+        private void btnClearLog_Click(object sender, EventArgs e)
+        {
+            txtTcpLog.Clear();
+            AppendTcpLog("日志已清空");
+        }
+
+        private void lstClients_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            bool hasSelection = lstClients.SelectedIndex >= 0;
+            btnDisconnectClient.Enabled = tcpServer?.IsRunning == true && hasSelection;
+            btnSendMessage.Enabled = tcpServer?.IsRunning == true && hasSelection;
+        }
+
+        #endregion
 
     }
 

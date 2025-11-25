@@ -112,6 +112,18 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.panel5 = new System.Windows.Forms.Panel();
+            this.btnStartServer = new System.Windows.Forms.Button();
+            this.btnStopServer = new System.Windows.Forms.Button();
+            this.txtPort = new System.Windows.Forms.TextBox();
+            this.lblServerStatus = new System.Windows.Forms.Label();
+            this.lstClients = new System.Windows.Forms.ListBox();
+            this.lblClientCount = new System.Windows.Forms.Label();
+            this.btnDisconnectClient = new System.Windows.Forms.Button();
+            this.txtMessage = new System.Windows.Forms.TextBox();
+            this.btnSendMessage = new System.Windows.Forms.Button();
+            this.btnBroadcastMessage = new System.Windows.Forms.Button();
+            this.txtTcpLog = new System.Windows.Forms.TextBox();
+            this.btnClearLog = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
             this.radZfq = new System.Windows.Forms.RadioButton();
             this.radFs = new System.Windows.Forms.RadioButton();
@@ -1187,12 +1199,157 @@
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // panel5
-            // 
+            //
+            this.panel5.Controls.Add(this.btnStartServer);
+            this.panel5.Controls.Add(this.btnStopServer);
+            this.panel5.Controls.Add(this.txtPort);
+            this.panel5.Controls.Add(this.lblServerStatus);
+            this.panel5.Controls.Add(this.lstClients);
+            this.panel5.Controls.Add(this.lblClientCount);
+            this.panel5.Controls.Add(this.btnDisconnectClient);
+            this.panel5.Controls.Add(this.txtMessage);
+            this.panel5.Controls.Add(this.btnSendMessage);
+            this.panel5.Controls.Add(this.btnBroadcastMessage);
+            this.panel5.Controls.Add(this.txtTcpLog);
+            this.panel5.Controls.Add(this.btnClearLog);
             this.panel5.Location = new System.Drawing.Point(305, 52);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(436, 271);
             this.panel5.TabIndex = 14;
-            // 
+            //
+            // btnStartServer
+            //
+            this.btnStartServer.Location = new System.Drawing.Point(5, 5);
+            this.btnStartServer.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnStartServer.Name = "btnStartServer";
+            this.btnStartServer.Size = new System.Drawing.Size(60, 25);
+            this.btnStartServer.TabIndex = 0;
+            this.btnStartServer.Text = "启动";
+            this.btnStartServer.UseVisualStyleBackColor = true;
+            //
+            // btnStopServer
+            //
+            this.btnStopServer.Enabled = false;
+            this.btnStopServer.Location = new System.Drawing.Point(70, 5);
+            this.btnStopServer.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnStopServer.Name = "btnStopServer";
+            this.btnStopServer.Size = new System.Drawing.Size(60, 25);
+            this.btnStopServer.TabIndex = 1;
+            this.btnStopServer.Text = "停止";
+            this.btnStopServer.UseVisualStyleBackColor = true;
+            //
+            // txtPort
+            //
+            this.txtPort.Location = new System.Drawing.Point(135, 7);
+            this.txtPort.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtPort.Name = "txtPort";
+            this.txtPort.Size = new System.Drawing.Size(50, 21);
+            this.txtPort.TabIndex = 2;
+            this.txtPort.Text = "8888";
+            //
+            // lblServerStatus
+            //
+            this.lblServerStatus.AutoSize = true;
+            this.lblServerStatus.ForeColor = System.Drawing.Color.Red;
+            this.lblServerStatus.Location = new System.Drawing.Point(190, 10);
+            this.lblServerStatus.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblServerStatus.Name = "lblServerStatus";
+            this.lblServerStatus.Size = new System.Drawing.Size(65, 12);
+            this.lblServerStatus.TabIndex = 3;
+            this.lblServerStatus.Text = "服务器停止";
+            //
+            // lstClients
+            //
+            this.lstClients.FormattingEnabled = true;
+            this.lstClients.ItemHeight = 12;
+            this.lstClients.Location = new System.Drawing.Point(5, 35);
+            this.lstClients.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.lstClients.Name = "lstClients";
+            this.lstClients.Size = new System.Drawing.Size(200, 150);
+            this.lstClients.TabIndex = 4;
+            //
+            // lblClientCount
+            //
+            this.lblClientCount.AutoSize = true;
+            this.lblClientCount.Location = new System.Drawing.Point(5, 190);
+            this.lblClientCount.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblClientCount.Name = "lblClientCount";
+            this.lblClientCount.Size = new System.Drawing.Size(89, 12);
+            this.lblClientCount.TabIndex = 5;
+            this.lblClientCount.Text = "客户端数量: 0";
+            //
+            // btnDisconnectClient
+            //
+            this.btnDisconnectClient.Enabled = false;
+            this.btnDisconnectClient.Location = new System.Drawing.Point(130, 185);
+            this.btnDisconnectClient.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnDisconnectClient.Name = "btnDisconnectClient";
+            this.btnDisconnectClient.Size = new System.Drawing.Size(75, 22);
+            this.btnDisconnectClient.TabIndex = 6;
+            this.btnDisconnectClient.Text = "断开连接";
+            this.btnDisconnectClient.UseVisualStyleBackColor = true;
+            //
+            // txtMessage
+            //
+            this.txtMessage.Location = new System.Drawing.Point(210, 35);
+            this.txtMessage.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtMessage.Name = "txtMessage";
+            this.txtMessage.Size = new System.Drawing.Size(220, 21);
+            this.txtMessage.TabIndex = 7;
+            //
+            // btnSendMessage
+            //
+            this.btnSendMessage.Enabled = false;
+            this.btnSendMessage.Location = new System.Drawing.Point(210, 60);
+            this.btnSendMessage.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnSendMessage.Name = "btnSendMessage";
+            this.btnSendMessage.Size = new System.Drawing.Size(100, 25);
+            this.btnSendMessage.TabIndex = 8;
+            this.btnSendMessage.Text = "发送选中";
+            this.btnSendMessage.UseVisualStyleBackColor = true;
+            //
+            // btnBroadcastMessage
+            //
+            this.btnBroadcastMessage.Enabled = false;
+            this.btnBroadcastMessage.Location = new System.Drawing.Point(330, 60);
+            this.btnBroadcastMessage.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnBroadcastMessage.Name = "btnBroadcastMessage";
+            this.btnBroadcastMessage.Size = new System.Drawing.Size(100, 25);
+            this.btnBroadcastMessage.TabIndex = 9;
+            this.btnBroadcastMessage.Text = "广播全部";
+            this.btnBroadcastMessage.UseVisualStyleBackColor = true;
+            //
+            // txtTcpLog
+            //
+            this.txtTcpLog.Location = new System.Drawing.Point(210, 90);
+            this.txtTcpLog.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtTcpLog.Multiline = true;
+            this.txtTcpLog.Name = "txtTcpLog";
+            this.txtTcpLog.ReadOnly = true;
+            this.txtTcpLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtTcpLog.Size = new System.Drawing.Size(220, 150);
+            this.txtTcpLog.TabIndex = 10;
+            //
+            // btnClearLog
+            //
+            this.btnClearLog.Location = new System.Drawing.Point(210, 245);
+            this.btnClearLog.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnClearLog.Name = "btnClearLog";
+            this.btnClearLog.Size = new System.Drawing.Size(100, 22);
+            this.btnClearLog.TabIndex = 11;
+            this.btnClearLog.Text = "清空日志";
+            this.btnClearLog.UseVisualStyleBackColor = true;
+            this.btnClearLog.Click += new System.EventHandler(this.btnClearLog_Click);
+            //
+            // TCP服务器按钮事件
+            //
+            this.btnStartServer.Click += new System.EventHandler(this.btnStartServer_Click);
+            this.btnStopServer.Click += new System.EventHandler(this.btnStopServer_Click);
+            this.btnDisconnectClient.Click += new System.EventHandler(this.btnDisconnectClient_Click);
+            this.btnSendMessage.Click += new System.EventHandler(this.btnSendMessage_Click);
+            this.btnBroadcastMessage.Click += new System.EventHandler(this.btnBroadcastMessage_Click);
+            this.lstClients.SelectedIndexChanged += new System.EventHandler(this.lstClients_SelectedIndexChanged);
+            //
             // panel4
             // 
             this.panel4.Controls.Add(this.radZfq);
@@ -2474,5 +2631,17 @@
         private System.Windows.Forms.RadioButton radFs;
         private System.Windows.Forms.RadioButton radZs;
         private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Button btnStartServer;
+        private System.Windows.Forms.Button btnStopServer;
+        private System.Windows.Forms.TextBox txtPort;
+        private System.Windows.Forms.Label lblServerStatus;
+        private System.Windows.Forms.ListBox lstClients;
+        private System.Windows.Forms.Label lblClientCount;
+        private System.Windows.Forms.Button btnDisconnectClient;
+        private System.Windows.Forms.TextBox txtMessage;
+        private System.Windows.Forms.Button btnSendMessage;
+        private System.Windows.Forms.Button btnBroadcastMessage;
+        private System.Windows.Forms.TextBox txtTcpLog;
+        private System.Windows.Forms.Button btnClearLog;
     }
 }
