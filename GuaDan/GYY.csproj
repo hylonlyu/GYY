@@ -135,6 +135,7 @@
     <Compile Include="RaceInfoItem.cs" />
     <Compile Include="RegResult.cs" />
     <Compile Include="Security.cs" />
+    <Compile Include="TcpServer.cs" />
     <Compile Include="UserInfo.cs" />
     <Compile Include="Util.cs" />
     <EmbeddedResource Include="FrmGuaDan.resx">

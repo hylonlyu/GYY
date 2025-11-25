@@ -412,17 +412,7 @@ namespace GuaDan
                     }
                 }
 
-                // 保存 lstIP 中的内容
-                if (this.lstIP != null)
-                {
-                    foreach (var item in lstIP.Items)
-                    {
-                        if (item != null)
-                        {
-                            extra.IPs.Add(item.ToString());
-                        }
-                    }
-                }
+            
 
                 string file = "setting\\FrmGuaDan_extra.bin";
                 using (FileStream fs = new FileStream(file, FileMode.Create))
@@ -481,16 +471,7 @@ namespace GuaDan
                     }
                 }
 
-                // 恢复 lstIP 的内容
-                if (this.lstIP != null)
-                {
-                    lstIP.Items.Clear();
-                    foreach (var ip in extra.IPs)
-                    {
-                        lstIP.Items.Add(ip);
-                    }
-                }
-                ShowInfoMsg("已加载额外设置");
+          
             }
             catch (Exception ex)
             {
@@ -2303,159 +2284,7 @@ namespace GuaDan
             }
         }
 
-        private void btnAddIP_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                string input = txtIP?.Text?.Trim();
-                if (string.IsNullOrEmpty(input))
-                {
-                    ShowInfoMsg("请输入 IP 或 IP:端口");
-                    return;
-                }
 
-                // 支持格式：host 或 host:port （host 可以是 IPv4/IPv6 或 主机名）
-                string hostPart = input;
-                int port = -1;
-                if (input.Contains(":"))
-                {
-                    var parts = input.Split(new char[] { ':' }, 2);
-                    hostPart = parts[0].Trim();
-                    if (string.IsNullOrEmpty(hostPart))
-                    {
-                        ShowInfoMsg("无效的主机名或 IP");
-                        return;
-                    }
-
-                    if (!int.TryParse(parts[1].Trim(), out port) || port < 1 || port > 65535)
-                    {
-                        ShowInfoMsg("端口必须是 1 到 65535 的整数");
-                        return;
-                    }
-                }
-
-                // 校验 host 是否为合法 IP 或合理的主机名
-                IPAddress tmp;
-                bool isIp = IPAddress.TryParse(hostPart, out tmp);
-                if (!isIp)
-                {
-                    // 简单校验主机名（不做 DNS 查询）：允许字母数字、连字符、点，且不能以 - 或 . 开头或结尾
-                    var hostRegex = new Regex(@"^[A-Za-z0-9](?:[A-Za-z0-9\.-]{0,253}[A-Za-z0-9])?$");
-                    if (!hostRegex.IsMatch(hostPart))
-                    {
-                        ShowInfoMsg("主机名或 IP 格式不正确");
-                        return;
-                    }
-                }
-
-                // 去重（忽略大小写）
-                foreach (var item in lstIP.Items)
-                {
-                    if (item != null && item.ToString().Equals(input, StringComparison.OrdinalIgnoreCase))
-                    {
-                        ShowInfoMsg($"已存在: {input}");
-                        txtIP.Clear();
-                        return;
-                    }
-                }
-
-                lstIP.Items.Add(input);
-                txtIP.Clear();
-                ShowInfoMsg($"已添加: {input}");
-            }
-            catch (Exception ex)
-            {
-                ShowInfoMsg($"添加 IP 失败: {ex.Message}");
-            }
-        }
-
-        private void btnDelIP_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (lstIP.SelectedItems == null || lstIP.SelectedItems.Count == 0)
-                {
-                    ShowInfoMsg("请先选择要删除的 IP");
-                    return;
-                }
-
-                // 复制选中项到列表，避免边遍历边修改集合引发异常
-                var toRemove = lstIP.SelectedItems.Cast<object>().ToList();
-                foreach (var item in toRemove)
-                {
-                    lstIP.Items.Remove(item);
-                    ShowInfoMsg($"已删除: {item}");
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowInfoMsg($"删除 IP 失败: {ex.Message}");
-            }
-        }
-
-        private async void btnSend_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                string msg = txtReport?.Text ?? "";
-                if (string.IsNullOrWhiteSpace(msg))
-                {
-                    ShowInfoMsg("发送内容为空，取消发送。");
-                    return;
-                }
-
-                if (lstIP == null || lstIP.Items.Count == 0)
-                {
-                    ShowInfoMsg("IP 列表为空，请先添加 IP。");
-                    return;
-                }
-
-                byte[] data = Encoding.UTF8.GetBytes(msg);
-                int defaultPort = 9000;
-
-                using (UdpClient client = new UdpClient())
-                {
-                    List<Task> tasks = new List<Task>();
-                    foreach (var item in lstIP.Items)
-                    {
-                        if (item == null) continue;
-                        string s = item.ToString().Trim();
-                        if (string.IsNullOrEmpty(s)) continue;
-
-                        string ipPart = s;
-                        int port = defaultPort;
-                        if (s.Contains(":"))
-                        {
-                            var parts = s.Split(new char[] { ':' }, 2);
-                            ipPart = parts[0].Trim();
-                            int.TryParse(parts[1].Trim(), out port);
-                            if (port <= 0) port = defaultPort;
-                        }
-
-                        tasks.Add(Task.Run(async () =>
-                        {
-                            try
-                            {
-                                await client.SendAsync(data, data.Length, ipPart, port);
-                                ShowInfoMsg($"已发送到 {ipPart}:{port}");
-                            }
-                            catch (Exception ex)
-                            {
-                                ShowInfoMsg($"发送到 {ipPart}:{port} 失败: {ex.Message}");
-                            }
-                        }));
-                    }
-
-                    await Task.WhenAll(tasks);
-                }
-
-                ShowInfoMsg("全部发送完成。");
-            }
-            catch (Exception ex)
-            {
-                ShowInfoMsg($"发送过程出现异常: {ex.Message}");
-            }
-        }
     }
 
     class BetInfo
