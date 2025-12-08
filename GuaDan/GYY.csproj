@@ -55,7 +55,7 @@
     <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>logo.ico</ApplicationIcon>
+    <ApplicationIcon>01.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack">
@@ -179,7 +179,9 @@
     <None Include="Resources\logo.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="01.ico" />
     <Content Include="logo.ico" />
+    <Content Include="Resources\300a375f-6cfe-49de-a506-fd62435f2f40.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">

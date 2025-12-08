@@ -1868,6 +1868,8 @@ namespace GuaDan
             {
                 Clipboard.SetText(ret);
             }
+            string message = txtMessage.Text.Trim();
+            BroadcastMessage(message);
         }
 
         private List<string> GetHorseList(Dictionary<string, RaceInfoItem> dicRi)
@@ -2395,6 +2397,22 @@ namespace GuaDan
         /// </summary>
         private void OnMessageReceived(TcpServer.ClientInfo client, string message)
         {
+            // 检查是否为心跳包
+            if (message == "HEARTBEAT")
+            {
+                // 回复心跳包
+                bool success = tcpServer.TrySendToClient(client.Id, "HEARTBEAT_ACK");
+                if (success)
+                {
+                    AppendTcpLog($"收到并回复来自 {client.RemoteEndPoint} 的心跳");
+                }
+                else
+                {
+                    AppendTcpLog($"回复来自 {client.RemoteEndPoint} 的心跳失败");
+                }
+                return;
+            }
+
             AppendTcpLog($"收到来自 {client.RemoteEndPoint} 的消息: {message}");
         }
 
@@ -2446,7 +2464,18 @@ namespace GuaDan
                 lstClients.Items.Add(item);
             }
 
-            lblClientCount.Text = $"客户端数量: {connectedClients.Count}";
+            // 确保lblClientCount也在主线程中更新
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(() =>
+                {
+                    lblClientCount.Text = $"客户端数量: {connectedClients.Count}";
+                }));
+            }
+            else
+            {
+                lblClientCount.Text = $"客户端数量: {connectedClients.Count}";
+            }
         }
 
         /// <summary>
@@ -2520,9 +2549,9 @@ namespace GuaDan
         /// <summary>
         /// 广播消息给所有客户端
         /// </summary>
-        private void BroadcastMessage()
+        private void BroadcastMessage(string message)
         {
-            string message = txtMessage.Text.Trim();
+           
             if (!string.IsNullOrEmpty(message))
             {
                 int successCount = 0;
@@ -2607,7 +2636,8 @@ namespace GuaDan
 
         private void btnBroadcastMessage_Click(object sender, EventArgs e)
         {
-            BroadcastMessage();
+            string message = txtMessage.Text.Trim();
+            BroadcastMessage(message);
         }
 
         private void btnClearLog_Click(object sender, EventArgs e)
