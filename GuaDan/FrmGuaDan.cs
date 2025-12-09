@@ -1868,7 +1868,7 @@ namespace GuaDan
             {
                 Clipboard.SetText(ret);
             }
-            string message = txtMessage.Text.Trim();
+            string message = txtReport.Text.Trim();
             BroadcastMessage(message);
         }
 
