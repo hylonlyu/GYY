@@ -5,7 +5,8 @@
       "Bash(msbuild:*)",
       "Bash(dotnet restore:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(dir:*)"
     ],
     "deny": [],
     "ask": []

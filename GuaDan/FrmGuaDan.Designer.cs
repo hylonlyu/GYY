@@ -2475,7 +2475,7 @@
             this.MinimumSize = new System.Drawing.Size(1578, 843);
             this.Name = "FrmGuaDan";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "GYY";
+            this.Text = "GYY  V1.1.0";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmGuaDan_FormClosed);
             this.Load += new System.EventHandler(this.FrmGuaDan_Load);
             this.tabPage4.ResumeLayout(false);
